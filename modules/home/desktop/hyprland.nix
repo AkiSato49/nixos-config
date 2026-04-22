@@ -74,10 +74,7 @@
         };
       };
 
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_fingers = 3;
-      };
+      # gestures removed in Hyprland 0.46+ (touchpad swipe via libinput now)
 
       misc = {
         force_default_wallpaper = 0;
@@ -111,7 +108,7 @@
         "$mod, P, pseudo"
         # NOTE: $mod,L and $mod,J are used for vim focus — hyprlock on CTRL+SUPER+L
         "$mod CTRL, L, exec, hyprlock"
-        "$mod, T, togglesplit"
+        "$mod, T, layoutmsg, togglesplit"
         "$mod, B, exec, zen"
         "$mod, E, exec, nautilus"
 
@@ -190,7 +187,8 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      windowrulev2 = [
+      # windowrulev2 deprecated in 0.46+ — use windowrule with same syntax
+      windowrule = [
         "float, class:^(pavucontrol)$"
         "float, class:^(blueman-manager)$"
         "float, class:^(nm-connection-editor)$"
