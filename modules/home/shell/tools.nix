@@ -16,7 +16,7 @@
     # Git
     gh
     lazygit
-    git-delta
+    delta
 
     # Dev essentials
     direnv
