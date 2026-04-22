@@ -95,14 +95,18 @@
   programs.home-manager.enable = true;
 
   # Let HM take over files that may already exist (e.g. from a previous manual setup).
-  # Runs before HM's link-check phase — no manual deletion needed.
+  # Removes plain files (not symlinks) in all dirs HM manages — runs before link-check.
   home.activation.clearConflicts = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    # Dirs fully managed by HM modules — wipe plain files, leave symlinks alone
+    for dir in hypr alacritty nvim lazygit gtk-3.0 gtk-4.0 waybar mako wofi; do
+      if [ -d "$HOME/.config/$dir" ]; then
+        find "$HOME/.config/$dir" -maxdepth 3 -type f ! -type l -delete 2>/dev/null || true
+      fi
+    done
+    # Standalone dotfiles
     rm -f \
       $HOME/.config/mimeapps.list \
       $HOME/.config/user-dirs.dirs \
-      $HOME/.config/gtk-3.0/settings.ini \
-      $HOME/.config/gtk-4.0/settings.ini \
-      $HOME/.config/hypr/hyprland.conf \
       $HOME/.gtkrc-2.0
   '';
 
