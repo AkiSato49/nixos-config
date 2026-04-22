@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
 {
   imports = [
@@ -93,6 +93,18 @@
   };
 
   programs.home-manager.enable = true;
+
+  # Let HM take over files that may already exist (e.g. from a previous manual setup).
+  # Runs before HM's link-check phase — no manual deletion needed.
+  home.activation.clearConflicts = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    rm -f \
+      $HOME/.config/mimeapps.list \
+      $HOME/.config/user-dirs.dirs \
+      $HOME/.config/gtk-3.0/settings.ini \
+      $HOME/.config/gtk-4.0/settings.ini \
+      $HOME/.config/hypr/hyprland.conf \
+      $HOME/.gtkrc-2.0
+  '';
 
   # Udiskie auto-mount
   services.udiskie = {
