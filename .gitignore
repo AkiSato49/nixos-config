@@ -1,0 +1,20 @@
+# Nix
+result
+result-*
+
+# Secrets (never commit these)
+secrets.yaml
+*.age
+*.key
+
+# Hardware config is machine-specific — commit your own version
+# hosts/nixos/hardware-configuration.nix
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
