@@ -29,12 +29,14 @@
           enabled = true;
           size = 3;
           passes = 2;
-          new_optimizations = true;
         };
-        drop_shadow = true;
-        shadow_range = 8;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(1a1a1aee)";
+        # Hyprland 0.45+ shadow syntax
+        shadow = {
+          enabled = true;
+          range = 8;
+          render_power = 3;
+          color = "rgba(1a1a1aee)";
+        };
       };
 
       animations = {
@@ -87,7 +89,9 @@
         "waybar"
         "mako"
         "hyprpaper"
-        "cliphist watch"
+        # cliphist: store text + images separately
+        "wl-paste --type text --watch cliphist store"
+        "wl-paste --type image --watch cliphist store"
         "udiskie &"
         "kanshi &"
         "/run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets"
@@ -105,8 +109,9 @@
         "$mod, F, fullscreen"
         "$mod, V, togglefloating"
         "$mod, P, pseudo"
-        "$mod, J, togglesplit"
-        "$mod, L, exec, hyprlock"
+        # NOTE: $mod,L and $mod,J are used for vim focus — hyprlock on CTRL+SUPER+L
+        "$mod CTRL, L, exec, hyprlock"
+        "$mod, T, togglesplit"
         "$mod, B, exec, zen"
         "$mod, E, exec, nautilus"
 
@@ -116,9 +121,9 @@
         "$mod SHIFT, S, exec, grimblast save area - | swappy -f -"
 
         # Clipboard history
-        "$mod, C, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
+        "$mod, Y, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy"
 
-        # Focus (vim keys)
+        # Focus (vim keys + arrows)
         "$mod, left,  movefocus, l"
         "$mod, right, movefocus, r"
         "$mod, up,    movefocus, u"

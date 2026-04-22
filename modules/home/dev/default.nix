@@ -27,14 +27,7 @@
     # DB GUI
     dbeaver-bin
 
-    # HTTP tools
-    httpie
-    curlie
-
-    # Data / misc
-    jq
-    gnumake
-    gcc
+    # Build tools
     pkg-config
   ];
 
@@ -50,13 +43,13 @@
 
   # Default devShell template (copy to any project)
   home.file.".config/devshell-template.nix".text = ''
-    # Copy to project root as shell.nix or flake.nix devShells
+    # Copy to project root as shell.nix
     { pkgs ? import <nixpkgs> {} }:
     pkgs.mkShell {
       buildInputs = with pkgs; [
         nodejs
         bun
-        nodePackages.pnpm
+        pnpm
       ];
       shellHook = '''
         echo "Dev shell ready"

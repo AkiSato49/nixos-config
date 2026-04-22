@@ -15,15 +15,16 @@
       padding          = "12";
       margin           = "10";
       icon-path        = "${pkgs.papirus-icon-theme}/share/icons/Papirus-Dark";
-
-      "[urgency=high]" = {
-        border-color    = "#fb4934";
-        default-timeout = 0;
-      };
-
-      "[urgency=low]" = {
-        border-color = "#3c3836";
-      };
     };
+
+    # Section rules (urgency) go in extraConfig — not supported as attrset keys
+    extraConfig = ''
+      [urgency=high]
+      border-color=#fb4934
+      default-timeout=0
+
+      [urgency=low]
+      border-color=#3c3836
+    '';
   };
 }
