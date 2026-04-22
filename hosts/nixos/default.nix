@@ -51,6 +51,7 @@
   };
 
   programs.zsh.enable = true;
+  programs.dconf.enable = true;
 
   # XDG portals for Hyprland
   xdg.portal = {
