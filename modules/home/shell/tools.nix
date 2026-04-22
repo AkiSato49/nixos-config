@@ -49,30 +49,32 @@
 
   programs.git = {
     enable = true;
-    userName  = "AkiSato49";
-    userEmail = "carlosakisato@gmail.com";
-    extraConfig = {
+    settings = {
+      user.name  = "AkiSato49";
+      user.email = "carlosakisato@gmail.com";
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = false;
       core.editor = "nvim";
-    };
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        light = false;
-        syntax-theme = "gruvbox-dark";
-        side-by-side = true;
-        line-numbers = true;
+      alias = {
+        st   = "status";
+        co   = "checkout";
+        br   = "branch";
+        lg   = "log --oneline --graph --decorate";
+        undo = "reset --soft HEAD~1";
       };
     };
-    aliases = {
-      st   = "status";
-      co   = "checkout";
-      br   = "branch";
-      lg   = "log --oneline --graph --decorate";
-      undo = "reset --soft HEAD~1";
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      light = false;
+      syntax-theme = "gruvbox-dark";
+      side-by-side = true;
+      line-numbers = true;
     };
   };
 
@@ -87,9 +89,9 @@
     settings = {
       gui = {
         theme = {
-          activeBorderColor    = [ "yellow" "bold" ];
-          inactiveBorderColor  = [ "white" ];
-          selectedLineBgColor  = [ "#3c3836" ];
+          activeBorderColor   = [ "yellow" "bold" ];
+          inactiveBorderColor = [ "white" ];
+          selectedLineBgColor = [ "#3c3836" ];
         };
       };
     };

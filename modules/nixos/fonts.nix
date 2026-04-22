@@ -4,7 +4,10 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" "Hack" "NerdFontsSymbolsOnly" ]; })
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
+      nerd-fonts.hack
+      nerd-fonts.symbols-only
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-emoji

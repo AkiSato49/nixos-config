@@ -92,9 +92,6 @@
     ];
   };
 
-  # Allow unfree in home packages
-  nixpkgs.config.allowUnfree = true;
-
   programs.home-manager.enable = true;
 
   # Udiskie auto-mount
