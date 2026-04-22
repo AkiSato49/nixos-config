@@ -5,8 +5,8 @@
     # Node / JS ecosystem
     nodejs
     bun
-    nodePackages.pnpm
-    nodePackages.typescript
+    pnpm
+    typescript
 
     # Python
     python3

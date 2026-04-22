@@ -9,8 +9,8 @@
 
     extraPackages = with pkgs; [
       # LSP servers
-      nodePackages.typescript-language-server
-      nodePackages.vscode-langservers-extracted  # html, css, json, eslint
+      typescript-language-server
+      vscode-langservers-extracted  # html, css, json, eslint
       svelte-language-server
       lua-language-server
       nil                   # Nix LSP
