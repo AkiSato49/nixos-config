@@ -60,7 +60,6 @@
       dwindle = {
         pseudotile = true;
         preserve_split = true;
-        smart_split = true;
       };
 
       input = {
@@ -93,7 +92,7 @@
         "kanshi &"
         "/run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets"
         "1password --silent"
-        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "${pkgs.polkit-gnome}/libexec/polkit-gnome-authentication-agent-1"
       ];
 
       "$mod" = "SUPER";

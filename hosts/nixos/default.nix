@@ -56,7 +56,7 @@
   # XDG portals for Hyprland
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
     xdgOpenUsePortal = true;
     config.common.default = "*";
   };
@@ -69,7 +69,7 @@
     brightnessctl
     playerctl
     gnome-keyring
-    polkit_gnome
+    polkit-gnome
   ];
 
   # Polkit agent

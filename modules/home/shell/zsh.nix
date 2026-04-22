@@ -45,18 +45,8 @@
     };
 
     initContent = ''
-      # zoxide (smart cd)
-      eval "$(zoxide init zsh --cmd cd)"
-
-      # mise (runtime manager)
+      # mise (runtime manager) — others handled by HM programs integrations
       eval "$(mise activate zsh)"
-
-      # direnv
-      eval "$(direnv hook zsh)"
-
-      # fzf keybindings
-      source ${pkgs.fzf}/share/fzf/key-bindings.zsh
-      source ${pkgs.fzf}/share/fzf/completion.zsh
     '';
 
     history = {
