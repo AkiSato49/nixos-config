@@ -11,6 +11,8 @@
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/power.nix
     ../../modules/nixos/security.nix
+    ../../modules/nixos/greetd.nix
+    ../../modules/nixos/tailscale.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

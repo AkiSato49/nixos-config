@@ -104,6 +104,8 @@
   # XDG defaults
   xdg = {
     enable = true;
+    # Ensure zsh history dir exists
+    dataFile."zsh/.keep".text = "";
     userDirs = {
       enable = true;
       createDirectories = true;
