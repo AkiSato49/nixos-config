@@ -187,8 +187,7 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      # windowrulev2 deprecated in 0.46+ — use windowrule with same syntax
-      windowrule = [
+      windowrulev2 = [
         "float, class:^(pavucontrol)$"
         "float, class:^(blueman-manager)$"
         "float, class:^(nm-connection-editor)$"
