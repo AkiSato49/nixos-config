@@ -19,13 +19,9 @@
     };
   };
 
-  # Panoramic wallpaper splitter
-  # Usage: set-wallpaper ~/Pictures/mypano.jpg
-  home.packages = [ pkgs.imagemagick ];
-
-  home.file.".local/bin/set-wallpaper" = {
-    executable = true;
-    text = ''
+  home.packages = [
+    pkgs.imagemagick
+    (pkgs.writeShellScriptBin "set-wallpaper" ''
       #!/bin/bash
       # Splits a single image across eDP-1 | HDMI-A-1 | DVI-I-1 (rotated 270°)
       # Monitor layout (logical px):
@@ -88,6 +84,6 @@
       hyprctl hyprpaper wallpaper "DVI-I-1,$WP_DIR/dvi.png"
 
       echo "Done! Wallpaper set across all monitors."
-    '';
-  };
+    '')
+  ];
 }
