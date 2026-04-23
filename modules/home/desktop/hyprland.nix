@@ -166,13 +166,13 @@
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
 
-      windowrule = float, match:class pavucontrol
-      windowrule = float, match:class blueman-manager
-      windowrule = float, match:class nm-connection-editor
-      windowrule = float, match:class 1Password
-      windowrule = float, match:class swappy
-      windowrule = float, match:title Picture-in-Picture
-      windowrule = pin, match:title Picture-in-Picture
+      windowrule = float on, match:class pavucontrol
+      windowrule = float on, match:class blueman-manager
+      windowrule = float on, match:class nm-connection-editor
+      windowrule = float on, match:class 1Password
+      windowrule = float on, match:class swappy
+      windowrule = float on, match:title Picture-in-Picture
+      windowrule = pin on, match:title Picture-in-Picture
       windowrule = suppress_event maximize, match:class .*
     '';
   };
