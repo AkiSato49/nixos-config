@@ -190,7 +190,7 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      windowrulev2 = [
+      windowrule = [
         "float, class:^(pavucontrol)$"
         "float, class:^(blueman-manager)$"
         "float, class:^(nm-connection-editor)$"
