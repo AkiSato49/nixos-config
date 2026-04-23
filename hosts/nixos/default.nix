@@ -13,6 +13,7 @@
     ../../modules/nixos/security.nix
     ../../modules/nixos/greetd.nix
     ../../modules/nixos/tailscale.nix
+    ../../modules/nixos/displaylink.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
