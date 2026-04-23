@@ -41,32 +41,37 @@
       mkdir -p "$WP_DIR"
       CONVERT="${pkgs.imagemagick}/bin/convert"
 
+      # Eye-comfort post-processing applied to all monitors:
+      #   -modulate 85,80,100  → 85% brightness, 80% saturation, hue unchanged
+      #   -blur 0x1.2          → subtle gaussian blur (eyes stop trying to focus on bg)
+      EYE_EASY="-modulate 85,80,100 -blur 0x1.2"
+
       # --- eDP-1 (left monitor): 2880x1800, 16:10 ---
-      # Scale to fill 2880x1800, crop from the LEFT side of the image
       echo "Generating eDP-1 (laptop, left)..."
       $CONVERT "$SRC" \
         -resize "2880x1800^" \
         -gravity West \
         -extent "2880x1800" \
+        $EYE_EASY \
         "$WP_DIR/edp1.png"
 
       # --- HDMI-A-1 (centre monitor): 2560x1440, 16:9 ---
-      # Scale to fill 2560x1440, crop from the CENTRE of the image
       echo "Generating HDMI-A-1 (centre, Lenovo)..."
       $CONVERT "$SRC" \
         -resize "2560x1440^" \
         -gravity Center \
         -extent "2560x1440" \
+        $EYE_EASY \
         "$WP_DIR/hdmi.png"
 
-      # --- DVI-I-1 (right monitor, portrait): physical 2560x1440, displayed 1440x2560 ---
-      # Scale source to fill 1440x2560 portrait, crop from the RIGHT side.
-      # Then rotate 270° so Hyprland's transform 3 (90° CW) displays it upright.
+      # --- DVI-I-1 (right monitor, portrait): logical 1440x2560 ---
+      # hyprpaper handles the display rotation via Hyprland transform
       echo "Generating DVI-I-1 (right, portrait)..."
       $CONVERT "$SRC" \
         -resize "1440x2560^" \
         -gravity East \
         -extent "1440x2560" \
+        $EYE_EASY \
         "$WP_DIR/dvi.png"
 
       # Apply via hyprpaper IPC
