@@ -96,7 +96,7 @@
         "kanshi &"
         "/run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets"
         "1password --silent"
-        "${pkgs.polkit-gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent"
       ];
 
       "$mod" = "SUPER";
