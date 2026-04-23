@@ -67,7 +67,6 @@
         -resize "1440x2560^" \
         -gravity East \
         -extent "1440x2560" \
-        -rotate 270 \
         "$WP_DIR/dvi.png"
 
       # Apply via hyprpaper IPC
