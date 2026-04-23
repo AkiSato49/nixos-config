@@ -30,13 +30,10 @@
           size = 3;
           passes = 2;
         };
-        # Hyprland 0.45+ shadow syntax
-        shadow = {
-          enabled = true;
-          range = 8;
-          render_power = 3;
-          color = "rgba(1a1a1aee)";
-        };
+        drop_shadow = true;
+        shadow_range = 8;
+        shadow_render_power = 3;
+        "col.shadow" = "rgba(1a1a1aee)";
       };
 
       animations = {
