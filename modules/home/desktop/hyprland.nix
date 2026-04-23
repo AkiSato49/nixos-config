@@ -72,6 +72,7 @@
       }
 
       exec-once = waybar
+      exec-once = nm-applet --indicator
       exec-once = mako
       exec-once = hyprpaper
       exec-once = wl-paste --type text --watch cliphist store

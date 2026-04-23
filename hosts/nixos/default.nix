@@ -70,6 +70,7 @@
     playerctl
     gnome-keyring
     lxqt.lxqt-policykit
+    networkmanagerapplet
   ];
 
   # Polkit agent
