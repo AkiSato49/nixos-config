@@ -5,6 +5,22 @@
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
+    extraConfig = ''
+      decoration {
+        blur {
+          enabled = true
+          size = 3
+          passes = 2
+        }
+        shadow {
+          enabled = true
+          range = 8
+          render_power = 3
+          color = rgba(1a1a1aee)
+        }
+      }
+    '';
+
     settings = {
       monitor = [
         # Default — all monitors auto-detected
@@ -25,17 +41,6 @@
 
       decoration = {
         rounding = 8;
-        blur = {
-          enabled = true;
-          size = 3;
-          passes = 2;
-        };
-        shadow = {
-          enabled = true;
-          range = 8;
-          render_power = 3;
-          color = "rgba(1a1a1aee)";
-        };
       };
 
       animations = {
