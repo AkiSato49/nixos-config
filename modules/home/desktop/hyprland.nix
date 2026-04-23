@@ -166,14 +166,14 @@
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
 
-      windowrule = float, class:^(pavucontrol)$
-      windowrule = float, class:^(blueman-manager)$
-      windowrule = float, class:^(nm-connection-editor)$
-      windowrule = float, class:^(1Password)$
-      windowrule = float, class:^(swappy)$
-      windowrule = float, title:^(Picture-in-Picture)$
-      windowrule = pin, title:^(Picture-in-Picture)$
-      windowrule = suppressevent maximize, class:.*
+      windowrule = float, match:class pavucontrol
+      windowrule = float, match:class blueman-manager
+      windowrule = float, match:class nm-connection-editor
+      windowrule = float, match:class 1Password
+      windowrule = float, match:class swappy
+      windowrule = float, match:title Picture-in-Picture
+      windowrule = pin, match:title Picture-in-Picture
+      windowrule = suppress_event maximize, match:class .*
     '';
   };
 }
