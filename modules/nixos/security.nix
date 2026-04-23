@@ -23,4 +23,12 @@
 
   # Keyring
   services.gnome.gnome-keyring.enable = true;
+
+  # Fingerprint
+  services.fprintd.enable = true;
+  security.pam.services = {
+    login.fprintAuth     = true;
+    sudo.fprintAuth      = true;
+    hyprlock.fprintAuth  = true;
+  };
 }
