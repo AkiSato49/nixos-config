@@ -19,6 +19,15 @@
           color = rgba(1a1a1aee)
         }
       }
+
+      windowrule = float, class:^(pavucontrol)$
+      windowrule = float, class:^(blueman-manager)$
+      windowrule = float, class:^(nm-connection-editor)$
+      windowrule = float, class:^(1Password)$
+      windowrule = float, class:^(swappy)$
+      windowrule = float, title:^(Picture-in-Picture)$
+      windowrule = pin, title:^(Picture-in-Picture)$
+      windowrule = suppressevent maximize, class:.*
     '';
 
     settings = {
@@ -190,16 +199,6 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      windowrule = [
-        "float, class:^(pavucontrol)$"
-        "float, class:^(blueman-manager)$"
-        "float, class:^(nm-connection-editor)$"
-        "float, class:^(1Password)$"
-        "float, class:^(swappy)$"
-        "float, title:^(Picture-in-Picture)$"
-        "pin, title:^(Picture-in-Picture)$"
-        "suppressevent maximize, class:.*"
-      ];
     };
   };
 }
