@@ -42,33 +42,32 @@
       WP_DIR="$HOME/.config/hypr/wallpapers"
       mkdir -p "$WP_DIR"
 
-      TOTAL_W=5440  # 1440 + 2560 + 1440 logical
-      REF_H=2560    # tallest monitor (DVI-I-1 portrait)
+      # Logical dimensions (hardcoded for this monitor layout)
+      # eDP-1: 1440x900  |  HDMI-A-1: 2560x1440  |  DVI-I-1: 1440x2560 (portrait)
+      # Total width: 5440, ref height: 2560
 
-      echo "Scaling source image to ${TOTAL_W}x${REF_H}..."
+      echo "Scaling source image to 5440x2560..."
       SCALED="$(mktemp /tmp/wallpaper-XXXX.png)"
       ${pkgs.imagemagick}/bin/convert "$SRC" \
-        -resize "${TOTAL_W}x${REF_H}^" \
+        -resize "5440x2560^" \
         -gravity Center \
-        -extent "${TOTAL_W}x${REF_H}" \
+        -extent "5440x2560" \
         "$SCALED"
 
-      # eDP-1: logical 1440x900, center-crop vertically, scale 2x to physical
-      Y_EDP=$(( (REF_H - 900) / 2 ))
+      # eDP-1: center-crop 1440x900 from left, scale 2x to physical 2880x1800
       echo "Generating eDP-1 wallpaper..."
       ${pkgs.imagemagick}/bin/convert "$SCALED" \
-        -crop "1440x900+0+${Y_EDP}" \
+        -crop "1440x900+0+830" \
         -resize "2880x1800!" \
         "$WP_DIR/edp1.png"
 
-      # HDMI-A-1: logical 2560x1440, center-crop vertically
-      Y_HDMI=$(( (REF_H - 1440) / 2 ))
+      # HDMI-A-1: center-crop 2560x1440 from middle
       echo "Generating HDMI-A-1 wallpaper..."
       ${pkgs.imagemagick}/bin/convert "$SCALED" \
-        -crop "2560x1440+1440+${Y_HDMI}" \
+        -crop "2560x1440+1440+560" \
         "$WP_DIR/hdmi.png"
 
-      # DVI-I-1: logical 1440x2560 (full height), rotate 90° CW so
+      # DVI-I-1: full-height 1440x2560 from right, rotate 90° CW so
       # Hyprland's 270° display transform shows it correctly
       echo "Generating DVI-I-1 wallpaper..."
       ${pkgs.imagemagick}/bin/convert "$SCALED" \
