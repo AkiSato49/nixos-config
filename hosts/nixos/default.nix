@@ -69,7 +69,7 @@
     brightnessctl
     playerctl
     gnome-keyring
-    polkit-gnome
+    lxqt.lxqt-policykit
   ];
 
   # Polkit agent
