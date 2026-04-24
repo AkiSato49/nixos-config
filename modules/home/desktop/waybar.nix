@@ -23,21 +23,27 @@
         "hyprland/workspaces" = {
           format = "{icon}";
           format-icons = {
-            "1" = "󰎤";
-            "2" = "󰎧";
-            "3" = "󰎪";
-            "4" = "󰎭";
-            "5" = "󰎱";
-            "6" = "󰎳";
-            "7" = "󰎶";
-            "8" = "󰎹";
-            "9" = "󰎼";
-            urgent = "";
-            active = "";
+            "1" = "1";
+            "2" = "2";
+            "3" = "3";
+            "4" = "4";
+            "5" = "5";
+            "6" = "6";
+            "7" = "7";
+            "8" = "8";
+            "9" = "9";
+            urgent  = "";
+            active  = "";
             default = "";
           };
-          on-scroll-up = "hyprctl dispatch workspace e+1";
-          on-scroll-down = "hyprctl dispatch workspace e-1";
+          persistent-workspaces = {
+            "*" = [ 1 2 3 4 5 6 7 8 9 ];
+          };
+          separate-outputs    = true;
+          on-scroll-up        = "hyprctl dispatch workspace e+1";
+          on-scroll-down      = "hyprctl dispatch workspace e-1";
+          show-special        = false;
+          active-only         = false;
         };
 
         "hyprland/window" = {
@@ -105,29 +111,50 @@
       }
 
       window#waybar {
-        background-color: #282828;
+        background-color: #1d2021;
         color: #ebdbb2;
-        border-bottom: 2px solid #3c3836;
+        border-bottom: 2px solid #282828;
       }
 
       /* Workspaces */
+      #workspaces {
+        margin: 4px 4px;
+        padding: 0 2px;
+        background-color: #1d2021;
+        border-radius: 8px;
+      }
+
       #workspaces button {
-        padding: 0 8px;
-        color: #a89984;
+        padding: 0 7px;
+        margin: 2px 1px;
+        min-width: 18px;
+        color: #504945;
         background-color: transparent;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+      }
+
+      #workspaces button.occupied {
+        color: #a89984;
       }
 
       #workspaces button.active {
-        color: #d79921;
-        background-color: #3c3836;
+        color: #1d2021;
+        background-color: #d79921;
         border-radius: 6px;
+        padding: 0 10px;
       }
 
       #workspaces button.urgent {
-        color: #cc241d;
+        color: #1d2021;
+        background-color: #cc241d;
+        border-radius: 6px;
       }
 
       #workspaces button:hover {
+        color: #ebdbb2;
         background-color: #3c3836;
         border-radius: 6px;
       }
@@ -145,6 +172,13 @@
         padding: 0 12px;
       }
 
+      /* Window title */
+      #window {
+        color: #665c54;
+        padding: 0 8px;
+        font-style: italic;
+      }
+
       /* Right modules */
       #pulseaudio,
       #network,
@@ -152,7 +186,10 @@
       #battery,
       #tray {
         padding: 0 10px;
+        margin: 4px 2px;
         color: #ebdbb2;
+        background-color: #282828;
+        border-radius: 6px;
       }
 
       #pulseaudio.muted {
