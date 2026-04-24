@@ -88,6 +88,7 @@
       exec-once = nm-applet --indicator
       exec-once = mako
       exec-once = hyprpaper
+      exec-once = bash -c 'sleep 2 && [ -f ~/Pictures/wallpapers/edp1.png ] && set-wallpaper-apply'
       exec-once = wl-paste --type text --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec-once = udiskie &

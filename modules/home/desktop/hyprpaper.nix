@@ -7,20 +7,36 @@
       ipc = "on";
       splash = false;
       preload = [
-        "~/.config/hypr/wallpapers/edp1.png"
-        "~/.config/hypr/wallpapers/hdmi.png"
-        "~/.config/hypr/wallpapers/dvi.png"
+        "~/Pictures/wallpapers/edp1.png"
+        "~/Pictures/wallpapers/hdmi.png"
+        "~/Pictures/wallpapers/dvi.png"
       ];
       wallpaper = [
-        "eDP-1,~/.config/hypr/wallpapers/edp1.png"
-        "HDMI-A-1,~/.config/hypr/wallpapers/hdmi.png"
-        "DVI-I-1,~/.config/hypr/wallpapers/dvi.png"
+        "eDP-1,~/Pictures/wallpapers/edp1.png"
+        "HDMI-A-1,~/Pictures/wallpapers/hdmi.png"
+        "DVI-I-1,~/Pictures/wallpapers/dvi.png"
       ];
     };
   };
 
   home.packages = [
     pkgs.imagemagick
+
+    # Apply already-generated wallpapers (runs on login)
+    (pkgs.writeShellScriptBin "set-wallpaper-apply" ''
+      WP_DIR="$HOME/Pictures/wallpapers"
+      if [ ! -f "$WP_DIR/edp1.png" ]; then
+        echo "No wallpapers found at $WP_DIR — run set-wallpaper <image> first"
+        exit 1
+      fi
+      hyprctl hyprpaper unload all 2>/dev/null
+      hyprctl hyprpaper preload "$WP_DIR/edp1.png"
+      hyprctl hyprpaper preload "$WP_DIR/hdmi.png"
+      hyprctl hyprpaper preload "$WP_DIR/dvi.png"
+      hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
+      hyprctl hyprpaper wallpaper "HDMI-A-1,$WP_DIR/hdmi.png"
+      hyprctl hyprpaper wallpaper "DVI-I-1,$WP_DIR/dvi.png"
+    '')
     (pkgs.writeShellScriptBin "set-wallpaper" ''
       # Panoramic wallpaper across eDP-1 | HDMI-A-1 | DVI-I-1 (portrait)
       # Each monitor gets a full, beautiful section scaled to fill its aspect ratio.
@@ -37,7 +53,7 @@
         exit 1
       fi
 
-      WP_DIR="$HOME/.config/hypr/wallpapers"
+      WP_DIR="$HOME/Pictures/wallpapers"
       mkdir -p "$WP_DIR"
       CONVERT="${pkgs.imagemagick}/bin/convert"
 
@@ -74,6 +90,8 @@
       hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
       hyprctl hyprpaper wallpaper "HDMI-A-1,$WP_DIR/hdmi.png"
       hyprctl hyprpaper wallpaper "DVI-I-1,$WP_DIR/dvi.png"
+
+      echo "Wallpapers saved to $WP_DIR — will persist across rebuilds."
 
       echo "Done!"
     '')
