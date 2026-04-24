@@ -12,7 +12,7 @@
     ../modules/home/desktop/kanshi.nix
     ../modules/home/shell/zsh.nix
     ../modules/home/shell/tools.nix
-    ../modules/home/apps/alacritty.nix
+    ../modules/home/apps/ghostty.nix
     ../modules/home/apps/neovim.nix
     ../modules/home/apps/media.nix
     ../modules/home/dev/default.nix
@@ -98,7 +98,7 @@
   # Removes plain files (not symlinks) in all dirs HM manages — runs before link-check.
   home.activation.clearConflicts = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     # Dirs fully managed by HM modules — wipe plain files, leave symlinks alone
-    for dir in hypr alacritty nvim lazygit gtk-3.0 gtk-4.0 waybar mako wofi; do
+    for dir in hypr ghostty nvim lazygit gtk-3.0 gtk-4.0 waybar mako wofi; do
       if [ -d "$HOME/.config/$dir" ]; then
         find "$HOME/.config/$dir" -maxdepth 3 -type f ! -type l -delete 2>/dev/null || true
       fi

@@ -86,7 +86,7 @@
       exec-once = ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent
 
       # Core
-      bind = $mod, Return, exec, alacritty
+      bind = $mod, Return, exec, ghostty
       bind = $mod, Space, exec, wofi --show drun
       bind = $mod, Q, killactive
       bind = $mod, F, fullscreen

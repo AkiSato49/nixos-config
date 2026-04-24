@@ -200,7 +200,7 @@
             "3rd/image.nvim",
             ft = { "markdown", "norg", "oil", "python" },
             opts = {
-              backend              = "ueberzugpp",
+              backend              = "kitty",  -- Ghostty supports kitty graphics protocol
               max_width            = 100,
               max_height           = 40,
               max_height_window_percentage = math.huge,
