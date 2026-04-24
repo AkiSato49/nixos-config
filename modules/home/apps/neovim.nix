@@ -14,12 +14,12 @@
     ];
 
     extraPackages = with pkgs; [
-      # LSP servers (in PATH so mason-lspconfig finds them without downloading)
+      # LSP servers
       typescript-language-server
-      vscode-langservers-extracted  # html, css, json, eslint
+      vscode-langservers-extracted
       svelte-language-server
       lua-language-server
-      nil                           # Nix LSP
+      nil
       pyright
 
       # Formatters
@@ -32,8 +32,22 @@
       ripgrep
       fd
       git
-      gcc   # required for some plugin builds
+      gcc
       gnumake
+
+      # Image rendering (image.nvim)
+      imagemagick
+    ];
+
+    # Lua packages (image.nvim needs magick)
+    extraLuaPackages = lp: [ lp.magick ];
+
+    # Python packages (molten-nvim / Jupyter)
+    extraPython3Packages = ps: with ps; [
+      pynvim
+      jupyter-client
+      cairosvg
+      plotly
     ];
 
     initLua = ''
@@ -145,6 +159,7 @@
           { import = "lazyvim.plugins.extras.lang.json" },
           { import = "lazyvim.plugins.extras.lang.python" },
           { import = "lazyvim.plugins.extras.lang.svelte" },
+          { import = "lazyvim.plugins.extras.lang.markdown" },
 
           -- ── Theme: Gruvbox ────────────────────────────────────────────
           {
@@ -160,14 +175,117 @@
             },
           },
 
-          -- ── NixOS: treesitter (parsers via Nix, no TSUpdate) ─────────
+          -- ── NixOS: treesitter ─────────────────────────────────────────
+          -- Lazy-load on buffer open (avoids first-run errors)
+          -- Parsers come from Nix; plugin Lua files from lazy.nvim
           {
             "nvim-treesitter/nvim-treesitter",
+            event = { "BufReadPost", "BufNewFile", "BufWritePre" },
             opts = {
-              ensure_installed = {},  -- parsers come from Nix
+              ensure_installed = {},
               highlight = { enable = true },
               indent    = { enable = true },
+              autotag   = { enable = true },
             },
+          },
+
+          -- ── Image rendering ───────────────────────────────────────────
+          -- Requires kitty / wezterm terminal (Hyprland compatible)
+          {
+            "3rd/image.nvim",
+            ft = { "markdown", "norg", "oil", "python" },
+            opts = {
+              backend              = "kitty",
+              max_width            = 100,
+              max_height           = 40,
+              max_height_window_percentage = math.huge,
+              max_width_window_percentage  = math.huge,
+              window_overlap_clear_enabled = true,
+              window_overlap_clear_ft      = { "cmp_menu", "cmp_docs", "" },
+            },
+          },
+
+          -- ── Jupyter / REPL (molten-nvim) ──────────────────────────────
+          {
+            "benlubas/molten-nvim",
+            version  = "^1.0.0",
+            ft       = { "python", "markdown" },
+            build    = ":UpdateRemotePlugins",
+            init = function()
+              vim.g.molten_image_provider       = "image.nvim"
+              vim.g.molten_output_win_max_height = 20
+              vim.g.molten_auto_open_output      = false
+              vim.g.molten_wrap_output           = true
+              vim.g.molten_virt_text_output      = true
+              vim.g.molten_virt_lines_off_by_1   = true
+            end,
+            keys = {
+              { "<leader>mi", "<cmd>MoltenInit<cr>",                    desc = "Molten init" },
+              { "<leader>me", "<cmd>MoltenEvaluateOperator<cr>",        desc = "Evaluate operator", expr = true },
+              { "<leader>ml", "<cmd>MoltenEvaluateLine<cr>",            desc = "Evaluate line" },
+              { "<leader>mv", "<cmd>MoltenEvaluateVisual<cr>",          desc = "Evaluate visual", mode = "v" },
+              { "<leader>mr", "<cmd>MoltenReevaluateCell<cr>",          desc = "Re-evaluate cell" },
+              { "<leader>md", "<cmd>MoltenDelete<cr>",                  desc = "Delete cell" },
+              { "<leader>mo", "<cmd>MoltenShowOutput<cr>",              desc = "Show output" },
+              { "<leader>mh", "<cmd>MoltenHideOutput<cr>",              desc = "Hide output" },
+              { "<leader>mx", "<cmd>MoltenOpenInBrowser<cr>",           desc = "Open in browser" },
+            },
+          },
+
+          -- ── ipynb file support ────────────────────────────────────────
+          {
+            "GCBallesteros/NotebookNavigator.nvim",
+            dependencies = { "benlubas/molten-nvim" },
+            ft   = { "python", "markdown" },
+            keys = {
+              { "]c", function() require("notebook-navigator").move_cell("d") end, desc = "Next cell" },
+              { "[c", function() require("notebook-navigator").move_cell("u") end, desc = "Prev cell" },
+              { "<leader>rc", function() require("notebook-navigator").run_cell() end,      desc = "Run cell" },
+              { "<leader>ra", function() require("notebook-navigator").run_and_advance() end, desc = "Run & advance" },
+            },
+            opts = {
+              repl_provider       = "molten",
+              show_hydra_hint     = false,
+              activate_hydra_keys = nil,
+              cell_highlight_group = "CursorLine",
+            },
+          },
+
+          -- ── REPL (iron.nvim) — for non-Jupyter workflows ──────────────
+          {
+            "Vigemus/iron.nvim",
+            keys = {
+              { "<leader>rs", "<cmd>IronRepl<cr>",   desc = "Open REPL" },
+              { "<leader>rr", "<cmd>IronRestart<cr>", desc = "Restart REPL" },
+              { "<leader>rf", "<cmd>IronFocus<cr>",  desc = "Focus REPL" },
+              { "<leader>rh", "<cmd>IronHide<cr>",   desc = "Hide REPL" },
+            },
+            config = function()
+              require("iron.core").setup({
+                config = {
+                  scratch_repl    = true,
+                  repl_definition = {
+                    python = { command = { "ipython" } },
+                    sh     = { command = { "bash" } },
+                    js     = { command = { "node" } },
+                  },
+                  repl_open_cmd = require("iron.view").right(60),
+                },
+                keymaps = {
+                  send_motion  = "<leader>sc",
+                  visual_send  = "<leader>sc",
+                  send_file    = "<leader>sf",
+                  send_line    = "<leader>sl",
+                  send_until_cursor = "<leader>su",
+                  cr           = "<leader>s<cr>",
+                  interrupt     = "<leader>s<space>",
+                  exit         = "<leader>sq",
+                  clear        = "<leader>cl",
+                },
+                highlight = { italic = true },
+                ignore_blank_lines = true,
+              })
+            end,
           },
 
           -- ── NixOS: telescope-fzf-native (pre-built by Nix) ───────────
