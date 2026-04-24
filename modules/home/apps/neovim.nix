@@ -83,6 +83,13 @@
       vim.g.maplocalleader = " "
 
       -- =============================================
+      -- NixOS: manually prepend Nix-managed plugins to rtp
+      -- (before lazy.nvim starts, so they're always visible)
+      -- =============================================
+      vim.opt.rtp:prepend("${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}")
+      vim.opt.rtp:prepend("${pkgs.vimPlugins.telescope-fzf-native-nvim}")
+
+      -- =============================================
       -- Keymaps
       -- =============================================
       local map = vim.keymap.set
@@ -217,14 +224,8 @@
         },
       })
 
-      -- =============================================
-      -- Treesitter config (outside lazy — Nix-managed)
-      -- =============================================
-      require("nvim-treesitter.configs").setup({
-        highlight = { enable = true },
-        indent    = { enable = true },
-        autotag   = { enable = true },
-      })
+      -- Treesitter is configured by LazyVim's spec above.
+      -- The Nix store path is already prepended to rtp before lazy.setup().
     '';
   };
 }
