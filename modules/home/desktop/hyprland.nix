@@ -99,6 +99,7 @@
 
       # Core
       bind = $mod, Return, exec, ghostty
+      bind = $mod, Escape, exec, wlogout
       bind = $mod, Space, exec, wofi --show drun
       bind = $mod, Q, killactive
       bind = $mod, F, fullscreen

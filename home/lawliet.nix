@@ -10,6 +10,7 @@
     ../modules/home/desktop/wofi.nix
     ../modules/home/desktop/theming.nix
     ../modules/home/desktop/kanshi.nix
+    ../modules/home/desktop/wlogout.nix
     ../modules/home/shell/zsh.nix
     ../modules/home/shell/tools.nix
     ../modules/home/apps/ghostty.nix
