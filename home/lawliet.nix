@@ -38,6 +38,7 @@
       ncdu
       udiskie
       smartmontools
+      usbutils
       wlr-randr
       nmap
 
