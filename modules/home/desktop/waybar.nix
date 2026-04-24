@@ -77,9 +77,8 @@
             "class<qbittorrent>"      = "󰋮";
             "class<steam>"            = "󰓓";
             "class<firefox>"              = "󰈹";
-            "class<org.pwmt.zathura>"     = "󰈦";  # PDF
-            "class<imv>"                  = "󰋩";  # image viewer
-            "class<mpv>"                  = "";   # already above but keep
+            "class<org.pwmt.zathura>"     = "󰈦";
+            "class<imv>"                  = "󰋩";
           };
           persistent-workspaces = {
             "eDP-1"    = [ 1 2 3 ];
