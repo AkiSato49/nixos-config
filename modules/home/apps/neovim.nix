@@ -4,16 +4,15 @@
   programs.neovim = {
     enable = true;
     defaultEditor = true;
-    viAlias  = true;
+    viAlias = true;
     vimAlias = true;
 
     extraPackages = with pkgs; [
       # LSP servers
       typescript-language-server
-      vscode-langservers-extracted  # html, css, json, eslint
+      vscode-langservers-extracted # html, css, json, eslint
       svelte-language-server
       lua-language-server
-      nil                   # Nix LSP
       pyright
 
       # Formatters
