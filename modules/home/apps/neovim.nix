@@ -351,10 +351,10 @@
         install  = { colorscheme = { "gruvbox", "default" } },
         checker  = { enabled = true, notify = false },
         performance = {
-          rtp = {
-            -- Don't reset runtimepath — keeps Nix-managed plugins (treesitter, etc.)
-            reset = false,
-          },
+          -- Critical for NixOS: Nix installs plugins to packpath/rtp.
+          -- lazy.nvim resets both by default, wiping Nix-managed plugins.
+          reset_packpath = false,
+          rtp = { reset = false },
         },
       })
 
