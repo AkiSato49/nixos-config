@@ -142,7 +142,7 @@
       }
 
       #workspaces button.occupied {
-        color: #665c54;
+        color: #ebdbb2;
       }
 
       /* Active: bright gold pill — same padding as others, no shift */
