@@ -60,9 +60,10 @@
         border: 1px solid #3c3836;
         border-radius: 4px;
         margin: 16px;
-        padding: 20px 40px;
-        font-size: 11px;
+        padding: 32px 52px;
+        font-size: 18px;
         letter-spacing: 0.12em;
+        text-align: center;
         transition: color 0.15s ease,
                     border-color 0.15s ease,
                     background-color 0.15s ease;
