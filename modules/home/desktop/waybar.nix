@@ -21,20 +21,35 @@
         ];
 
         "hyprland/workspaces" = {
-          format = "{icon}";
-          format-icons = {
-            "1" = "1";
-            "2" = "2";
-            "3" = "3";
-            "4" = "4";
-            "5" = "5";
-            "6" = "6";
-            "7" = "7";
-            "8" = "8";
-            "9" = "9";
-            urgent  = "";
-            active  = "";
-            default = "";
+          format = "{id}<span size='small' rise='3000'>{windows}</span>";
+          format-window-separator = "";
+          window-rewrite-default = "󰣆";
+          window-rewrite = {
+            "class<firefox>"          = "󰈹";
+            "class<zen-browser>"      = "󰈹";
+            "class<zen>"              = "󰈹";
+            "class<ghostty>"          = "";
+            "class<Alacritty>"        = "";
+            "class<kitty>"            = "";
+            "class<code>"             = "󰨞";
+            "class<code-oss>"         = "󰨞";
+            "class<cursor>"           = "󰨞";
+            "class<nvim>"             = "";
+            "class<neovim>"           = "";
+            "class<obsidian>"         = "󱞋";
+            "class<vesktop>"          = "󰙯";
+            "class<discord>"          = "󰙯";
+            "class<spotify>"          = "󰓇";
+            "class<mpv>"              = "";
+            "class<vlc>"              = "󰕼";
+            "class<nautilus>"         = "󰉋";
+            "class<thunar>"           = "󰉋";
+            "class<libreoffice.*>"    = "󰈙";
+            "class<gimp.*>"           = "󰏘";
+            "class<darktable>"        = "󰄄";
+            "class<qbittorrent>"      = "󰋮";
+            "class<steam>"            = "󰓓";
+            "title<.*nvim.*>"         = "";
           };
           persistent-workspaces = {
             "eDP-1"    = [ 1 2 3 ];
