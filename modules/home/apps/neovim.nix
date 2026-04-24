@@ -181,19 +181,8 @@
             end,
           },
 
-          -- Treesitter (parsers installed via Nix, not TSUpdate)
-          {
-            "nvim-treesitter/nvim-treesitter",
-            dir = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}",
-            config = function()
-              require("nvim-treesitter.configs").setup({
-                -- parsers managed by Nix, no ensure_installed needed
-                highlight = { enable = true },
-                indent    = { enable = true },
-                autotag   = { enable = true },
-              })
-            end,
-          },
+          -- Treesitter is managed by Nix (see programs.neovim.plugins)
+          -- configured below after lazy.setup() to avoid rtp issues
 
           -- LSP + Completion
           {
@@ -361,6 +350,19 @@
 
         install  = { colorscheme = { "gruvbox", "default" } },
         checker  = { enabled = true, notify = false },
+        performance = {
+          rtp = {
+            -- Don't reset runtimepath — keeps Nix-managed plugins (treesitter, etc.)
+            reset = false,
+          },
+        },
+      })
+
+      -- Treesitter: configured here, outside lazy, since it's Nix-managed
+      require("nvim-treesitter.configs").setup({
+        highlight = { enable = true },
+        indent    = { enable = true },
+        autotag   = { enable = true },
       })
     '';
   };
