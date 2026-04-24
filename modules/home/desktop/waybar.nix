@@ -21,15 +21,15 @@
         ];
 
         "hyprland/workspaces" = {
-          format = "{id}<span size='small' rise='3000'>{windows}</span>";
+          format = "{id}<span size='7000' rise='-3500'>{windows}</span>";
           format-window-separator = "";
           window-rewrite-default = "󰣆";
           window-rewrite = {
-            "class<firefox>"          = "󰈹";
-            "class<zen-browser>"      = "󰈹";
-            "class<zen>"              = "󰈹";
-            "class<ghostty>"          = "";
-            "class<Alacritty>"        = "";
+            "class<firefox>"              = "󰈹";
+            "class<.*[Zz]en.*>"          = "";
+            "class<.*ghostty.*>"         = "";
+            "class<com.mitchellh.ghostty>" = "";
+            "class<Alacritty>"           = "";
             "class<kitty>"            = "";
             "class<code>"             = "󰨞";
             "class<code-oss>"         = "󰨞";
