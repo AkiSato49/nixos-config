@@ -7,6 +7,11 @@
     viAlias = true;
     vimAlias = true;
 
+    # Treesitter managed by Nix (NixOS can't compile parsers at runtime)
+    plugins = with pkgs.vimPlugins; [
+      nvim-treesitter.withAllGrammars
+    ];
+
     extraPackages = with pkgs; [
       # LSP servers
       typescript-language-server
@@ -176,18 +181,13 @@
             end,
           },
 
-          -- Treesitter
+          -- Treesitter (parsers installed via Nix, not TSUpdate)
           {
             "nvim-treesitter/nvim-treesitter",
-            build = ":TSUpdate",
+            dir = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}",
             config = function()
               require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                  "lua", "nix", "javascript", "typescript",
-                  "tsx", "svelte", "html", "css", "json",
-                  "python", "rust", "go", "bash", "markdown",
-                  "markdown_inline", "yaml", "toml",
-                },
+                -- parsers managed by Nix, no ensure_installed needed
                 highlight = { enable = true },
                 indent    = { enable = true },
                 autotag   = { enable = true },
@@ -219,7 +219,6 @@
                 },
               })
 
-              local lspconfig   = require("lspconfig")
               local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
               local on_attach = function(_, bufnr)
@@ -241,9 +240,11 @@
                 "ts_ls", "html", "cssls", "svelte",
                 "lua_ls", "nil_ls", "pyright",
               }
+              -- Use nvim 0.11+ API (replaces deprecated require('lspconfig') framework)
               for _, lsp in ipairs(servers) do
-                lspconfig[lsp].setup({ capabilities = capabilities, on_attach = on_attach })
+                vim.lsp.config(lsp, { capabilities = capabilities, on_attach = on_attach })
               end
+              vim.lsp.enable(servers)
 
               -- nvim-cmp
               local cmp     = require("cmp")
