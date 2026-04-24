@@ -37,6 +37,10 @@
 
       # Image rendering (image.nvim)
       imagemagick
+
+      # Quarto
+      quarto
+      pandoc
     ];
 
     # Lua packages (image.nvim needs magick)
@@ -232,23 +236,42 @@
             },
           },
 
-          -- ── ipynb file support ────────────────────────────────────────
+          -- ── Quarto (notebooks + .qmd + .ipynb) ───────────────────────
           {
-            "GCBallesteros/NotebookNavigator.nvim",
-            dependencies = { "benlubas/molten-nvim" },
-            ft   = { "python", "markdown" },
-            keys = {
-              { "]c", function() require("notebook-navigator").move_cell("d") end, desc = "Next cell" },
-              { "[c", function() require("notebook-navigator").move_cell("u") end, desc = "Prev cell" },
-              { "<leader>rc", function() require("notebook-navigator").run_cell() end,      desc = "Run cell" },
-              { "<leader>ra", function() require("notebook-navigator").run_and_advance() end, desc = "Run & advance" },
+            "quarto-dev/quarto-nvim",
+            dependencies = {
+              "jmbuhr/otter.nvim",   -- LSP in embedded code blocks
+              "benlubas/molten-nvim",
             },
+            ft = { "quarto", "markdown", "python" },
             opts = {
-              repl_provider       = "molten",
-              show_hydra_hint     = false,
-              activate_hydra_keys = nil,
-              cell_highlight_group = "CursorLine",
+              lspFeatures = {
+                enabled      = true,
+                languages    = { "python", "r", "julia", "bash" },
+                diagnostics  = { enabled = true, triggers = { "BufWritePost" } },
+                completion    = { enabled = true },
+              },
+              codeRunner = {
+                enabled        = true,
+                default_method = "molten",
+              },
             },
+            keys = {
+              { "<leader>qp", function() require("quarto").quartoPreview() end,  desc = "Quarto preview" },
+              { "<leader>qq", function() require("quarto").quartoClosePreview() end, desc = "Quarto close preview" },
+              { "<leader>qr", "<cmd>QuartoSendAbove<cr>",  desc = "Run cells above" },
+              { "<leader>qa", "<cmd>QuartoSendAll<cr>",    desc = "Run all cells" },
+              { "]c", "<cmd>QuartoNextCell<cr>",           desc = "Next cell" },
+              { "[c", "<cmd>QuartoPrevCell<cr>",           desc = "Prev cell" },
+              { "<leader>rc", "<cmd>QuartoSend<cr>",       desc = "Run cell" },
+              { "<leader>ra", "<cmd>QuartoSendAndAdvance<cr>", desc = "Run & advance" },
+            },
+          },
+
+          -- otter.nvim: LSP support inside embedded code blocks
+          {
+            "jmbuhr/otter.nvim",
+            opts = {},
           },
 
           -- ── REPL (iron.nvim) — for non-Jupyter workflows ──────────────
