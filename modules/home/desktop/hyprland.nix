@@ -6,9 +6,9 @@
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
     extraConfig = ''
-      monitor = eDP-1,    2880x1800@60, 0x0,       2
-      monitor = HDMI-A-1, 2560x1440@60, auto-right, 1
-      monitor = DVI-I-1,  2560x1440@60, auto-right, 1, transform, 3
+      monitor = eDP-1,    2880x1800@60, 0x0,    2
+      monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
+      monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
 
       $mod = SUPER
 
