@@ -99,7 +99,7 @@
 
       # Core
       bind = $mod, Return, exec, ghostty
-      bind = $mod, Escape, exec, wlogout
+      bind = $mod, Escape, exec, GTK_THEME=Adwaita:dark wlogout -b 3 -c 0 -r 0 -m 0
       bind = $mod, Space, exec, wofi --show drun
       bind = $mod, Q, killactive
       bind = $mod, F, fullscreen
