@@ -35,8 +35,9 @@
       gcc
       gnumake
 
-      # Image rendering (image.nvim)
+      # Image rendering (image.nvim + ueberzugpp for Alacritty/Wayland)
       imagemagick
+      ueberzugpp
 
       # Quarto
       quarto
@@ -199,7 +200,7 @@
             "3rd/image.nvim",
             ft = { "markdown", "norg", "oil", "python" },
             opts = {
-              backend              = "kitty",
+              backend              = "ueberzugpp",
               max_width            = 100,
               max_height           = 40,
               max_height_window_percentage = math.huge,
