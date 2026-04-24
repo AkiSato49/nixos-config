@@ -124,39 +124,38 @@
         border-radius: 8px;
       }
 
+      /* All buttons identical size — no layout shift ever */
       #workspaces button {
-        padding: 0 7px;
+        padding: 0 10px;
         margin: 2px 1px;
-        min-width: 18px;
-        color: #504945;
+        min-width: 24px;
+        color: #3c3836;
         background-color: transparent;
         border-radius: 6px;
         font-size: 12px;
         font-weight: bold;
-        transition: all 0.2s ease;
+        /* glide: smooth color + background transitions only */
+        transition: background-color 0.18s ease, color 0.18s ease;
       }
 
       #workspaces button.occupied {
-        color: #a89984;
+        color: #665c54;
       }
 
+      /* Active: bright gold pill — same padding as others, no shift */
       #workspaces button.active {
         color: #1d2021;
         background-color: #d79921;
-        border-radius: 6px;
-        padding: 0 10px;
       }
 
       #workspaces button.urgent {
         color: #1d2021;
         background-color: #cc241d;
-        border-radius: 6px;
       }
 
       #workspaces button:hover {
         color: #ebdbb2;
         background-color: #3c3836;
-        border-radius: 6px;
       }
 
       /* Window title */
