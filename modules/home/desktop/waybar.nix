@@ -26,23 +26,34 @@
           window-rewrite-default = "󰣆";
           window-rewrite = {
             # ── Zen Browser (title-aware) ──────────────────────────────
-            "class<zen-beta> title<.*YouTube.*>"  = "󰗃";
-            "class<zen-beta> title<.*Twitch.*>"   = "󰕃";
-            "class<zen-beta> title<.*GitHub.*>"   = "󰊤";
-            "class<zen-beta> title<.*Reddit.*>"   = "󰑍";
-            "class<zen-beta> title<.*Twitter.*>"  = "󰕄";
-            "class<zen-beta> title<.*Gmail.*>"    = "󰊫";
-            "class<zen-beta> title<.*Google.*>"   = "󰊭";
-            "class<zen-beta> title<.*ChatGPT.*>"  = "󱙺";
-            "class<zen-beta> title<.*Claude.*>"   = "󱙺";
-            "class<zen-beta> title<.*Figma.*>"    = "󰶡";
-            "class<zen-beta>"                     = "";  # generic zen
+            "class<zen-beta> title<.*YouTube.*>"    = "󰗃";
+            "class<zen-beta> title<.*Twitch.*>"     = "󰕃";
+            "class<zen-beta> title<.*GitHub.*>"     = "󰊤";
+            "class<zen-beta> title<.*Reddit.*>"     = "󰑍";
+            "class<zen-beta> title<.*Twitter.*>"    = "󰕄";
+            "class<zen-beta> title<.*Gmail.*>"      = "󰊫";
+            "class<zen-beta> title<.*Google.*>"     = "󰊭";
+            "class<zen-beta> title<.*ChatGPT.*>"    = "󱙺";
+            "class<zen-beta> title<.*Claude.*>"     = "󱙺";
+            "class<zen-beta> title<.*Figma.*>"      = "󰶡";
+            "class<zen-beta> title<.*Canva.*>"      = "󰏘";
+            "class<zen-beta> title<.*Canvas.*>"     = "󰑴";
+            "class<zen-beta> title<.*edstem.*>"     = "󱂮";
+            "class<zen-beta> title<.*Ed .*>"        = "󱂮";
+            "class<zen-beta> title<.*Notion.*>"     = "󱉹";
+            "class<zen-beta> title<.*Spotify.*>"    = "󰓇";
+            "class<zen-beta> title<.*LinkedIn.*>"   = "󰌻";
+            "class<zen-beta> title<.*Outlook.*>"    = "󰴢";
+            "class<zen-beta> title<.*Teams.*>"      = "󰊻";
+            "class<zen-beta> title<.*PDF.*>"        = "󰈦";
+            "class<zen-beta> title<.*Stack.*>"      = "󰓌";
+            "class<zen-beta>"                       = "";  # generic zen
 
             # ── Terminal (title-aware) ─────────────────────────────────
             "class<com.mitchellh.ghostty> title<.*ssh.*>"  = "󰣀";
             "class<com.mitchellh.ghostty> title<.*nvim.*>" = "";
             "class<com.mitchellh.ghostty> title<.*git.*>"  = "󰊤";
-            "class<com.mitchellh.ghostty>"                 = "";  # generic ghostty
+            "class<com.mitchellh.ghostty>"                 = "";
             "class<Alacritty> title<.*ssh.*>"              = "󰣀";
             "class<Alacritty> title<.*nvim.*>"             = "";
             "class<Alacritty>"                             = "";
@@ -65,7 +76,10 @@
             "class<darktable>"        = "󰄄";
             "class<qbittorrent>"      = "󰋮";
             "class<steam>"            = "󰓓";
-            "class<firefox>"          = "󰈹";
+            "class<firefox>"              = "󰈹";
+            "class<org.pwmt.zathura>"     = "󰈦";  # PDF
+            "class<imv>"                  = "󰋩";  # image viewer
+            "class<mpv>"                  = "";   # already above but keep
           };
           persistent-workspaces = {
             "eDP-1"    = [ 1 2 3 ];
