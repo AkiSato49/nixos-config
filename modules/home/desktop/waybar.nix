@@ -37,7 +37,9 @@
             default = "";
           };
           persistent-workspaces = {
-            "*" = [ 1 2 3 4 5 6 7 8 9 ];
+            "eDP-1"    = [ 1 2 3 ];
+            "HDMI-A-1" = [ 4 5 6 ];
+            "DVI-I-1"  = [ 7 8 9 ];
           };
           separate-outputs    = true;
           on-scroll-up        = "hyprctl dispatch workspace e+1";
@@ -116,12 +118,13 @@
         border-bottom: 2px solid #282828;
       }
 
-      /* Workspaces */
+      /* Workspaces — pill container per monitor */
       #workspaces {
-        margin: 4px 4px;
-        padding: 0 2px;
-        background-color: #1d2021;
-        border-radius: 8px;
+        margin: 4px 6px;
+        padding: 0 4px;
+        background-color: #282828;
+        border-radius: 10px;
+        border: 1px solid #3c3836;
       }
 
       /* All buttons identical size — no layout shift ever */

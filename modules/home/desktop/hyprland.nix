@@ -10,6 +10,17 @@
       monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
       monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
 
+      # Workspace → monitor assignments (persists on reconnect)
+      workspace = 1, monitor:eDP-1,    default:true
+      workspace = 2, monitor:eDP-1
+      workspace = 3, monitor:eDP-1
+      workspace = 4, monitor:HDMI-A-1, default:true
+      workspace = 5, monitor:HDMI-A-1
+      workspace = 6, monitor:HDMI-A-1
+      workspace = 7, monitor:DVI-I-1,  default:true
+      workspace = 8, monitor:DVI-I-1
+      workspace = 9, monitor:DVI-I-1
+
       $mod = SUPER
 
       general {
