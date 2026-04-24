@@ -132,7 +132,7 @@
         padding: 0 10px;
         margin: 2px 1px;
         min-width: 24px;
-        color: #3c3836;
+        color: #ebdbb2;
         background-color: transparent;
         border-radius: 6px;
         font-size: 12px;
@@ -141,8 +141,9 @@
         transition: background-color 0.18s ease, color 0.18s ease;
       }
 
-      #workspaces button.occupied {
-        color: #ebdbb2;
+      /* Empty workspaces — dim down */
+      #workspaces button.empty {
+        color: #3c3836;
       }
 
       /* Active: bright gold pill — same padding as others, no shift */
