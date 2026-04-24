@@ -25,17 +25,34 @@
           format-window-separator = "";
           window-rewrite-default = "󰣆";
           window-rewrite = {
-            "class<firefox>"              = "󰈹";
-            "class<.*[Zz]en.*>"          = "";
-            "class<.*ghostty.*>"         = "";
-            "class<com.mitchellh.ghostty>" = "";
-            "class<Alacritty>"           = "";
-            "class<kitty>"            = "";
+            # ── Zen Browser (title-aware) ──────────────────────────────
+            "class<zen-beta> title<.*YouTube.*>"  = "󰗃";
+            "class<zen-beta> title<.*Twitch.*>"   = "󰕃";
+            "class<zen-beta> title<.*GitHub.*>"   = "󰊤";
+            "class<zen-beta> title<.*Reddit.*>"   = "󰑍";
+            "class<zen-beta> title<.*Twitter.*>"  = "󰕄";
+            "class<zen-beta> title<.*Gmail.*>"    = "󰊫";
+            "class<zen-beta> title<.*Google.*>"   = "󰊭";
+            "class<zen-beta> title<.*ChatGPT.*>"  = "󱙺";
+            "class<zen-beta> title<.*Claude.*>"   = "󱙺";
+            "class<zen-beta> title<.*Figma.*>"    = "󰶡";
+            "class<zen-beta>"                     = "";  # generic zen
+
+            # ── Terminal (title-aware) ─────────────────────────────────
+            "class<com.mitchellh.ghostty> title<.*ssh.*>"  = "󰣀";
+            "class<com.mitchellh.ghostty> title<.*nvim.*>" = "";
+            "class<com.mitchellh.ghostty> title<.*git.*>"  = "󰊤";
+            "class<com.mitchellh.ghostty>"                 = "";  # generic ghostty
+            "class<Alacritty> title<.*ssh.*>"              = "󰣀";
+            "class<Alacritty> title<.*nvim.*>"             = "";
+            "class<Alacritty>"                             = "";
+
+            # ── Dev tools ─────────────────────────────────────────────
             "class<code>"             = "󰨞";
             "class<code-oss>"         = "󰨞";
             "class<cursor>"           = "󰨞";
-            "class<nvim>"             = "";
-            "class<neovim>"           = "";
+
+            # ── Apps ──────────────────────────────────────────────────
             "class<obsidian>"         = "󱞋";
             "class<vesktop>"          = "󰙯";
             "class<discord>"          = "󰙯";
@@ -43,13 +60,12 @@
             "class<mpv>"              = "";
             "class<vlc>"              = "󰕼";
             "class<nautilus>"         = "󰉋";
-            "class<thunar>"           = "󰉋";
             "class<libreoffice.*>"    = "󰈙";
             "class<gimp.*>"           = "󰏘";
             "class<darktable>"        = "󰄄";
             "class<qbittorrent>"      = "󰋮";
             "class<steam>"            = "󰓓";
-            "title<.*nvim.*>"         = "";
+            "class<firefox>"          = "󰈹";
           };
           persistent-workspaces = {
             "eDP-1"    = [ 1 2 3 ];
