@@ -68,7 +68,7 @@
         border-radius: 6px;
         margin: 20px;
         padding: 48px 36px;
-        font-size: 32px;
+        font-size: 192px;
         letter-spacing: 0.08em;
         transition: color 0.15s ease,
                     border-color 0.15s ease,
