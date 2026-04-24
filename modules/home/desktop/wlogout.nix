@@ -8,37 +8,37 @@
       {
         label   = "lock";
         action  = "hyprlock";
-        text    = "󰌾\nlock";
+        text    = "󰌾";
         keybind = "l";
       }
       {
         label   = "hibernate";
         action  = "systemctl hibernate";
-        text    = "󰒳\nhibernate";
+        text    = "󰒳";
         keybind = "h";
       }
       {
         label   = "logout";
         action  = "hyprctl dispatch exit";
-        text    = "󰍃\nlogout";
+        text    = "󰍃";
         keybind = "e";
       }
       {
         label   = "shutdown";
         action  = "systemctl poweroff";
-        text    = "󰐥\nshutdown";
+        text    = "󰐥";
         keybind = "s";
       }
       {
         label   = "suspend";
         action  = "systemctl suspend";
-        text    = "󰒲\nsuspend";
+        text    = "󰒲";
         keybind = "u";
       }
       {
         label   = "reboot";
         action  = "systemctl reboot";
-        text    = "󰑐\nreboot";
+        text    = "󰑐";
         keybind = "r";
       }
     ];
