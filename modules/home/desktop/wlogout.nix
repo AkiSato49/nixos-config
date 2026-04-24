@@ -8,37 +8,37 @@
       {
         label   = "lock";
         action  = "hyprlock";
-        text    = "Lock";
+        text    = "󰌾\nlock";
         keybind = "l";
       }
       {
         label   = "hibernate";
         action  = "systemctl hibernate";
-        text    = "Hibernate";
+        text    = "󰒳\nhibernate";
         keybind = "h";
       }
       {
         label   = "logout";
         action  = "hyprctl dispatch exit";
-        text    = "Logout";
+        text    = "󰍃\nlogout";
         keybind = "e";
       }
       {
         label   = "shutdown";
         action  = "systemctl poweroff";
-        text    = "Shutdown";
+        text    = "󰐥\nshutdown";
         keybind = "s";
       }
       {
         label   = "suspend";
         action  = "systemctl suspend";
-        text    = "Suspend";
+        text    = "󰒲\nsuspend";
         keybind = "u";
       }
       {
         label   = "reboot";
         action  = "systemctl reboot";
-        text    = "Reboot";
+        text    = "󰑐\nreboot";
         keybind = "r";
       }
     ];
@@ -47,6 +47,7 @@
       * {
         background-image: none;
         font-family: "JetBrainsMono Nerd Font";
+        box-shadow: none;
       }
 
       window {
@@ -54,54 +55,35 @@
       }
 
       button {
-        color: #665c54;
-        background-color: transparent;
+        color: #928374;
+        background-color: rgba(40, 40, 40, 0.6);
         border: 1px solid #3c3836;
         border-radius: 4px;
-        margin: 12px;
+        margin: 16px;
+        padding: 20px 40px;
         font-size: 11px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+        letter-spacing: 0.12em;
+        transition: color 0.15s ease,
+                    border-color 0.15s ease,
+                    background-color 0.15s ease;
       }
 
       button:hover {
-        color: #ebdbb2;
-        background-color: #282828;
-        border-color: #504945;
+        color: #d79921;
+        background-color: rgba(55, 50, 45, 0.8);
+        border-color: #d79921;
       }
-
-      /* Icons via ::before — large, above label */
-      button::before {
-        font-size: 28px;
-        display: block;
-        margin-bottom: 8px;
-        letter-spacing: 0;
-        text-transform: none;
-      }
-
-      #lock::before     { content: "󰌾"; }
-      #logout::before   { content: "󰍃"; }
-      #suspend::before  { content: "󰒲"; }
-      #hibernate::before { content: "󰒳"; }
-      #shutdown::before { content: "󰐥"; }
-      #reboot::before   { content: "󰑐"; }
 
       #shutdown:hover {
-        color: #cc241d;
+        color: #fb4934;
         border-color: #cc241d;
-        background-color: rgba(204, 36, 29, 0.08);
+        background-color: rgba(204, 36, 29, 0.12);
       }
 
       #reboot:hover {
         color: #fabd2f;
-        border-color: #fabd2f;
-        background-color: rgba(250, 189, 47, 0.06);
-      }
-
-      #lock:hover, #logout:hover, #suspend:hover, #hibernate:hover {
-        color: #d79921;
         border-color: #d79921;
+        background-color: rgba(215, 153, 33, 0.1);
       }
     '';
   };
