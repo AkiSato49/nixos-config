@@ -1,30 +1,31 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, theme, ... }:
+let
+  c = theme.colors;
+  g = theme.geometry;
+in {
   services.mako = {
     enable = true;
     settings = {
-      background-color = "#282828";
-      text-color       = "#ebdbb2";
-      border-color     = "#d79921";
-      border-radius    = 8;
-      border-size      = 2;
+      background-color = c.bg;
+      text-color       = c.fg;
+      border-color     = c.yellow;
+      border-radius    = g.rounding;
+      border-size      = g.border_size;
       default-timeout  = 5000;
-      font             = "JetBrainsMono Nerd Font 11";
+      font             = "${theme.font.ui} 11";
       width            = 360;
       padding          = "12";
       margin           = "10";
       icon-path        = "${pkgs.papirus-icon-theme}/share/icons/Papirus-Dark";
     };
 
-    # Section rules (urgency) go in extraConfig — not supported as attrset keys
     extraConfig = ''
       [urgency=high]
-      border-color=#fb4934
+      border-color=${c.red_br}
       default-timeout=0
 
       [urgency=low]
-      border-color=#3c3836
+      border-color=${c.bg1}
     '';
   };
 }

@@ -1,86 +1,82 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, theme, ... }:
+let c = theme.colors; in {
   programs.alacritty = {
     enable = true;
     settings = {
       window = {
-        padding = { x = 14; y = 14; };
-        opacity = 0.95;
-        decorations = "None";
-        startup_mode = "Windowed";
-        title = "Alacritty";
-        dynamic_title = true;
+        padding        = { x = 14; y = 14; };
+        opacity        = 0.95;
+        decorations    = "None";
+        startup_mode   = "Windowed";
+        title          = "Alacritty";
+        dynamic_title  = true;
       };
 
       scrolling = {
-        history = 10000;
+        history    = 10000;
         multiplier = 3;
       };
 
       font = {
-        normal  = { family = "JetBrainsMono Nerd Font"; style = "Regular"; };
-        bold    = { family = "JetBrainsMono Nerd Font"; style = "Bold"; };
-        italic  = { family = "JetBrainsMono Nerd Font"; style = "Italic"; };
-        size = 13.5;
+        normal  = { family = theme.font.mono; style = "Regular"; };
+        bold    = { family = theme.font.mono; style = "Bold"; };
+        italic  = { family = theme.font.mono; style = "Italic"; };
+        size    = theme.font.size_mono;
       };
 
-      # Gruvbox Dark Hard
       colors = {
         primary = {
-          background = "#1d2021";
-          foreground = "#ebdbb2";
+          background = c.bg_hard;
+          foreground = c.fg;
         };
         cursor = {
-          text   = "#282828";
-          cursor = "#d79921";
+          text   = c.bg;
+          cursor = c.yellow;
         };
         selection = {
-          text       = "#ebdbb2";
-          background = "#3c3836";
+          text       = c.fg;
+          background = c.bg1;
         };
         normal = {
-          black   = "#282828";
-          red     = "#cc241d";
-          green   = "#98971a";
-          yellow  = "#d79921";
-          blue    = "#458588";
-          magenta = "#b16286";
-          cyan    = "#689d6a";
-          white   = "#a89984";
+          black   = c.bg;
+          red     = c.red;
+          green   = c.green;
+          yellow  = c.yellow;
+          blue    = c.blue;
+          magenta = c.purple;
+          cyan    = c.teal;
+          white   = c.fg_dim;
         };
         bright = {
-          black   = "#928374";
-          red     = "#fb4934";
-          green   = "#b8bb26";
-          yellow  = "#fabd2f";
-          blue    = "#83a598";
-          magenta = "#d3869b";
-          cyan    = "#8ec07c";
-          white   = "#ebdbb2";
+          black   = c.gray;
+          red     = c.red_br;
+          green   = c.green_br;
+          yellow  = c.yellow_br;
+          blue    = c.blue_br;
+          magenta = c.purple_br;
+          cyan    = c.teal_br;
+          white   = c.fg;
         };
       };
 
       cursor = {
         style = {
-          shape = "Block";
+          shape    = "Block";
           blinking = "On";
         };
-        vi_mode_style = "Underline";
-        blink_interval = 750;
+        vi_mode_style    = "Underline";
+        blink_interval   = 750;
         unfocused_hollow = true;
       };
 
-      mouse = {
-        hide_when_typing = true;
-      };
+      mouse.hide_when_typing = true;
 
       keyboard.bindings = [
-        { key = "V";        mods = "Control|Shift"; action = "Paste"; }
-        { key = "C";        mods = "Control|Shift"; action = "Copy"; }
-        { key = "Plus";     mods = "Control";       action = "IncreaseFontSize"; }
-        { key = "Minus";    mods = "Control";       action = "DecreaseFontSize"; }
-        { key = "Key0";     mods = "Control";       action = "ResetFontSize"; }
+        { key = "V";    mods = "Control|Shift"; action = "Paste"; }
+        { key = "C";    mods = "Control|Shift"; action = "Copy"; }
+        { key = "Plus"; mods = "Control";       action = "IncreaseFontSize"; }
+        { key = "Minus"; mods = "Control";      action = "DecreaseFontSize"; }
+        { key = "Key0"; mods = "Control";       action = "ResetFontSize"; }
       ];
     };
   };

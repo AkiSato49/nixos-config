@@ -1,97 +1,151 @@
-{ config, pkgs, ... }:
+{ config, pkgs, theme, ... }:
+let
+  c       = theme.colors;
+  useText = theme.variants.wlogout_text;
 
-{
+  # ── Text layout (prayer theme) ───────────────────────────────────────────────
+  textLayout = [
+    { label = "lock";      action = "hyprlock";              text = "LOCK";      keybind = "l"; }
+    { label = "hibernate"; action = "systemctl hibernate";   text = "HIBERNATE"; keybind = "h"; }
+    { label = "logout";    action = "hyprctl dispatch exit"; text = "LOGOUT";    keybind = "e"; }
+    { label = "shutdown";  action = "systemctl poweroff";    text = "SHUTDOWN";  keybind = "s"; }
+    { label = "suspend";   action = "systemctl suspend";     text = "SUSPEND";   keybind = "u"; }
+    { label = "reboot";    action = "systemctl reboot";      text = "REBOOT";    keybind = "r"; }
+  ];
+
+  # ── Icon layout (dark theme) ─────────────────────────────────────────────────
+  iconLayout = [
+    { label = "lock";      action = "hyprlock";              text = "󰌾"; keybind = "l"; }
+    { label = "hibernate"; action = "systemctl hibernate";   text = "󰒳"; keybind = "h"; }
+    { label = "logout";    action = "hyprctl dispatch exit"; text = "󰍃"; keybind = "e"; }
+    { label = "shutdown";  action = "systemctl poweroff";    text = "󰐥"; keybind = "s"; }
+    { label = "suspend";   action = "systemctl suspend";     text = "󰒲"; keybind = "u"; }
+    { label = "reboot";    action = "systemctl reboot";      text = "󰑐"; keybind = "r"; }
+  ];
+
+  # ── Swiss flat style (prayer) ────────────────────────────────────────────────
+  # Text labels, no rounding, prayer flag colors on hover
+  textStyle = ''
+    * {
+      font-family: "${theme.font.ui}";
+      font-size: 13px;
+      background-image: none;
+      box-shadow: none;
+      border: none;
+      outline: none;
+    }
+
+    window {
+      background-color: rgba(29, 32, 33, 0.97);
+    }
+
+    box { background-color: transparent; }
+
+    button {
+      color: ${c.fg_muted};
+      background-color: transparent;
+      border: 1px solid ${c.bg1} !important;
+      border-radius: 0;
+      margin: 12px;
+      padding: 32px 56px;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      transition: color 0.12s ease,
+                  border-color 0.12s ease,
+                  background-color 0.12s ease;
+    }
+
+    /* yellow — earth — lock */
+    #lock:hover {
+      color: ${c.yellow};
+      border-color: ${c.yellow} !important;
+    }
+
+    /* blue — sky — hibernate / suspend */
+    #hibernate:hover {
+      color: ${c.blue_br};
+      border-color: ${c.blue} !important;
+    }
+
+    /* white — air — logout */
+    #logout:hover {
+      color: ${c.fg};
+      border-color: ${c.fg_dim} !important;
+    }
+
+    /* red — fire — shutdown */
+    #shutdown:hover {
+      color: ${c.red_br};
+      border-color: ${c.red} !important;
+      background-color: rgba(204, 36, 29, 0.08);
+    }
+
+    /* blue — sky — suspend */
+    #suspend:hover {
+      color: ${c.blue_br};
+      border-color: ${c.blue} !important;
+    }
+
+    /* green — water — reboot */
+    #reboot:hover {
+      color: ${c.teal_br};
+      border-color: ${c.teal} !important;
+    }
+  '';
+
+  # ── Icon style (dark theme) ──────────────────────────────────────────────────
+  iconStyle = ''
+    * {
+      background-image: none;
+      background-color: transparent;
+      font-family: "${theme.font.ui}";
+      box-shadow: none;
+      border: none;
+      outline: none;
+    }
+
+    window {
+      background-color: rgba(29, 32, 33, 0.95);
+    }
+
+    box { background-color: transparent; }
+
+    button {
+      color: ${c.fg_muted};
+      background-color: rgba(40, 40, 40, 0.7);
+      border: 1px solid ${c.bg1} !important;
+      border-radius: 6px;
+      margin: 20px;
+      padding: 48px 36px;
+      font-size: 192px;
+      letter-spacing: 0.08em;
+      transition: color 0.15s ease,
+                  border-color 0.15s ease,
+                  background-color 0.15s ease;
+    }
+
+    button:hover {
+      color: ${c.yellow};
+      background-color: rgba(60, 56, 54, 0.8);
+      border-color: ${c.yellow} !important;
+    }
+
+    #shutdown:hover {
+      color: ${c.red_br};
+      border-color: ${c.red} !important;
+      background-color: rgba(204, 36, 29, 0.12);
+    }
+
+    #reboot:hover {
+      color: ${c.yellow_br};
+      border-color: ${c.yellow} !important;
+      background-color: rgba(215, 153, 33, 0.08);
+    }
+  '';
+in {
   programs.wlogout = {
     enable = true;
-
-    layout = [
-      {
-        label   = "lock";
-        action  = "hyprlock";
-        text    = "󰌾";
-        keybind = "l";
-      }
-      {
-        label   = "hibernate";
-        action  = "systemctl hibernate";
-        text    = "󰒳";
-        keybind = "h";
-      }
-      {
-        label   = "logout";
-        action  = "hyprctl dispatch exit";
-        text    = "󰍃";
-        keybind = "e";
-      }
-      {
-        label   = "shutdown";
-        action  = "systemctl poweroff";
-        text    = "󰐥";
-        keybind = "s";
-      }
-      {
-        label   = "suspend";
-        action  = "systemctl suspend";
-        text    = "󰒲";
-        keybind = "u";
-      }
-      {
-        label   = "reboot";
-        action  = "systemctl reboot";
-        text    = "󰑐";
-        keybind = "r";
-      }
-    ];
-
-    style = ''
-      * {
-        background-image: none;
-        background-color: transparent;
-        font-family: "JetBrainsMono Nerd Font";
-        box-shadow: none;
-        border: none;
-        outline: none;
-      }
-
-      window {
-        background-color: rgba(29, 32, 33, 0.95);
-      }
-
-      box {
-        background-color: transparent;
-      }
-
-      button {
-        color: #665c54;
-        background-color: rgba(40, 40, 40, 0.7);
-        border: 1px solid #3c3836 !important;
-        border-radius: 6px;
-        margin: 20px;
-        padding: 48px 36px;
-        font-size: 192px;
-        letter-spacing: 0.08em;
-        transition: color 0.15s ease,
-                    border-color 0.15s ease,
-                    background-color 0.15s ease;
-      }
-
-      button:hover {
-        color: #d79921;
-        background-color: rgba(60, 56, 54, 0.8);
-        border-color: #d79921 !important;
-      }
-
-      #shutdown:hover {
-        color: #fb4934;
-        border-color: #cc241d !important;
-        background-color: rgba(204, 36, 29, 0.12);
-      }
-
-      #reboot:hover {
-        color: #fabd2f;
-        border-color: #d79921 !important;
-        background-color: rgba(215, 153, 33, 0.08);
-      }
-    '';
+    layout = if useText then textLayout else iconLayout;
+    style  = if useText then textStyle  else iconStyle;
   };
 }

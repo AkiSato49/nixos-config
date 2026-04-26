@@ -1,8 +1,21 @@
-{ config, pkgs, ... }:
+{ config, pkgs, theme, ... }:
+let
+  c    = theme.colors;
+  flat = theme.variants.waybar_flat;
 
-{
+  # Prayer: yellow accent, blue highlights, teal info — prayer flag semantics
+  # Dark:   red-heavy — original gruvbox fzf feel
+  fzfColors = if flat then [
+    "--color=bg+:${c.bg1},bg:${c.bg_hard},spinner:${c.yellow},hl:${c.blue_br}"
+    "--color=fg:${c.fg},header:${c.fg_dim},info:${c.teal_br},pointer:${c.yellow}"
+    "--color=marker:${c.teal},fg+:${c.fg},prompt:${c.yellow},hl+:${c.yellow_br}"
+  ] else [
+    "--color=bg+:${c.bg1},bg:${c.bg},spinner:${c.red_br},hl:${c.gray}"
+    "--color=fg:${c.fg},header:${c.gray},info:${c.teal_br},pointer:${c.red_br}"
+    "--color=marker:${c.red_br},fg+:${c.fg},prompt:${c.red_br},hl+:${c.red_br}"
+  ];
+in {
   home.packages = with pkgs; [
-    # Better CLI tools
     fzf
     ripgrep
     bat
@@ -12,13 +25,9 @@
     jq
     httpie
     curlie
-
-    # Git
     gh
     lazygit
     delta
-
-    # Dev essentials
     direnv
     mise
     gnumake
@@ -26,24 +35,17 @@
   ];
 
   programs.fzf = {
-    enable = true;
+    enable               = true;
     enableZshIntegration = true;
-    defaultOptions = [
-      "--height 40%"
-      "--layout=reverse"
-      "--border"
-      "--color=bg+:#3c3836,bg:#282828,spinner:#fb4934,hl:#928374"
-      "--color=fg:#ebdbb2,header:#928374,info:#8ec07c,pointer:#fb4934"
-      "--color=marker:#fb4934,fg+:#ebdbb2,prompt:#fb4934,hl+:#fb4934"
-    ];
+    defaultOptions       = [ "--height 40%" "--layout=reverse" "--border" ] ++ fzfColors;
   };
 
   programs.bat = {
     enable = true;
     config = {
-      theme = "gruvbox-dark";
+      theme       = "gruvbox-dark";
       italic-text = "always";
-      pager = "less -FR";
+      pager       = "less -FR";
     };
   };
 
@@ -52,10 +54,10 @@
     settings = {
       user.name  = "AkiSato49";
       user.email = "carlosakisato@gmail.com";
-      init.defaultBranch = "main";
+      init.defaultBranch  = "main";
       push.autoSetupRemote = true;
-      pull.rebase = false;
-      core.editor = "nvim";
+      pull.rebase         = false;
+      core.editor         = "nvim";
       alias = {
         st   = "status";
         co   = "checkout";
@@ -67,38 +69,36 @@
   };
 
   programs.delta = {
-    enable = true;
+    enable               = true;
     enableGitIntegration = true;
     options = {
-      navigate = true;
-      light = false;
-      syntax-theme = "gruvbox-dark";
-      side-by-side = true;
-      line-numbers = true;
+      navigate      = true;
+      light         = false;
+      syntax-theme  = "gruvbox-dark";
+      side-by-side  = true;
+      line-numbers  = true;
     };
   };
 
   programs.direnv = {
-    enable = true;
+    enable               = true;
     enableZshIntegration = true;
-    nix-direnv.enable = true;
+    nix-direnv.enable    = true;
   };
 
   programs.lazygit = {
     enable = true;
     settings = {
-      gui = {
-        theme = {
-          activeBorderColor   = [ "yellow" "bold" ];
-          inactiveBorderColor = [ "white" ];
-          selectedLineBgColor = [ "#3c3836" ];
-        };
+      gui.theme = {
+        activeBorderColor   = [ "yellow" "bold" ];
+        inactiveBorderColor = [ "white" ];
+        selectedLineBgColor = [ "${c.bg1}" ];
       };
     };
   };
 
   programs.zoxide = {
-    enable = true;
+    enable               = true;
     enableZshIntegration = true;
   };
 }

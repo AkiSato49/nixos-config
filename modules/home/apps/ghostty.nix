@@ -1,64 +1,56 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, theme, ... }:
+let c = theme.colors; in {
   programs.ghostty = {
     enable = true;
 
     settings = {
-      # Font
-      font-family      = "JetBrainsMono Nerd Font";
-      font-size        = 13.5;
+      font-family  = theme.font.mono;
+      font-size    = theme.font.size_mono;
 
-      # Window
-      background-opacity  = 0.95;
-      window-decoration   = false;
-      window-padding-x    = 14;
-      window-padding-y    = 14;
+      background-opacity = 0.95;
+      window-decoration  = false;
+      window-padding-x   = 14;
+      window-padding-y   = 14;
 
-      # Scrollback
       scrollback-limit = 10000;
 
-      # Cursor
       cursor-style          = "block";
       cursor-style-blink    = true;
       cursor-invert-fg-bg   = false;
-      cursor-color          = "#d79921";
+      cursor-color          = c.yellow;
 
-      # Mouse
       mouse-hide-while-typing = true;
 
-      # Gruvbox Dark Hard
-      background            = "#1d2021";
-      foreground            = "#ebdbb2";
-      selection-background  = "#3c3836";
-      selection-foreground  = "#ebdbb2";
+      background           = c.bg_hard;
+      foreground           = c.fg;
+      selection-background = c.bg1;
+      selection-foreground = c.fg;
 
+      # Gruvbox Dark Hard palette
+      # Normal
       palette = [
-        # Normal
-        "0=#282828"   # black
-        "1=#cc241d"   # red
-        "2=#98971a"   # green
-        "3=#d79921"   # yellow
-        "4=#458588"   # blue
-        "5=#b16286"   # magenta
-        "6=#689d6a"   # cyan
-        "7=#a89984"   # white
+        "0=${c.bg}"         # black
+        "1=${c.red}"        # red
+        "2=${c.green}"      # green
+        "3=${c.yellow}"     # yellow
+        "4=${c.blue}"       # blue
+        "5=${c.purple}"     # magenta
+        "6=${c.teal}"       # cyan
+        "7=${c.fg_dim}"     # white
         # Bright
-        "8=#928374"   # bright black
-        "9=#fb4934"   # bright red
-        "10=#b8bb26"  # bright green
-        "11=#fabd2f"  # bright yellow
-        "12=#83a598"  # bright blue
-        "13=#d3869b"  # bright magenta
-        "14=#8ec07c"  # bright cyan
-        "15=#ebdbb2"  # bright white
+        "8=${c.gray}"       # bright black
+        "9=${c.red_br}"     # bright red
+        "10=${c.green_br}"  # bright green
+        "11=${c.yellow_br}" # bright yellow
+        "12=${c.blue_br}"   # bright blue
+        "13=${c.purple_br}" # bright magenta
+        "14=${c.teal_br}"   # bright cyan
+        "15=${c.fg}"        # bright white
       ];
 
-      # Shell integration
-      shell-integration     = "zsh";
+      shell-integration          = "zsh";
       shell-integration-features = "cursor,sudo,title";
 
-      # Keybindings
       keybind = [
         "ctrl+shift+v=paste_from_clipboard"
         "ctrl+shift+c=copy_to_clipboard"

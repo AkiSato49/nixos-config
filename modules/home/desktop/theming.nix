@@ -1,31 +1,27 @@
-{ config, pkgs, ... }:
+{ config, pkgs, theme, ... }:
 
 {
   gtk = {
     enable = true;
     theme = {
-      name = "Gruvbox-Dark-BL";
+      name    = theme.gtk.theme;
       package = pkgs.gruvbox-gtk-theme;
     };
     iconTheme = {
-      name = "Papirus-Dark";
+      name    = theme.gtk.icons;
       package = pkgs.papirus-icon-theme;
     };
     cursorTheme = {
-      name = "Bibata-Modern-Classic";
+      name    = theme.gtk.cursor;
       package = pkgs.bibata-cursors;
-      size = 24;
+      size    = theme.gtk.cursor_size;
     };
     font = {
-      name = "Noto Sans";
-      size = 11;
+      name = theme.gtk.font_name;
+      size = theme.gtk.font_size;
     };
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
 
   qt = {
@@ -35,17 +31,16 @@
   };
 
   home.sessionVariables = {
-    GTK_THEME = "Gruvbox-Dark-BL";
-    XCURSOR_THEME = "Bibata-Modern-Classic";
-    XCURSOR_SIZE = "24";
+    GTK_THEME            = theme.gtk.theme;
+    XCURSOR_THEME        = theme.gtk.cursor;
+    XCURSOR_SIZE         = toString theme.gtk.cursor_size;
     QT_QPA_PLATFORMTHEME = "gtk2";
   };
 
-  # Cursor for Hyprland
   home.pointerCursor = {
-    name = "Bibata-Modern-Classic";
+    name    = theme.gtk.cursor;
     package = pkgs.bibata-cursors;
-    size = 24;
+    size    = theme.gtk.cursor_size;
     gtk.enable = true;
     x11.enable = false;
   };
