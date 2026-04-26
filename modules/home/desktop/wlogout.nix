@@ -45,36 +45,23 @@ let
       font-family: "${theme.font.ui}";
       font-size: 80px;
       letter-spacing: 0.08em;
-      transition: color 0.15s ease;
     }
 
     button:hover,
     button:focus,
     button:active {
-      background-color: transparent !important;
-      background-image: none !important;
-      box-shadow: none !important;
-      border: none !important;
-      outline: none !important;
+      all: unset;
+      font-family: "${theme.font.ui}";
+      font-size: 80px;
+      letter-spacing: 0.08em;
     }
 
-    /* yellow — earth — lock */
-    #lock:hover    { color: ${c.yellow}; }
-
-    /* blue — sky — hibernate / suspend */
+    #lock:hover      { color: ${c.yellow}; }
     #hibernate:hover { color: ${c.blue_br}; }
-
-    /* white — air — logout */
-    #logout:hover  { color: ${c.fg}; }
-
-    /* red — fire — shutdown */
-    #shutdown:hover { color: ${c.red_br}; }
-
-    /* blue — sky — suspend */
-    #suspend:hover  { color: ${c.blue_br}; }
-
-    /* green — water — reboot */
-    #reboot:hover   { color: ${c.teal_br}; }
+    #logout:hover    { color: ${c.fg}; }
+    #shutdown:hover  { color: ${c.red_br}; }
+    #suspend:hover   { color: ${c.blue_br}; }
+    #reboot:hover    { color: ${c.teal_br}; }
   '';
 
   # ── Icon style (dark theme) ──────────────────────────────────────────────────
