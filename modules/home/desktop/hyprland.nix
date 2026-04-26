@@ -101,7 +101,7 @@ in {
 
       # Core
       bind = $mod,       Return, exec, ghostty
-      bind = $mod,       Escape, exec, power-menu
+      bind = $mod,       Escape, exec, GTK_THEME=Adwaita:dark wlogout -b 3 -c 0 -r 0 -m 0
       bind = $mod,       Space,  exec, wofi --show drun
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
@@ -183,6 +183,10 @@ in {
 
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
+
+      # blur wlogout even with global blur off — layer surfaces use their own rule
+      layerrule = blur, wlogout
+      layerrule = ignorezero, wlogout
 
       windowrule = float on, match:class pavucontrol
       windowrule = float on, match:class blueman-manager

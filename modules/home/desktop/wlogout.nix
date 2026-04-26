@@ -23,10 +23,11 @@ let
     { label = "reboot";    action = "systemctl reboot";      text = "󰑐"; keybind = "r"; }
   ];
 
-  # ── Pure text style (prayer) — no blocks, just floating text on dark overlay
+  # ── Pure text style (prayer) ──────────────────────────────────────────────────
+  # Full screen, semi-transparent (blurred via Hyprland layerrule).
+  # Flag colors always visible — hover brightens to vivid variant.
   textStyle = ''
     * {
-      font-family: "${theme.font.ui}";
       background-image: none;
       box-shadow: none;
       border: none;
@@ -34,17 +35,16 @@ let
     }
 
     window {
-      background-color: rgba(29, 32, 33, 0.88);
+      background-color: rgba(29, 32, 33, 0.65);
     }
 
     box { background: transparent; }
 
     button {
       all: unset;
-      color: ${c.fg_muted};
       font-family: "${theme.font.ui}";
       font-size: 80px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
     }
 
     button:hover,
@@ -53,10 +53,19 @@ let
       all: unset;
       font-family: "${theme.font.ui}";
       font-size: 80px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
     }
 
-    #lock:hover      { color: ${c.yellow}; }
+    /* prayer flag colors — always on */
+    #lock      { color: ${c.yellow}; }    /* earth  */
+    #hibernate { color: ${c.blue}; }      /* sky    */
+    #logout    { color: ${c.fg_dim}; }    /* air    */
+    #shutdown  { color: ${c.red}; }       /* fire   */
+    #suspend   { color: ${c.blue}; }      /* sky    */
+    #reboot    { color: ${c.teal}; }      /* water  */
+
+    /* hover — vivid variant */
+    #lock:hover      { color: ${c.yellow_br}; }
     #hibernate:hover { color: ${c.blue_br}; }
     #logout:hover    { color: ${c.fg}; }
     #shutdown:hover  { color: ${c.red_br}; }
