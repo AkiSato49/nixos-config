@@ -257,9 +257,9 @@ in {
             "class<zen-beta>"                     = "";
 
             "class<com.mitchellh.ghostty> title<.*ssh.*>"  = "󰣀";
-            "class<com.mitchellh.ghostty> title<.*nvim.*>" = "";
+            "class<com.mitchellh.ghostty> title<.*nvim.*>" = "";
             "class<com.mitchellh.ghostty> title<.*git.*>"  = "󰊤";
-            "class<com.mitchellh.ghostty>"                 = "";
+            "class<com.mitchellh.ghostty>"                 = "";
             "class<Alacritty> title<.*ssh.*>"              = "󰣀";
             "class<Alacritty> title<.*nvim.*>"             = "";
             "class<Alacritty>"                             = "";
