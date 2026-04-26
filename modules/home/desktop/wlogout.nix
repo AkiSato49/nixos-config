@@ -43,18 +43,11 @@ let
       all: unset;
       color: ${c.fg_muted};
       font-family: "${theme.font.ui}";
-      font-size: 72px;
-      letter-spacing: 0.1em;
+      font-size: 80px;
+      letter-spacing: 0.08em;
       transition: color 0.15s ease;
     }
 
-    /* center the label within the button's allocated cell */
-    button label {
-      margin: auto;
-      color: inherit;
-    }
-
-    /* strip GTK hover/focus/active backgrounds */
     button:hover,
     button:focus,
     button:active {
