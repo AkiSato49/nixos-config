@@ -185,8 +185,8 @@ in {
       bindm = $mod, mouse:273, resizewindow
 
       # blur wlogout even with global blur off — layer surfaces use their own rule
-      layerrule = blur, wlogout
-      layerrule = ignorezero, wlogout
+      layerrule = blur true, match:namespace wlogout
+      layerrule = ignore_alpha 0.1, match:namespace wlogout
 
       windowrule = float on, match:class pavucontrol
       windowrule = float on, match:class blueman-manager
