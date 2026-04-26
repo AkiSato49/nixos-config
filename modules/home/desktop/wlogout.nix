@@ -23,12 +23,10 @@ let
     { label = "reboot";    action = "systemctl reboot";      text = "󰑐"; keybind = "r"; }
   ];
 
-  # ── Swiss flat style (prayer) ────────────────────────────────────────────────
-  # Text labels, no rounding, prayer flag colors on hover
+  # ── Pure text style (prayer) — no blocks, just floating text on dark overlay
   textStyle = ''
     * {
       font-family: "${theme.font.ui}";
-      font-size: 13px;
       background-image: none;
       box-shadow: none;
       border: none;
@@ -36,61 +34,50 @@ let
     }
 
     window {
-      background-color: rgba(29, 32, 33, 0.97);
+      background-color: rgba(29, 32, 33, 0.88);
     }
 
-    box { background-color: transparent; }
+    box { background: transparent; }
 
     button {
-      color: ${c.fg_muted};
+      background: none;
       background-color: transparent;
-      border: 1px solid ${c.bg1} !important;
+      border: none !important;
       border-radius: 0;
-      margin: 12px;
-      padding: 32px 56px;
+      box-shadow: none;
+      outline: none;
+      color: ${c.fg_muted};
       font-size: 14px;
-      letter-spacing: 0.2em;
-      transition: color 0.12s ease,
-                  border-color 0.12s ease,
-                  background-color 0.12s ease;
+      letter-spacing: 0.22em;
+      transition: color 0.15s ease;
+    }
+
+    button:hover,
+    button:focus {
+      background: none;
+      background-color: transparent;
+      border: none !important;
+      box-shadow: none;
+      outline: none;
     }
 
     /* yellow — earth — lock */
-    #lock:hover {
-      color: ${c.yellow};
-      border-color: ${c.yellow} !important;
-    }
+    #lock:hover    { color: ${c.yellow}; }
 
     /* blue — sky — hibernate / suspend */
-    #hibernate:hover {
-      color: ${c.blue_br};
-      border-color: ${c.blue} !important;
-    }
+    #hibernate:hover { color: ${c.blue_br}; }
 
     /* white — air — logout */
-    #logout:hover {
-      color: ${c.fg};
-      border-color: ${c.fg_dim} !important;
-    }
+    #logout:hover  { color: ${c.fg}; }
 
     /* red — fire — shutdown */
-    #shutdown:hover {
-      color: ${c.red_br};
-      border-color: ${c.red} !important;
-      background-color: rgba(204, 36, 29, 0.08);
-    }
+    #shutdown:hover { color: ${c.red_br}; }
 
     /* blue — sky — suspend */
-    #suspend:hover {
-      color: ${c.blue_br};
-      border-color: ${c.blue} !important;
-    }
+    #suspend:hover  { color: ${c.blue_br}; }
 
     /* green — water — reboot */
-    #reboot:hover {
-      color: ${c.teal_br};
-      border-color: ${c.teal} !important;
-    }
+    #reboot:hover   { color: ${c.teal_br}; }
   '';
 
   # ── Icon style (dark theme) ──────────────────────────────────────────────────
