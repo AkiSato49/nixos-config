@@ -40,25 +40,21 @@ let
     box { background: transparent; }
 
     button {
-      background: none;
-      background-color: transparent;
-      border: none !important;
-      border-radius: 0;
-      box-shadow: none;
-      outline: none;
+      all: unset;
       color: ${c.fg_muted};
+      font-family: "${theme.font.ui}";
       font-size: 14px;
       letter-spacing: 0.22em;
       transition: color 0.15s ease;
     }
 
     button:hover,
-    button:focus {
-      background: none;
-      background-color: transparent;
-      border: none !important;
-      box-shadow: none;
-      outline: none;
+    button:focus,
+    button:active {
+      all: unset;
+      font-family: "${theme.font.ui}";
+      font-size: 14px;
+      letter-spacing: 0.22em;
     }
 
     /* yellow — earth — lock */
