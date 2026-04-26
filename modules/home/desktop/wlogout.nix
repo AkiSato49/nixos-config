@@ -56,16 +56,11 @@ let
       letter-spacing: 0.06em;
     }
 
-    /* prayer flag colors — always on */
-    #lock      { color: ${c.yellow}; }    /* earth  */
-    #hibernate { color: ${c.blue}; }      /* sky    */
-    #logout    { color: ${c.fg_dim}; }    /* air    */
-    #shutdown  { color: ${c.red}; }       /* fire   */
-    #suspend   { color: ${c.blue}; }      /* sky    */
-    #reboot    { color: ${c.teal}; }      /* water  */
+    /* default — muted white */
+    button { color: ${c.fg_dim}; }
 
-    /* hover — vivid variant */
-    #lock:hover      { color: ${c.yellow_br}; }
+    /* hover — prayer flag colors */
+    #lock:hover      { color: ${c.yellow}; }
     #hibernate:hover { color: ${c.blue_br}; }
     #logout:hover    { color: ${c.fg}; }
     #shutdown:hover  { color: ${c.red_br}; }
