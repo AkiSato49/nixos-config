@@ -43,18 +43,26 @@ let
       all: unset;
       color: ${c.fg_muted};
       font-family: "${theme.font.ui}";
-      font-size: 14px;
-      letter-spacing: 0.22em;
+      font-size: 72px;
+      letter-spacing: 0.1em;
       transition: color 0.15s ease;
     }
 
+    /* center the label within the button's allocated cell */
+    button label {
+      margin: auto;
+      color: inherit;
+    }
+
+    /* strip GTK hover/focus/active backgrounds */
     button:hover,
     button:focus,
     button:active {
-      all: unset;
-      font-family: "${theme.font.ui}";
-      font-size: 14px;
-      letter-spacing: 0.22em;
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      outline: none !important;
     }
 
     /* yellow — earth — lock */
