@@ -47,6 +47,9 @@
     initContent = ''
       # mise (runtime manager) — others handled by HM programs integrations
       eval "$(mise activate zsh)"
+
+      # npm global bins (e.g. pi, npx tools)
+      export PATH="$HOME/.npm-global/bin:$PATH"
     '';
 
     history = {
