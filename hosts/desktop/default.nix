@@ -13,6 +13,7 @@
     ../../modules/nixos/greetd.nix
     ../../modules/nixos/tailscale.nix
     ../../modules/nixos/nvidia.nix
+    ../../modules/nixos/openclaw.nix
     # power.nix intentionally excluded (desktop, no battery)
   ];
 

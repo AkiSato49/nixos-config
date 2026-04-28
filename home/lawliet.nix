@@ -17,6 +17,7 @@
     ../modules/home/apps/neovim.nix
     ../modules/home/apps/media.nix
     ../modules/home/dev/default.nix
+    ../modules/home/dev/pi.nix
   ];
 
   home = {
