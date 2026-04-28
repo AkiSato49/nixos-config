@@ -27,11 +27,28 @@
     theme  = import ./modules/themes/default.nix;
   in {
     nixosConfigurations = {
+      # Laptop
       NixOS = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs theme; };
         modules = [
           ./hosts/nixos/default.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs      = true;
+            home-manager.useUserPackages    = true;
+            home-manager.users.lawliet      = import ./home/lawliet.nix;
+            home-manager.extraSpecialArgs   = { inherit inputs theme; };
+          }
+        ];
+      };
+
+      # Desktop (Ryzen 5 5600X + RTX 3070 Ti)
+      desktop = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs theme; };
+        modules = [
+          ./hosts/desktop/default.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs      = true;
