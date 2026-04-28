@@ -40,7 +40,7 @@
     };
   };
 
-  networking.hostName = "NixOS";
+  networking.hostName = "casino";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_AU.UTF-8";
 
