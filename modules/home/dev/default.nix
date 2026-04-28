@@ -3,7 +3,7 @@
 {
   home.packages = with pkgs; [
     # Node / JS ecosystem
-    nodejs
+    nodejs_22
     bun
     pnpm
     typescript
