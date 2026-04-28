@@ -69,7 +69,13 @@
     settings = {
       add_newline = true;
 
-      format = "$directory$git_branch$git_status$nix_shell$python$nodejs$rust$golang$cmd_duration$line_break$character";
+      format = "$hostname$directory$git_branch$git_status$nix_shell$python$nodejs$rust$golang$cmd_duration$line_break$character";
+
+      hostname = {
+        ssh_only = false;
+        style = "bold cyan";
+        format = "[$hostname](bold cyan) ";
+      };
 
       character = {
         success_symbol = "[λ](bold green)";
