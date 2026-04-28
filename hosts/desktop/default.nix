@@ -50,6 +50,9 @@
     description = "lawliet";
     extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" "input" ];
     shell = pkgs.zsh;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIrozfwAKPWxBjT3E4De1uzg9umySfKuC5yRb1X/psb6"
+    ];
   };
 
   programs.zsh.enable = true;
@@ -77,7 +80,7 @@
 
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = true;
+    settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
   };
 
