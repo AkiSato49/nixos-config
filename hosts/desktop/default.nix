@@ -70,7 +70,7 @@
     vim
     playerctl
     gnome-keyring
-    polkit-gnome
+    lxqt.lxqt-policykit
     # Desktop-specific — no brightnessctl needed
   ];
 

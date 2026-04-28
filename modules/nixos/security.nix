@@ -22,7 +22,7 @@
   services.smartd.enable = true;
 
   # Keyring
-  services.gnome.gnome-keyring.enable = true;
+  services.gnome-keyring.enable = true;
 
   # Fingerprint
   services.fprintd.enable = true;
