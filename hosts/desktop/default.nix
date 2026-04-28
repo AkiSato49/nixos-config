@@ -77,7 +77,7 @@
 
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = false;
+    settings.PasswordAuthentication = true;
     settings.PermitRootLogin = "no";
   };
 
