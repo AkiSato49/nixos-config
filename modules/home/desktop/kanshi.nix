@@ -10,7 +10,7 @@
       {
         profile.name = "undocked";
         profile.outputs = [
-          { criteria = "eDP-1"; status = "enable"; scale = 1.0; }
+          { criteria = "eDP-1"; status = "enable"; scale = 1.5; }
         ];
       }
 

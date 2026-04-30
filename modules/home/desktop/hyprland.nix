@@ -2,26 +2,53 @@
 let
   c = theme.colors;
   g = theme.geometry;
+
+  # Distribute 10 workspaces across whatever monitors are connected.
+  # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
+  assignWs = pkgs.writeShellScriptBin "assign-ws" ''
+    set -e
+    mapfile -t mons < <(${pkgs.hyprland}/bin/hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name')
+    n=''${#mons[@]}
+    [ "$n" -eq 0 ] && exit 0
+    total=10
+    base=$(( total / n ))
+    extra=$(( total - base * n ))
+    ws=1
+    for i in "''${!mons[@]}"; do
+      count=$base
+      [ "$i" -lt "$extra" ] && count=$(( count + 1 ))
+      for j in $(seq 1 $count); do
+        first=""
+        [ "$j" -eq 1 ] && first=",default:true"
+        ${pkgs.hyprland}/bin/hyprctl keyword workspace "$ws,monitor:''${mons[$i]}$first" >/dev/null
+        ${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor "$ws ''${mons[$i]}" >/dev/null 2>&1 || true
+        ws=$(( ws + 1 ))
+      done
+    done
+    ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true
+  '';
+
+  wsListener = pkgs.writeShellScriptBin "ws-monitor-listener" ''
+    SOCK="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+    ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
+      case "$line" in
+        monitoradded*|monitorremoved*) ${assignWs}/bin/assign-ws ;;
+      esac
+    done
+  '';
 in {
   wayland.windowManager.hyprland = {
     enable  = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
     extraConfig = ''
-      monitor = eDP-1,    2880x1800@60, 0x0,    2
+      monitor = eDP-1,    2880x1800@60, 0x0,    1.5
       monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
       monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
+      monitor = ,preferred,auto,1
 
-      # Workspace → monitor assignments (persists on reconnect)
-      workspace = 1, monitor:eDP-1,    default:true
-      workspace = 2, monitor:eDP-1
-      workspace = 3, monitor:eDP-1
-      workspace = 4, monitor:HDMI-A-1, default:true
-      workspace = 5, monitor:HDMI-A-1
-      workspace = 6, monitor:HDMI-A-1
-      workspace = 7, monitor:DVI-I-1,  default:true
-      workspace = 8, monitor:DVI-I-1
-      workspace = 9, monitor:DVI-I-1
+      # Workspace → monitor assignments are computed dynamically by
+      # assign-ws based on currently connected monitors (1=10, 2=5/5, 3≈3/3/3, …)
 
       $mod = SUPER
 
@@ -95,6 +122,8 @@ in {
       exec-once = wl-paste --type image --watch cliphist store
       exec-once = udiskie &
       exec-once = kanshi &
+      exec-once = ${assignWs}/bin/assign-ws
+      exec-once = ${wsListener}/bin/ws-monitor-listener
       exec-once = /run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets
       exec-once = 1password --silent
       exec-once = ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent
@@ -150,6 +179,7 @@ in {
       bind = $mod, 7, workspace, 7
       bind = $mod, 8, workspace, 8
       bind = $mod, 9, workspace, 9
+      bind = $mod, 0, workspace, 10
 
       # Move to workspace
       bind = $mod SHIFT, 1, movetoworkspace, 1
@@ -161,6 +191,7 @@ in {
       bind = $mod SHIFT, 7, movetoworkspace, 7
       bind = $mod SHIFT, 8, movetoworkspace, 8
       bind = $mod SHIFT, 9, movetoworkspace, 9
+      bind = $mod SHIFT, 0, movetoworkspace, 10
 
       # Scroll workspaces
       bind = $mod, mouse_down, workspace, e+1

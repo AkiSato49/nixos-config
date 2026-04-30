@@ -283,11 +283,8 @@ in {
             "class<org.pwmt.zathura>"     = "󰈦";
             "class<imv>"                  = "󰋩";
           };
-          persistent-workspaces = {
-            "eDP-1"    = [ 1 2 3 ];
-            "HDMI-A-1" = [ 4 5 6 ];
-            "DVI-I-1"  = [ 7 8 9 ];
-          };
+          # Workspaces are assigned dynamically per-monitor by assign-ws,
+          # so just show whichever ones land on each output.
           separate-outputs    = true;
           on-scroll-up        = "hyprctl dispatch workspace e+1";
           on-scroll-down      = "hyprctl dispatch workspace e-1";
