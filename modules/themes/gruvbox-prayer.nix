@@ -48,7 +48,7 @@
   font = {
     ui        = "JetBrainsMono Nerd Font";
     mono      = "JetBrainsMono Nerd Font";
-    size_ui   = 12;
+    size_ui   = 16;
     size_mono = 13.5;
   };
 

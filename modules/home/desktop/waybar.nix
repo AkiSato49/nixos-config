@@ -37,7 +37,7 @@ let
       background-color: transparent;
       border-radius: 0;
       border-bottom: 2px solid transparent;
-      font-size: 11px;
+      font-size: 14px;
       font-weight: bold;
       transition: color 0.15s ease, border-bottom-color 0.15s ease;
     }
@@ -65,7 +65,7 @@ let
       color: ${c.fg_muted};
       padding: 0 8px;
       font-style: italic;
-      font-size: 11px;
+      font-size: 14px;
     }
 
     /* Clock ── typography forward */
@@ -114,7 +114,7 @@ let
       border: 1px solid ${c.yellow};
       border-radius: 0;
       color: ${c.fg};
-      font-size: 11px;
+      font-size: 14px;
     }
   '';
 
@@ -145,11 +145,11 @@ let
     #workspaces button {
       padding: 0 10px;
       margin: 2px 1px;
-      min-width: 24px;
+      min-width: 28px;
       color: #ebdbb2;
       background-color: transparent;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 15px;
       font-weight: bold;
       transition: background-color 0.18s ease, color 0.18s ease;
     }
@@ -221,7 +221,7 @@ in {
       mainBar = {
         layer    = "top";
         position = "top";
-        height   = 36;
+        height   = 44;
         spacing  = 4;
 
         modules-left   = [ "hyprland/workspaces" "hyprland/window" ];
