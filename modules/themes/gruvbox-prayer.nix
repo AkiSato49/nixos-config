@@ -49,7 +49,7 @@
     ui        = "JetBrainsMono Nerd Font";
     mono      = "JetBrainsMono Nerd Font";
     size_ui   = 16;
-    size_mono = 13.5;
+    size_mono = 17.0;
   };
 
   gtk = {
