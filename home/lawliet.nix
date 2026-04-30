@@ -14,6 +14,7 @@
     ../modules/home/shell/zsh.nix
     ../modules/home/shell/tools.nix
     ../modules/home/apps/ghostty.nix
+    ../modules/home/apps/zen.nix
     ../modules/home/apps/neovim.nix
     ../modules/home/apps/media.nix
     ../modules/home/dev/default.nix

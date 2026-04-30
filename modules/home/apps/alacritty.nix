@@ -2,7 +2,7 @@
 let
   c = theme.colors;
   big = hostName == "casino";
-  monoSize = if big then 18 else theme.font.size_mono;
+  monoSize = if big then 22 else theme.font.size_mono;
 in {
   programs.alacritty = {
     enable = true;
