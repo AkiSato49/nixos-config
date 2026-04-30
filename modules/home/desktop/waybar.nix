@@ -1,8 +1,16 @@
-{ config, pkgs, theme, ... }:
+{ config, pkgs, theme, hostName ? "", ... }:
 let
   c    = theme.colors;
   f    = theme.font;
   flat = theme.variants.waybar_flat;
+
+  # HiDPI laptop: bump everything up.
+  big      = hostName == "casino";
+  uiSize   = if big then 16 else f.size_ui;
+  smSize   = if big then 14 else 11;
+  barH     = if big then 44 else 36;
+  wsMin    = if big then 28 else 24;
+  wsFont   = if big then 15 else 12;
 
   clockFmt = if flat then "{:%H:%M}" else " {:%H:%M}";
   clockAlt = if flat then "{:%A  %d %B %Y}" else " {:%A, %d %B %Y}";
@@ -11,7 +19,7 @@ let
   styleFlat = ''
     * {
       font-family: "${f.ui}";
-      font-size: ${toString f.size_ui}px;
+      font-size: ${toString uiSize}px;
       border: none;
       border-radius: 0;
       min-height: 0;
@@ -37,7 +45,7 @@ let
       background-color: transparent;
       border-radius: 0;
       border-bottom: 2px solid transparent;
-      font-size: 14px;
+      font-size: ${toString smSize}px;
       font-weight: bold;
       transition: color 0.15s ease, border-bottom-color 0.15s ease;
     }
@@ -65,7 +73,7 @@ let
       color: ${c.fg_muted};
       padding: 0 8px;
       font-style: italic;
-      font-size: 14px;
+      font-size: ${toString smSize}px;
     }
 
     /* Clock ── typography forward */
@@ -114,7 +122,7 @@ let
       border: 1px solid ${c.yellow};
       border-radius: 0;
       color: ${c.fg};
-      font-size: 14px;
+      font-size: ${toString smSize}px;
     }
   '';
 
@@ -122,7 +130,7 @@ let
   stylePill = ''
     * {
       font-family: "${f.ui}";
-      font-size: ${toString f.size_ui}px;
+      font-size: ${toString uiSize}px;
       border: none;
       border-radius: 0;
       min-height: 0;
@@ -145,11 +153,11 @@ let
     #workspaces button {
       padding: 0 10px;
       margin: 2px 1px;
-      min-width: 28px;
+      min-width: ${toString wsMin}px;
       color: #ebdbb2;
       background-color: transparent;
       border-radius: 6px;
-      font-size: 15px;
+      font-size: ${toString wsFont}px;
       font-weight: bold;
       transition: background-color 0.18s ease, color 0.18s ease;
     }
@@ -221,7 +229,7 @@ in {
       mainBar = {
         layer    = "top";
         position = "top";
-        height   = 44;
+        height   = barH;
         spacing  = 4;
 
         modules-left   = [ "hyprland/workspaces" "hyprland/window" ];

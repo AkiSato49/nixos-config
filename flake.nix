@@ -25,39 +25,24 @@
     system = "x86_64-linux";
     pkgs   = nixpkgs.legacyPackages.${system};
     theme  = import ./modules/themes/default.nix;
+    mkHost = hostName: nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit inputs theme hostName; };
+      modules = [
+        ./hosts/${hostName}/default.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs      = true;
+          home-manager.useUserPackages    = true;
+          home-manager.users.lawliet      = import ./home/lawliet.nix;
+          home-manager.extraSpecialArgs   = { inherit inputs theme hostName; };
+        }
+      ];
+    };
   in {
     nixosConfigurations = {
-      # Laptop
-      NixOS = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs theme; };
-        modules = [
-          ./hosts/nixos/default.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs      = true;
-            home-manager.useUserPackages    = true;
-            home-manager.users.lawliet      = import ./home/lawliet.nix;
-            home-manager.extraSpecialArgs   = { inherit inputs theme; };
-          }
-        ];
-      };
-
-      # Desktop (Ryzen 5 5600X + RTX 3070 Ti)
-      desktop = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs theme; };
-        modules = [
-          ./hosts/desktop/default.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs      = true;
-            home-manager.useUserPackages    = true;
-            home-manager.users.lawliet      = import ./home/lawliet.nix;
-            home-manager.extraSpecialArgs   = { inherit inputs theme; };
-          }
-        ];
-      };
+      casino = mkHost "casino";  # Laptop
+      mambo  = mkHost "mambo";   # Desktop (Ryzen 5 5600X + RTX 3070 Ti)
     };
   };
 }

@@ -1,7 +1,13 @@
-{ config, pkgs, inputs, theme, ... }:
+{ config, pkgs, inputs, theme, hostName ? "", ... }:
 let
   c = theme.colors;
   g = theme.geometry;
+
+  # HiDPI laptop only
+  big       = hostName == "casino";
+  edpScale  = if big then "1.5" else "2";
+  gdkScale  = if big then "1.25" else "1";
+  curSize   = if big then 28 else 24;
 
   # Distribute 10 workspaces across whatever monitors are connected.
   # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
@@ -42,7 +48,7 @@ in {
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
     extraConfig = ''
-      monitor = eDP-1,    2880x1800@60, 0x0,    1.5
+      monitor = eDP-1,    2880x1800@60, 0x0,    ${edpScale}
       monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
       monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
       monitor = ,preferred,auto,1
@@ -50,14 +56,14 @@ in {
       # Workspace → monitor assignments are computed dynamically by
       # assign-ws based on currently connected monitors (1=10, 2=5/5, 3≈3/3/3, …)
 
-      # HiDPI / scaling env
-      env = GDK_SCALE,1.25
+      # HiDPI / scaling env (gdkScale only bumped on casino)
+      env = GDK_SCALE,${gdkScale}
       env = GDK_DPI_SCALE,1
       env = QT_AUTO_SCREEN_SCALE_FACTOR,1
       env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
       env = MOZ_ENABLE_WAYLAND,1
       env = MOZ_USE_XINPUT2,1
-      env = XCURSOR_SIZE,28
+      env = XCURSOR_SIZE,${toString curSize}
 
       $mod = SUPER
 
