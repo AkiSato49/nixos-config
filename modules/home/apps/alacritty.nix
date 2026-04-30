@@ -1,5 +1,9 @@
-{ config, pkgs, theme, ... }:
-let c = theme.colors; in {
+{ config, pkgs, theme, hostName ? "", ... }:
+let
+  c = theme.colors;
+  big = hostName == "casino";
+  monoSize = if big then 18 else theme.font.size_mono;
+in {
   programs.alacritty = {
     enable = true;
     settings = {
@@ -21,7 +25,7 @@ let c = theme.colors; in {
         normal  = { family = theme.font.mono; style = "Regular"; };
         bold    = { family = theme.font.mono; style = "Bold"; };
         italic  = { family = theme.font.mono; style = "Italic"; };
-        size    = theme.font.size_mono;
+        size    = monoSize;
       };
 
       colors = {

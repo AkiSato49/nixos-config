@@ -6,11 +6,11 @@ let
 
   # HiDPI laptop: bump everything up.
   big      = hostName == "casino";
-  uiSize   = if big then 18 else f.size_ui;
-  smSize   = if big then 16 else 11;
-  barH     = if big then 50 else 36;
-  wsMin    = if big then 32 else 24;
-  wsFont   = if big then 17 else 12;
+  uiSize   = if big then 22 else f.size_ui;
+  smSize   = if big then 19 else 11;
+  barH     = if big then 60 else 36;
+  wsMin    = if big then 40 else 24;
+  wsFont   = if big then 20 else 12;
 
   clockFmt = if flat then "{:%H:%M}" else " {:%H:%M}";
   clockAlt = if flat then "{:%A  %d %B %Y}" else " {:%A, %d %B %Y}";

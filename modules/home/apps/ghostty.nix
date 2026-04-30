@@ -1,11 +1,15 @@
-{ config, pkgs, theme, ... }:
-let c = theme.colors; in {
+{ config, pkgs, theme, hostName ? "", ... }:
+let
+  c = theme.colors;
+  big = hostName == "casino";
+  monoSize = if big then 18 else theme.font.size_mono;
+in {
   programs.ghostty = {
     enable = true;
 
     settings = {
       font-family  = theme.font.mono;
-      font-size    = theme.font.size_mono;
+      font-size    = monoSize;
 
       background-opacity = 0.95;
       window-decoration  = false;

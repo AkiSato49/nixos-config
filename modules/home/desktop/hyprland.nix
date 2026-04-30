@@ -5,10 +5,10 @@ let
 
   # HiDPI laptop only
   big       = hostName == "casino";
-  edpScale  = if big then "1.75" else "2";
+  edpScale  = if big then "2.0"  else "2";
   gdkScale  = if big then "2"    else "1";
-  gdkDpi    = if big then "0.85" else "1";
-  curSize   = if big then 32     else 24;
+  gdkDpi    = if big then "1.0"  else "1";
+  curSize   = if big then 36     else 24;
 
   # Distribute 10 workspaces across whatever monitors are connected.
   # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
