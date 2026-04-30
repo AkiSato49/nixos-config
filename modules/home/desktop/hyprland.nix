@@ -5,9 +5,10 @@ let
 
   # HiDPI laptop only
   big       = hostName == "casino";
-  edpScale  = if big then "1.5" else "2";
-  gdkScale  = if big then "1.25" else "1";
-  curSize   = if big then 28 else 24;
+  edpScale  = if big then "1.75" else "2";
+  gdkScale  = if big then "2"    else "1";
+  gdkDpi    = if big then "0.85" else "1";
+  curSize   = if big then 32     else 24;
 
   # Distribute 10 workspaces across whatever monitors are connected.
   # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
@@ -58,7 +59,7 @@ in {
 
       # HiDPI / scaling env (gdkScale only bumped on casino)
       env = GDK_SCALE,${gdkScale}
-      env = GDK_DPI_SCALE,1
+      env = GDK_DPI_SCALE,${gdkDpi}
       env = QT_AUTO_SCREEN_SCALE_FACTOR,1
       env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
       env = MOZ_ENABLE_WAYLAND,1
