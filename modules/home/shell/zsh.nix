@@ -9,6 +9,9 @@
     autocd = true;
 
     shellAliases = {
+      # Navigation
+      cd = "z";
+
       # Better defaults
       ls   = "eza --icons";
       ll   = "eza -la --icons --git";
