@@ -298,8 +298,8 @@
           -- Parsers come from Nix; plugin Lua files from lazy.nvim
           {
             "nvim-treesitter/nvim-treesitter",
-            -- NixOS: use Nix-managed plugin + parsers, never download
-            dir   = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}",
+            -- NixOS: Lua files from plugin, parsers from withAllGrammars via rtp
+            dir   = "${pkgs.vimPlugins.nvim-treesitter}",
             build = false,
             event = { "BufReadPost", "BufNewFile", "BufWritePre" },
             opts = function(_, opts)
@@ -308,11 +308,6 @@
               opts.indent    = { enable = true }
               opts.autotag   = { enable = true }
               return opts
-            end,
-            config = function(_, opts)
-              -- Point treesitter at the Nix parser dir
-              vim.opt.runtimepath:append("${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}")
-              require("nvim-treesitter.configs").setup(opts)
             end,
           },
 
