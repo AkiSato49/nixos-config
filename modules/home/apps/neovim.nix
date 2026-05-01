@@ -321,7 +321,7 @@
 
           -- ── NixOS: disable mason auto-install (servers in PATH via Nix)
           {
-            "williamboman/mason-lspconfig.nvim",
+            "mason-org/mason-lspconfig.nvim",
             opts = { ensure_installed = {} },
           },
 
@@ -357,6 +357,9 @@
         },
         install = { colorscheme = { "gruvbox", "tokyonight", "habamax" } },
         checker = { enabled = true, notify = false },
+
+        -- ── NixOS: disable luarocks/hererocks (magick comes from Nix) ──
+        rocks = { enabled = false, hererocks = false },
 
         -- ── Critical for NixOS ────────────────────────────────────────
         -- lazy.nvim resets packpath + rtp by default, wiping Nix plugins
