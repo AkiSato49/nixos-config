@@ -111,16 +111,23 @@
       opt.sidescrolloff  = 8
       opt.signcolumn     = "yes"
       opt.updatetime     = 50
-      opt.colorcolumn    = "100"
+      opt.colorcolumn    = ""
       opt.clipboard      = "unnamedplus"
       opt.splitbelow     = true
       opt.splitright     = true
-      opt.cursorline     = true
+      opt.cursorline     = false
       opt.pumheight      = 10
       opt.completeopt    = "menuone,noselect"
 
       vim.g.mapleader      = " "
       vim.g.maplocalleader = " "
+
+      vim.diagnostic.config({
+        virtual_text = false,
+        signs        = true,
+        underline    = true,
+        update_in_insert = false,
+      })
 
       -- =============================================
       -- NixOS: manually prepend Nix-managed plugins to rtp
