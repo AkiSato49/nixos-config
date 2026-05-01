@@ -32,6 +32,15 @@ in {
     mise
     gnumake
     gcc
+
+    # New
+    carapace   # shell completions for 500+ commands
+    procs      # modern ps
+    duf        # pretty df
+    dust       # visual du
+    bottom     # better htop
+    tldr       # short man pages
+    zellij     # modern terminal multiplexer
   ];
 
   programs.fzf = {
@@ -98,6 +107,16 @@ in {
   };
 
   programs.zoxide = {
+    enable               = true;
+    enableZshIntegration = true;
+  };
+
+  programs.carapace = {
+    enable               = true;
+    enableZshIntegration = true;
+  };
+
+  programs.zellij = {
     enable               = true;
     enableZshIntegration = true;
   };
