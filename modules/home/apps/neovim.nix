@@ -186,12 +186,15 @@
           {
             "nvim-treesitter/nvim-treesitter",
             event = { "BufReadPost", "BufNewFile", "BufWritePre" },
-            opts = {
-              ensure_installed = {},
-              highlight = { enable = true },
-              indent    = { enable = true },
-              autotag   = { enable = true },
-            },
+            build = false,
+            opts = function(_, opts)
+              -- NixOS: parsers come from Nix; never auto-install
+              opts.ensure_installed = {}
+              opts.highlight = { enable = true }
+              opts.indent    = { enable = true }
+              opts.autotag   = { enable = true }
+              return opts
+            end,
           },
 
           -- ── Image rendering ───────────────────────────────────────────

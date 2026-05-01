@@ -21,6 +21,8 @@ let c = theme.colors; in {
 
       mouse-hide-while-typing = true;
 
+      link-url = true;
+
       background           = c.bg_hard;
       foreground           = c.fg;
       selection-background = c.bg1;
