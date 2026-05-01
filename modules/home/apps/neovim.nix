@@ -209,6 +209,30 @@
           -- ── Editor extras ────────────────────────────────────────
           { import = "lazyvim.plugins.extras.editor.aerial" },
           { import = "lazyvim.plugins.extras.editor.navic" },
+          { import = "lazyvim.plugins.extras.ui.indent-blankline" },
+          { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
+
+          -- ── Rainbow delimiters ─────────────────────────────────────
+          {
+            "HiPhish/rainbow-delimiters.nvim",
+            event = "BufReadPost",
+            config = function()
+              local rainbow = require("rainbow-delimiters")
+              require("rainbow-delimiters.setup").setup({
+                strategy = { [""] = rainbow.strategy["global"] },
+                query    = { [""] = "rainbow-delimiters" },
+                highlight = {
+                  "RainbowDelimiterYellow",
+                  "RainbowDelimiterBlue",
+                  "RainbowDelimiterOrange",
+                  "RainbowDelimiterGreen",
+                  "RainbowDelimiterViolet",
+                  "RainbowDelimiterCyan",
+                  "RainbowDelimiterRed",
+                },
+              })
+            end,
+          },
 
           -- ── Diffview ───────────────────────────────────────────
           {
