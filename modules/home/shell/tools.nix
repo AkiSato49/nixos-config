@@ -42,7 +42,6 @@ in {
     dust       # visual du
     bottom     # better htop (btm)
     tldr       # short man pages
-    zellij     # modern terminal multiplexer
   ];
 
   programs.fzf = {
@@ -124,8 +123,4 @@ in {
     enableZshIntegration = true;
   };
 
-  programs.zellij = {
-    enable               = true;
-    enableZshIntegration = true;
-  };
 }
