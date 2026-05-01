@@ -184,7 +184,9 @@ in {
       bind = $mod,       Space,  exec, wofi --show drun
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
-      bind = $mod,       V,      togglefloating
+      bind = $mod,       F2,     togglefloating
+      bind = $mod,       C,      exec, wtype -M ctrl -k c
+      bind = $mod,       V,      exec, wtype -M ctrl -k v
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit

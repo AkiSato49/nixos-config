@@ -36,6 +36,7 @@ in {
     # New
     mcfly      # AI-ranked history search
     carapace   # shell completions for 500+ commands
+    wtype      # simulate keypresses on Wayland
     procs      # modern ps
     duf        # pretty df
     dust       # visual du
