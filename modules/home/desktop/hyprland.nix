@@ -188,7 +188,11 @@ in {
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit
-      bind = $mod,       B,      exec, zen
+      # Launch zen at default (1x) scale so it isn't oversized on the
+      # non-HiDPI HDMI/DVI displays. MOZ_ENABLE_WAYLAND=1 already gives
+      # per-monitor scaling; GDK_SCALE=1.25 (set globally for casino) makes
+      # zen huge on the externals, so override it just for this launch.
+      bind = $mod,       B,      exec, env GDK_SCALE=1 GDK_DPI_SCALE=1 zen
       bind = $mod,       E,      exec, nautilus
 
       # Screenshots
