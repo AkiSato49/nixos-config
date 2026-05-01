@@ -192,7 +192,7 @@ in {
       # non-HiDPI HDMI/DVI displays. MOZ_ENABLE_WAYLAND=1 already gives
       # per-monitor scaling; GDK_SCALE=1.25 (set globally for casino) makes
       # zen huge on the externals, so override it just for this launch.
-      bind = $mod,       B,      exec, env GDK_SCALE=1 GDK_DPI_SCALE=1 zen
+      bind = $mod,       B,      exec, env GDK_SCALE=1 GDK_DPI_SCALE=1 zen-beta
       bind = $mod,       E,      exec, nautilus
 
       # Screenshots
