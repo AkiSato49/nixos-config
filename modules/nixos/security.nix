@@ -35,9 +35,19 @@
     });
   '';
   security.pam.services = {
-    login.fprintAuth     = true;
-    sudo.fprintAuth      = true;
-    hyprlock.fprintAuth  = true;
-    greetd.fprintAuth    = true;
+    login.fprintAuth    = true;
+    sudo.fprintAuth     = true;
+    greetd.fprintAuth   = true;
+
+    # Hyprlock: fingerprint with 5s timeout, then fall back to password
+    hyprlock.text = ''
+      auth sufficient pam_fprintd.so timeout=5
+      auth sufficient pam_unix.so likeauth try_first_pass
+      auth required  pam_deny.so
+
+      account required pam_unix.so
+      password sufficient pam_unix.so nullok yescrypt
+      session required pam_unix.so
+    '';
   };
 }
