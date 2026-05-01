@@ -19,7 +19,7 @@
       cat  = "bat";
       find = "fd";
       grep = "rg";
-      top  = "btop";
+      top  = "btm";
       du   = "ncdu";
 
       # Nix

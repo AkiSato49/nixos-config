@@ -38,7 +38,7 @@ in {
     procs      # modern ps
     duf        # pretty df
     dust       # visual du
-    bottom     # better htop
+    bottom     # better htop (btm)
     tldr       # short man pages
     zellij     # modern terminal multiplexer
   ];
