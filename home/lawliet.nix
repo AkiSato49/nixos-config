@@ -27,7 +27,7 @@
 
     packages = with pkgs; [
       # Browser (zen via flake — see hyprland.nix for the package ref)
-      inputs.zen-browser.packages.${pkgs.system}.default
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # Office
       libreoffice-qt6-fresh
