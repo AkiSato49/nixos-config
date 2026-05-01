@@ -298,6 +298,8 @@
             event = { "BufReadPost", "BufNewFile", "BufWritePre" },
             opts = function(_, opts)
               opts.ensure_installed = {}
+              -- NixOS: parsers live in ~/.config/nvim/parser/ (symlinked)
+              opts.install_dir = vim.fn.stdpath("config")
               return opts
             end,
           },
