@@ -38,5 +38,6 @@
     login.fprintAuth     = true;
     sudo.fprintAuth      = true;
     hyprlock.fprintAuth  = true;
+    greetd.fprintAuth    = true;
   };
 }
