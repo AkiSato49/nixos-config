@@ -208,6 +208,7 @@
 
           -- ── Editor extras ────────────────────────────────────────
           { import = "lazyvim.plugins.extras.editor.aerial" },
+          { import = "lazyvim.plugins.extras.editor.illuminate" },
           { import = "lazyvim.plugins.extras.editor.navic" },
           { import = "lazyvim.plugins.extras.ui.indent-blankline" },
           { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
