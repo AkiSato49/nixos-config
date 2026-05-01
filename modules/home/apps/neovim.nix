@@ -323,6 +323,9 @@
               opts.autotag   = { enable = true }
               return opts
             end,
+            config = function(_, opts)
+              require("nvim-treesitter.configs").setup(opts)
+            end,
           },
 
           -- ── Image rendering ───────────────────────────────────────────
