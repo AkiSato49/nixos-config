@@ -91,8 +91,8 @@ in {
       # Workspace → monitor assignments are computed dynamically by
       # assign-ws based on currently connected monitors (1=10, 2=5/5, 3≈3/3/3, …)
 
-      # HiDPI / scaling env (gdkScale only bumped on casino)
-      env = GDK_SCALE,${gdkScale}
+      # HiDPI / scaling env — rely on per-monitor Wayland scaling.
+      # GDK_SCALE removed: was making zen huge on non-HiDPI externals.
       env = GDK_DPI_SCALE,1
       env = QT_AUTO_SCREEN_SCALE_FACTOR,1
       env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
