@@ -27,6 +27,7 @@
       beam27Packages.elixir-ls
       kotlin-language-server
       ruby-lsp
+      rubyPackages.rubocop
       phpactor
       terraform-ls
       yaml-language-server
@@ -429,6 +430,14 @@
           -- ── NixOS: disable mason auto-install (servers in PATH via Nix)
           {
             "mason-org/mason-lspconfig.nvim",
+            opts = { ensure_installed = {} },
+          },
+          {
+            "mason-org/mason.nvim",
+            opts = { ensure_installed = {} },
+          },
+          {
+            "WhoIsSethDaniel/mason-tool-installer.nvim",
             opts = { ensure_installed = {} },
           },
 
