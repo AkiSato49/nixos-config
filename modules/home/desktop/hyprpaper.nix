@@ -7,14 +7,14 @@
       ipc = "on";
       splash = false;
       preload = [
-        "~/Pictures/Wallpapers/edp1.png"
-        "~/Pictures/Wallpapers/hdmi.png"
-        "~/Pictures/Wallpapers/dvi.png"
+        "~/Pictures/wallpapers/edp1.png"
+        "~/Pictures/wallpapers/hdmi.png"
+        "~/Pictures/wallpapers/dvi.png"
       ];
       wallpaper = [
-        "eDP-1,~/Pictures/Wallpapers/edp1.png"
-        "HDMI-A-1,~/Pictures/Wallpapers/hdmi.png"
-        "DVI-I-1,~/Pictures/Wallpapers/dvi.png"
+        "eDP-1,~/Pictures/wallpapers/edp1.png"
+        "HDMI-A-1,~/Pictures/wallpapers/hdmi.png"
+        "DVI-I-1,~/Pictures/wallpapers/dvi.png"
       ];
     };
   };

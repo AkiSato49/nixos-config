@@ -9,28 +9,62 @@ let
   gdkScale  = if big then "1.25" else "1";
   curSize   = if big then 28 else 24;
 
+  # Per-host monitor pinning. casino has a fixed three-display layout;
+  # mambo just auto-arranges whatever's plugged in via the catch-all rule.
+  monitorConfig =
+    if big then ''
+      # Layout (left -> right), all positions in *logical* pixels:
+      #   eDP-1    : 2880x1800 / scale 1.5 -> 1920x1200 logical, at 0,0
+      #   HDMI-A-1 : 2560x1440 / scale 1   -> 2560x1440 logical, at 1920,0
+      #   DVI-I-1  : 2560x1440 / scale 1, rotated 270 -> 1440x2560 logical, at 4480,0
+      monitor = eDP-1,    2880x1800@60, 0x0,    ${edpScale}
+      monitor = HDMI-A-1, 2560x1440@60, 1920x0, 1
+      monitor = DVI-I-1,  2560x1440@60, 4480x0, 1, transform, 3
+    '' else "";
+
   # Distribute 10 workspaces across whatever monitors are connected.
   # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
+  # Distribute TOTAL workspaces across all currently-connected monitors,
+  # left-to-right by physical X position. Splits as evenly as possible
+  # (extras go to the leftmost monitors, e.g. 10/3 -> 4,3,3). Each monitor
+  # gets its first workspace marked default so focusing the monitor lands
+  # on a sane workspace. Existing workspaces (with windows) are migrated
+  # via moveworkspacetomonitor so nothing gets orphaned when monitors come
+  # and go.
   assignWs = pkgs.writeShellScriptBin "assign-ws" ''
     set -e
-    mapfile -t mons < <(${pkgs.hyprland}/bin/hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name')
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+
+    # Monitors sorted left-to-right by x coordinate.
+    mapfile -t mons < <($HYPRCTL monitors -j | $JQ -r 'sort_by(.x) | .[].name')
     n=''${#mons[@]}
-    [ "$n" -eq 0 ] && exit 0
+    if [ "$n" -eq 0 ]; then
+      echo "assign-ws: no monitors connected" >&2
+      exit 0
+    fi
+
     total=10
     base=$(( total / n ))
     extra=$(( total - base * n ))
+
     ws=1
     for i in "''${!mons[@]}"; do
+      mon="''${mons[$i]}"
       count=$base
       [ "$i" -lt "$extra" ] && count=$(( count + 1 ))
-      for j in $(seq 1 $count); do
-        first=""
-        [ "$j" -eq 1 ] && first=",default:true"
-        ${pkgs.hyprland}/bin/hyprctl keyword workspace "$ws,monitor:''${mons[$i]}$first" >/dev/null
-        ${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor "$ws ''${mons[$i]}" >/dev/null 2>&1 || true
+      for j in $(seq 1 "$count"); do
+        default=""
+        [ "$j" -eq 1 ] && default=",default:true"
+        # Persist the binding (survives monitor hotplug).
+        $HYPRCTL keyword workspace "$ws,monitor:$mon$default" >/dev/null
+        # Migrate any existing windows on this workspace to the new monitor.
+        $HYPRCTL dispatch moveworkspacetomonitor "$ws $mon" >/dev/null 2>&1 || true
         ws=$(( ws + 1 ))
       done
     done
+
+    echo "assign-ws: $total workspaces across $n monitor(s): ''${mons[*]}" >&2
     ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true
   '';
 
@@ -48,9 +82,10 @@ in {
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
 
     extraConfig = ''
-      monitor = eDP-1,    2880x1800@60, 0x0,    ${edpScale}
-      monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
-      monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
+      ${monitorConfig}
+      # Catch-all: any monitor not pinned above gets auto-placed at preferred mode.
+      # On casino this only kicks in for unexpected outputs; on mambo it does
+      # all the work (every connected display is auto-arranged left-to-right).
       monitor = ,preferred,auto,1
 
       # Workspace → monitor assignments are computed dynamically by
