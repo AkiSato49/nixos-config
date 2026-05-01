@@ -34,6 +34,7 @@ in {
     gcc
 
     # New
+    mcfly      # AI-ranked history search
     carapace   # shell completions for 500+ commands
     procs      # modern ps
     duf        # pretty df
@@ -104,6 +105,12 @@ in {
         selectedLineBgColor = [ "${c.bg1}" ];
       };
     };
+  };
+
+  programs.mcfly = {
+    enable               = true;
+    enableZshIntegration = true;
+    keyScheme            = "vim";
   };
 
   programs.zoxide = {
