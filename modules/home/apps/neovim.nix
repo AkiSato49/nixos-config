@@ -125,7 +125,6 @@
       -- NixOS: manually prepend Nix-managed plugins to rtp
       -- (before lazy.nvim starts, so they're always visible)
       -- =============================================
-      vim.opt.rtp:prepend("${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}")
       vim.opt.rtp:prepend("${pkgs.vimPlugins.telescope-fzf-native-nvim}")
 
       -- =============================================
@@ -293,19 +292,12 @@
           -- Parsers come from Nix; plugin Lua files from lazy.nvim
           {
             "nvim-treesitter/nvim-treesitter",
-            -- NixOS: Lua files from plugin, parsers from withAllGrammars via rtp
-            dir   = "${pkgs.vimPlugins.nvim-treesitter}",
+            -- NixOS: parsers symlinked to ~/.config/nvim/parser/ via xdg.configFile
             build = false,
             event = { "BufReadPost", "BufNewFile", "BufWritePre" },
             opts = function(_, opts)
               opts.ensure_installed = {}
-              opts.highlight = { enable = true }
-              opts.indent    = { enable = true }
-              opts.autotag   = { enable = true }
               return opts
-            end,
-            config = function(_, opts)
-              require("nvim-treesitter.configs").setup(opts)
             end,
           },
 
@@ -484,8 +476,16 @@
         },
       })
 
-      -- Treesitter is configured by LazyVim's spec above.
-      -- The Nix store path is already prepended to rtp before lazy.setup().
     '';
   };
+
+  # NixOS: symlink all treesitter parsers into ~/.config/nvim/parser/
+  # so neovim finds them natively without rtp hacks
+  xdg.configFile."nvim/parser".source =
+    let
+      parsers = pkgs.symlinkJoin {
+        name = "treesitter-parsers";
+        paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+      };
+    in "${parsers}/parser";
 }
