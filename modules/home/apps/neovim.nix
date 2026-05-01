@@ -206,6 +206,55 @@
           { import = "lazyvim.plugins.extras.lang.cmake" },
           { import = "lazyvim.plugins.extras.lang.git" },
 
+          -- ── Editor extras ────────────────────────────────────────
+          { import = "lazyvim.plugins.extras.editor.aerial" },
+          { import = "lazyvim.plugins.extras.editor.navic" },
+
+          -- ── Diffview ───────────────────────────────────────────
+          {
+            "sindrets/diffview.nvim",
+            cmd  = { "DiffviewOpen", "DiffviewFileHistory" },
+            keys = {
+              { "<leader>gd", "<cmd>DiffviewOpen<cr>",        desc = "Diffview open" },
+              { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history" },
+              { "<leader>gH", "<cmd>DiffviewFileHistory<cr>",  desc = "Repo history" },
+              { "<leader>gc", "<cmd>DiffviewClose<cr>",       desc = "Diffview close" },
+            },
+          },
+
+          -- ── Project root detection ─────────────────────────────────
+          {
+            "ahmedkhalf/project.nvim",
+            opts = {},
+            config = function(_, opts)
+              require("project_nvim").setup(opts)
+              require("telescope").load_extension("projects")
+            end,
+            keys = {
+              { "<leader>fp", "<cmd>Telescope projects<cr>", desc = "Projects" },
+            },
+          },
+
+          -- ── Better TypeScript + JS (full workspace indexing) ────────────
+          {
+            "pmizio/typescript-tools.nvim",
+            dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+            ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+            opts = {
+              settings = {
+                expose_as_code_action         = "all",
+                tsserver_file_preferences     = {
+                  includeInlayParameterNameHints          = "all",
+                  includeInlayVariableTypeHints           = true,
+                  includeInlayFunctionLikeReturnTypeHints = true,
+                  includeCompletionsForModuleExports      = true,
+                  -- Full project-wide auto-imports
+                  autoImportFileExcludePatterns           = {},
+                },
+              },
+            },
+          },
+
           -- ── Theme: Gruvbox ────────────────────────────────────────────
           {
             "ellisonleao/gruvbox.nvim",
