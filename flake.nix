@@ -38,6 +38,21 @@
           rev   = "4c105f7cd7a5d8db077bdd26f1b25b3d993d9402";
           hash  = "sha256-xlNiNx9wsYdlJUTo30F6DWgKIG3Is8PzLYVRcW+Fg4w=";
         };
+        # git HEAD uses cava-0.10.7 (no -beta); nixpkgs postUnpack copies -beta
+        postUnpack = let
+          cavaSrc = prev.fetchFromGitHub {
+            owner = "LukashonakV";
+            repo  = "cava";
+            tag   = "0.10.7";
+            hash  = "sha256-zkyj1vBzHtoypX4Bxdh1Vmwh967DKKxN751v79hzmgQ=";
+          };
+        in ''
+          pushd "$sourceRoot"
+          cp -R --no-preserve=mode,ownership ${cavaSrc} subprojects/cava-0.10.7
+          patchShebangs .
+          popd
+        '';
+        doInstallCheck = false;
       });
     };
 
