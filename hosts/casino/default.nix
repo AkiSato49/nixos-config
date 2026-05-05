@@ -14,6 +14,7 @@
     ../../modules/nixos/greetd.nix
     ../../modules/nixos/tailscale.nix
     ../../modules/nixos/displaylink.nix
+    ../../modules/nixos/mongodb.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

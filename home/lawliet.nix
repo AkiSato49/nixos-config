@@ -16,6 +16,8 @@
     ../modules/home/apps/ghostty.nix
     ../modules/home/apps/neovim.nix
     ../modules/home/apps/media.nix
+    ../modules/home/apps/whisper.nix
+    ../modules/home/apps/dictation.nix
     ../modules/home/dev/default.nix
     ../modules/home/dev/pi.nix
   ];
