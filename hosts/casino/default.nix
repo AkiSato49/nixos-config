@@ -13,8 +13,9 @@
     ../../modules/nixos/security.nix
     ../../modules/nixos/greetd.nix
     ../../modules/nixos/tailscale.nix
-    ../../modules/nixos/displaylink.nix
+    # ../../modules/nixos/displaylink.nix  # monitors now on native TB5 DP/HDMI, no longer needed
     ../../modules/nixos/mongodb.nix
+    ../../modules/nixos/obs.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -59,7 +60,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
-    xdgOpenUsePortal = true;
+    xdgOpenUsePortal = false;
     config.common.default = "*";
   };
 

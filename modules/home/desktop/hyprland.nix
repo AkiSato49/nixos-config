@@ -15,11 +15,12 @@ let
     if big then ''
       # Layout (left -> right), all positions in *logical* pixels:
       #   eDP-1    : 2880x1800 / scale 1.5 -> 1920x1200 logical, at 0,0
-      #   HDMI-A-1 : 2560x1440 / scale 1   -> 2560x1440 logical, at 1920,0
-      #   DVI-I-1  : 2560x1440 / scale 1, rotated 270 -> 1440x2560 logical, at 4480,0
-      monitor = eDP-1,    2880x1800@60, 0x0,    ${edpScale}
-      monitor = HDMI-A-1, 2560x1440@60, 1920x0, 1
-      monitor = DVI-I-1,  2560x1440@60, 4480x0, 1, transform, 3
+      #   Lenovo Pro 27Q  : 2560x1440 / scale 1, landscape, at 1920,0
+      #   AOC Q27G2SG4B+  : 2560x1440 / scale 1, portrait (270°), at 4480,0
+      #   desc: matching avoids DP port number churn on replug
+      monitor = eDP-1, 2880x1800@60, 0x0, ${edpScale}
+      monitor = desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA, 2560x1440@60, 1920x0, 1
+      monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485,            2560x1440@60, 4480x0, 1, transform, 3
     '' else "";
 
   # Distribute 10 workspaces across whatever monitors are connected.
@@ -171,7 +172,6 @@ in {
       exec-once = wl-paste --type text  --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec-once = udiskie &
-      exec-once = kanshi &
       exec-once = ${assignWs}/bin/assign-ws
       exec-once = ${wsListener}/bin/ws-monitor-listener
       exec-once = /run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets
