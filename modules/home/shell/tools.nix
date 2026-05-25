@@ -32,6 +32,16 @@ in {
     mise
     gnumake
     gcc
+
+    # New
+    mcfly      # AI-ranked history search
+    carapace   # shell completions for 500+ commands
+    wtype      # simulate keypresses on Wayland
+    procs      # modern ps
+    duf        # pretty df
+    dust       # visual du
+    bottom     # better htop (btm)
+    tldr       # short man pages
   ];
 
   programs.fzf = {
@@ -97,8 +107,20 @@ in {
     };
   };
 
+  programs.mcfly = {
+    enable               = true;
+    enableZshIntegration = true;
+    keyScheme            = "vim";
+  };
+
   programs.zoxide = {
     enable               = true;
     enableZshIntegration = true;
   };
+
+  programs.carapace = {
+    enable               = true;
+    enableZshIntegration = true;
+  };
+
 }

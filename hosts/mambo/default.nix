@@ -14,6 +14,7 @@
     ../../modules/nixos/tailscale.nix
     ../../modules/nixos/nvidia.nix
     ../../modules/nixos/openclaw.nix
+    ../../modules/nixos/mongodb.nix
     # power.nix intentionally excluded (desktop, no battery)
   ];
 

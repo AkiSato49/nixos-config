@@ -1,6 +1,43 @@
-{ config, pkgs, ... }:
-
+{ config, pkgs, hostName ? "", ... }:
+let
+  # Casino's HiDPI laptop forces GDK_SCALE=1.25 globally, which makes
+  # zen huge on the non-HiDPI HDMI/DVI displays. Wayland-native zen
+  # already does per-monitor scaling, so override the env on launch.
+  zenExec = if hostName == "casino"
+            then "env GDK_SCALE=1 GDK_DPI_SCALE=1 zen-beta"
+            else "zen-beta";
+in
 {
+  xdg.desktopEntries.zen-beta = {
+    name        = "Zen Browser (Beta)";
+    genericName = "Web Browser";
+    icon        = "zen-browser";
+    exec        = "${zenExec} --name zen-beta %U";
+    terminal    = false;
+    categories  = [ "Network" "WebBrowser" ];
+    mimeType    = [
+      "text/html" "text/xml" "application/xhtml+xml"
+      "application/vnd.mozilla.xul+xml"
+      "x-scheme-handler/http" "x-scheme-handler/https"
+    ];
+    startupNotify = true;
+    settings = { StartupWMClass = "zen-beta"; };
+    actions = {
+      new-private-window = {
+        name = "New Private Window";
+        exec = "${zenExec} --private-window %U";
+      };
+      new-window = {
+        name = "New Window";
+        exec = "${zenExec} --new-window %U";
+      };
+      profile-manager-window = {
+        name = "Profile Manager";
+        exec = "${zenExec} --ProfileManager";
+      };
+    };
+  };
+
   programs.mpv = {
     enable = true;
     config = {
@@ -47,9 +84,9 @@
       "image/gif"         = [ "imv.desktop" ];
       "image/webp"        = [ "imv.desktop" ];
       "application/pdf"   = [ "org.pwmt.zathura.desktop" ];
-      "text/html"         = [ "zen.desktop" ];
-      "x-scheme-handler/http"  = [ "zen.desktop" ];
-      "x-scheme-handler/https" = [ "zen.desktop" ];
+      "text/html"         = [ "zen-beta.desktop" ];
+      "x-scheme-handler/http"  = [ "zen-beta.desktop" ];
+      "x-scheme-handler/https" = [ "zen-beta.desktop" ];
     };
   };
 }

@@ -21,6 +21,27 @@
       lua-language-server
       nil
       pyright
+      gopls
+      rust-analyzer
+      clang-tools
+      beam27Packages.elixir-ls
+      kotlin-language-server
+      ruby-lsp
+      rubyPackages.rubocop
+      phpactor
+      terraform-ls
+      yaml-language-server
+      taplo
+      dockerfile-language-server-nodejs
+      sqls
+      metals
+      zls
+      astro-language-server
+      helm-ls
+      marksman
+      cmake-language-server
+      bash-language-server
+      ocamlPackages.ocaml-lsp
 
       # Formatters
       prettierd
@@ -90,22 +111,28 @@
       opt.sidescrolloff  = 8
       opt.signcolumn     = "yes"
       opt.updatetime     = 50
-      opt.colorcolumn    = "100"
+      opt.colorcolumn    = ""
       opt.clipboard      = "unnamedplus"
       opt.splitbelow     = true
       opt.splitright     = true
-      opt.cursorline     = true
+      opt.cursorline     = false
       opt.pumheight      = 10
       opt.completeopt    = "menuone,noselect"
 
       vim.g.mapleader      = " "
       vim.g.maplocalleader = " "
 
+      vim.diagnostic.config({
+        virtual_text = false,
+        signs        = true,
+        underline    = true,
+        update_in_insert = false,
+      })
+
       -- =============================================
       -- NixOS: manually prepend Nix-managed plugins to rtp
       -- (before lazy.nvim starts, so they're always visible)
       -- =============================================
-      vim.opt.rtp:prepend("${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}")
       vim.opt.rtp:prepend("${pkgs.vimPlugins.telescope-fzf-native-nvim}")
 
       -- =============================================
@@ -165,6 +192,81 @@
           { import = "lazyvim.plugins.extras.lang.python" },
           { import = "lazyvim.plugins.extras.lang.svelte" },
           { import = "lazyvim.plugins.extras.lang.markdown" },
+          { import = "lazyvim.plugins.extras.lang.go" },
+          { import = "lazyvim.plugins.extras.lang.rust" },
+          { import = "lazyvim.plugins.extras.lang.clangd" },
+          { import = "lazyvim.plugins.extras.lang.elixir" },
+          { import = "lazyvim.plugins.extras.lang.kotlin" },
+          { import = "lazyvim.plugins.extras.lang.ruby" },
+          { import = "lazyvim.plugins.extras.lang.php" },
+          { import = "lazyvim.plugins.extras.lang.terraform" },
+          { import = "lazyvim.plugins.extras.lang.yaml" },
+          { import = "lazyvim.plugins.extras.lang.toml" },
+          { import = "lazyvim.plugins.extras.lang.docker" },
+          { import = "lazyvim.plugins.extras.lang.sql" },
+          { import = "lazyvim.plugins.extras.lang.scala" },
+          { import = "lazyvim.plugins.extras.lang.zig" },
+          { import = "lazyvim.plugins.extras.lang.astro" },
+          { import = "lazyvim.plugins.extras.lang.nix" },
+          { import = "lazyvim.plugins.extras.lang.helm" },
+          { import = "lazyvim.plugins.extras.lang.tailwind" },
+          { import = "lazyvim.plugins.extras.lang.cmake" },
+          { import = "lazyvim.plugins.extras.lang.git" },
+
+          -- ── Editor extras ────────────────────────────────────────
+          { import = "lazyvim.plugins.extras.editor.aerial" },
+          { import = "lazyvim.plugins.extras.editor.illuminate" },
+          { import = "lazyvim.plugins.extras.editor.navic" },
+          { import = "lazyvim.plugins.extras.ui.indent-blankline" },
+          { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
+
+          -- ── Rainbow delimiters ─────────────────────────────────────
+          {
+            "HiPhish/rainbow-delimiters.nvim",
+            event = "BufReadPost",
+            config = function()
+              local rainbow = require("rainbow-delimiters")
+              require("rainbow-delimiters.setup").setup({
+                strategy = { [""] = rainbow.strategy["global"] },
+                query    = { [""] = "rainbow-delimiters" },
+                highlight = {
+                  "RainbowDelimiterYellow",
+                  "RainbowDelimiterBlue",
+                  "RainbowDelimiterOrange",
+                  "RainbowDelimiterGreen",
+                  "RainbowDelimiterViolet",
+                  "RainbowDelimiterCyan",
+                  "RainbowDelimiterRed",
+                },
+              })
+            end,
+          },
+
+          -- ── Diffview ───────────────────────────────────────────
+          {
+            "sindrets/diffview.nvim",
+            cmd  = { "DiffviewOpen", "DiffviewFileHistory" },
+            keys = {
+              { "<leader>gd", "<cmd>DiffviewOpen<cr>",        desc = "Diffview open" },
+              { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history" },
+              { "<leader>gH", "<cmd>DiffviewFileHistory<cr>",  desc = "Repo history" },
+              { "<leader>gc", "<cmd>DiffviewClose<cr>",       desc = "Diffview close" },
+            },
+          },
+
+          -- ── Project root detection ─────────────────────────────────
+          {
+            "ahmedkhalf/project.nvim",
+            opts = {},
+            config = function(_, opts)
+              require("project_nvim").setup(opts)
+              require("telescope").load_extension("projects")
+            end,
+            keys = {
+              { "<leader>fp", "<cmd>Telescope projects<cr>", desc = "Projects" },
+            },
+          },
+
 
           -- ── Theme: Gruvbox ────────────────────────────────────────────
           {
@@ -176,6 +278,19 @@
               overrides = {
                 SignColumn   = { bg = "#1d2021" },
                 CursorLineNr = { fg = "#d79921", bold = true },
+                -- LSP semantic tokens — distinct from treesitter
+                ["@lsp.type.parameter"]  = { fg = "#d8a657", italic = true },
+                ["@lsp.type.property"]   = { fg = "#89b482" },
+                ["@lsp.type.class"]      = { fg = "#d3869b", bold = true },
+                ["@lsp.type.interface"]  = { fg = "#7daea3", bold = true },
+                ["@lsp.type.enum"]       = { fg = "#d3869b" },
+                ["@lsp.type.enumMember"] = { fg = "#d8a657" },
+                ["@lsp.type.namespace"]  = { fg = "#7daea3" },
+                ["@lsp.type.decorator"]  = { fg = "#a9b665", italic = true },
+                ["@lsp.type.variable"]   = { fg = "#d4be98" },
+                ["@lsp.mod.deprecated"]  = { strikethrough = true },
+                ["@lsp.mod.readonly"]    = { italic = true, bold = true },
+                ["@lsp.mod.static"]      = { italic = true },
               },
             },
           },
@@ -185,13 +300,15 @@
           -- Parsers come from Nix; plugin Lua files from lazy.nvim
           {
             "nvim-treesitter/nvim-treesitter",
+            -- NixOS: parsers symlinked to ~/.config/nvim/parser/ via xdg.configFile
+            build = false,
             event = { "BufReadPost", "BufNewFile", "BufWritePre" },
-            opts = {
-              ensure_installed = {},
-              highlight = { enable = true },
-              indent    = { enable = true },
-              autotag   = { enable = true },
-            },
+            opts = function(_, opts)
+              opts.ensure_installed = {}
+              -- NixOS: parsers live in ~/.config/nvim/parser/ (symlinked)
+              opts.install_dir = vim.fn.stdpath("config")
+              return opts
+            end,
           },
 
           -- ── Image rendering ───────────────────────────────────────────
@@ -321,7 +438,15 @@
 
           -- ── NixOS: disable mason auto-install (servers in PATH via Nix)
           {
-            "williamboman/mason-lspconfig.nvim",
+            "mason-org/mason-lspconfig.nvim",
+            opts = { ensure_installed = {} },
+          },
+          {
+            "mason-org/mason.nvim",
+            opts = { ensure_installed = {} },
+          },
+          {
+            "WhoIsSethDaniel/mason-tool-installer.nvim",
             opts = { ensure_installed = {} },
           },
 
@@ -358,6 +483,9 @@
         install = { colorscheme = { "gruvbox", "tokyonight", "habamax" } },
         checker = { enabled = true, notify = false },
 
+        -- ── NixOS: disable luarocks/hererocks (magick comes from Nix) ──
+        rocks = { enabled = false, hererocks = false },
+
         -- ── Critical for NixOS ────────────────────────────────────────
         -- lazy.nvim resets packpath + rtp by default, wiping Nix plugins
         performance = {
@@ -366,8 +494,16 @@
         },
       })
 
-      -- Treesitter is configured by LazyVim's spec above.
-      -- The Nix store path is already prepended to rtp before lazy.setup().
     '';
   };
+
+  # NixOS: symlink all treesitter parsers into ~/.config/nvim/parser/
+  # so neovim finds them natively without rtp hacks
+  xdg.configFile."nvim/parser".source =
+    let
+      parsers = pkgs.symlinkJoin {
+        name = "treesitter-parsers";
+        paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+      };
+    in "${parsers}/parser";
 }

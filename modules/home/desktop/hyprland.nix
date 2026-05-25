@@ -1,27 +1,105 @@
-{ config, pkgs, inputs, theme, ... }:
+{ config, pkgs, inputs, theme, hostName ? "", ... }:
 let
   c = theme.colors;
   g = theme.geometry;
+
+  # HiDPI laptop only
+  big       = hostName == "casino";
+  edpScale  = if big then "1.5" else "2";
+  gdkScale  = if big then "1.25" else "1";
+  curSize   = if big then 28 else 24;
+
+  # Per-host monitor pinning. casino has a fixed three-display layout;
+  # mambo just auto-arranges whatever's plugged in via the catch-all rule.
+  monitorConfig =
+    if big then ''
+      # Layout (left -> right), all positions in *logical* pixels:
+      #   eDP-1    : 2880x1800 / scale 1.5 -> 1920x1200 logical, at 0,0
+      #   Lenovo Pro 27Q  : 2560x1440 / scale 1, landscape, at 1920,0
+      #   AOC Q27G2SG4B+  : 2560x1440 / scale 1, portrait (270°), at 4480,0
+      #   desc: matching avoids DP port number churn on replug
+      monitor = eDP-1, 2880x1800@60, 0x0, ${edpScale}
+      monitor = desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA, 2560x1440@60, 1920x0, 1
+      monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485,            2560x1440@60, 4480x0, 1, transform, 3
+    '' else "";
+
+  # Distribute 10 workspaces across whatever monitors are connected.
+  # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
+  # Distribute TOTAL workspaces across all currently-connected monitors,
+  # left-to-right by physical X position. Splits as evenly as possible
+  # (extras go to the leftmost monitors, e.g. 10/3 -> 4,3,3). Each monitor
+  # gets its first workspace marked default so focusing the monitor lands
+  # on a sane workspace. Existing workspaces (with windows) are migrated
+  # via moveworkspacetomonitor so nothing gets orphaned when monitors come
+  # and go.
+  assignWs = pkgs.writeShellScriptBin "assign-ws" ''
+    set -e
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+
+    # Monitors sorted left-to-right by x coordinate.
+    mapfile -t mons < <($HYPRCTL monitors -j | $JQ -r 'sort_by(.x) | .[].name')
+    n=''${#mons[@]}
+    if [ "$n" -eq 0 ]; then
+      echo "assign-ws: no monitors connected" >&2
+      exit 0
+    fi
+
+    total=10
+    base=$(( total / n ))
+    extra=$(( total - base * n ))
+
+    ws=1
+    for i in "''${!mons[@]}"; do
+      mon="''${mons[$i]}"
+      count=$base
+      [ "$i" -lt "$extra" ] && count=$(( count + 1 ))
+      for j in $(seq 1 "$count"); do
+        default=""
+        [ "$j" -eq 1 ] && default=",default:true"
+        # Persist the binding (survives monitor hotplug).
+        $HYPRCTL keyword workspace "$ws,monitor:$mon$default" >/dev/null
+        # Migrate any existing windows on this workspace to the new monitor.
+        $HYPRCTL dispatch moveworkspacetomonitor "$ws $mon" >/dev/null 2>&1 || true
+        ws=$(( ws + 1 ))
+      done
+    done
+
+    echo "assign-ws: $total workspaces across $n monitor(s): ''${mons[*]}" >&2
+    ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true
+  '';
+
+  wsListener = pkgs.writeShellScriptBin "ws-monitor-listener" ''
+    SOCK="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+    ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
+      case "$line" in
+        monitoradded*|monitorremoved*) ${assignWs}/bin/assign-ws ;;
+      esac
+    done
+  '';
 in {
   wayland.windowManager.hyprland = {
     enable  = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
 
     extraConfig = ''
-      monitor = eDP-1,    2880x1800@60, 0x0,    2
-      monitor = HDMI-A-1, 2560x1440@60, 1440x0, 1
-      monitor = DVI-I-1,  2560x1440@60, 4000x0, 1, transform, 3
+      ${monitorConfig}
+      # Catch-all: any monitor not pinned above gets auto-placed at preferred mode.
+      # On casino this only kicks in for unexpected outputs; on mambo it does
+      # all the work (every connected display is auto-arranged left-to-right).
+      monitor = ,preferred,auto,1
 
-      # Workspace → monitor assignments (persists on reconnect)
-      workspace = 1, monitor:eDP-1,    default:true
-      workspace = 2, monitor:eDP-1
-      workspace = 3, monitor:eDP-1
-      workspace = 4, monitor:HDMI-A-1, default:true
-      workspace = 5, monitor:HDMI-A-1
-      workspace = 6, monitor:HDMI-A-1
-      workspace = 7, monitor:DVI-I-1,  default:true
-      workspace = 8, monitor:DVI-I-1
-      workspace = 9, monitor:DVI-I-1
+      # Workspace → monitor assignments are computed dynamically by
+      # assign-ws based on currently connected monitors (1=10, 2=5/5, 3≈3/3/3, …)
+
+      # HiDPI / scaling env — rely on per-monitor Wayland scaling.
+      # GDK_SCALE removed: was making zen huge on non-HiDPI externals.
+      env = GDK_DPI_SCALE,1
+      env = QT_AUTO_SCREEN_SCALE_FACTOR,1
+      env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
+      env = MOZ_ENABLE_WAYLAND,1
+      env = MOZ_USE_XINPUT2,1
+      env = XCURSOR_SIZE,${toString curSize}
 
       $mod = SUPER
 
@@ -94,7 +172,8 @@ in {
       exec-once = wl-paste --type text  --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec-once = udiskie &
-      exec-once = kanshi &
+      exec-once = ${assignWs}/bin/assign-ws
+      exec-once = ${wsListener}/bin/ws-monitor-listener
       exec-once = /run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets
       exec-once = 1password --silent
       exec-once = ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent
@@ -105,11 +184,17 @@ in {
       bind = $mod,       Space,  exec, wofi --show drun
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
-      bind = $mod,       V,      togglefloating
+      bind = $mod,       F2,     togglefloating
+      bind = $mod,       C,      exec, wtype -M ctrl -k c
+      bind = $mod,       V,      exec, wtype -M ctrl -k v
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit
-      bind = $mod,       B,      exec, zen
+      # Launch zen at default (1x) scale so it isn't oversized on the
+      # non-HiDPI HDMI/DVI displays. MOZ_ENABLE_WAYLAND=1 already gives
+      # per-monitor scaling; GDK_SCALE=1.25 (set globally for casino) makes
+      # zen huge on the externals, so override it just for this launch.
+      bind = $mod,       B,      exec, env GDK_SCALE=1 GDK_DPI_SCALE=1 zen-beta
       bind = $mod,       E,      exec, nautilus
 
       # Screenshots
@@ -150,6 +235,7 @@ in {
       bind = $mod, 7, workspace, 7
       bind = $mod, 8, workspace, 8
       bind = $mod, 9, workspace, 9
+      bind = $mod, 0, workspace, 10
 
       # Move to workspace
       bind = $mod SHIFT, 1, movetoworkspace, 1
@@ -161,6 +247,7 @@ in {
       bind = $mod SHIFT, 7, movetoworkspace, 7
       bind = $mod SHIFT, 8, movetoworkspace, 8
       bind = $mod SHIFT, 9, movetoworkspace, 9
+      bind = $mod SHIFT, 0, movetoworkspace, 10
 
       # Scroll workspaces
       bind = $mod, mouse_down, workspace, e+1

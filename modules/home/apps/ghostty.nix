@@ -21,6 +21,8 @@ let c = theme.colors; in {
 
       mouse-hide-while-typing = true;
 
+      link-url = true;
+
       background           = c.bg_hard;
       foreground           = c.fg;
       selection-background = c.bg1;
@@ -54,6 +56,8 @@ let c = theme.colors; in {
       keybind = [
         "ctrl+shift+v=paste_from_clipboard"
         "ctrl+shift+c=copy_to_clipboard"
+        "super+c=copy_to_clipboard"
+        "super+v=paste_from_clipboard"
         "ctrl+equal=increase_font_size:1"
         "ctrl+minus=decrease_font_size:1"
         "ctrl+zero=reset_font_size"

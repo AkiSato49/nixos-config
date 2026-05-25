@@ -16,6 +16,8 @@
     ../modules/home/apps/ghostty.nix
     ../modules/home/apps/neovim.nix
     ../modules/home/apps/media.nix
+    ../modules/home/apps/whisper.nix
+    ../modules/home/apps/dictation.nix
     ../modules/home/dev/default.nix
     ../modules/home/dev/pi.nix
   ];
@@ -27,7 +29,7 @@
 
     packages = with pkgs; [
       # Browser (zen via flake — see hyprland.nix for the package ref)
-      inputs.zen-browser.packages.${pkgs.system}.default
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # Office
       libreoffice-qt6-fresh

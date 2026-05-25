@@ -9,6 +9,9 @@
     autocd = true;
 
     shellAliases = {
+      # Navigation
+      cd = "z";
+
       # Better defaults
       ls   = "eza --icons";
       ll   = "eza -la --icons --git";
@@ -16,7 +19,7 @@
       cat  = "bat";
       find = "fd";
       grep = "rg";
-      top  = "btop";
+      top  = "btm";
       du   = "ncdu";
 
       # Nix

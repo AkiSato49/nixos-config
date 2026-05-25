@@ -7,14 +7,14 @@
       ipc = "on";
       splash = false;
       preload = [
-        "~/Pictures/Wallpapers/edp1.png"
-        "~/Pictures/Wallpapers/hdmi.png"
-        "~/Pictures/Wallpapers/dvi.png"
+        "~/Pictures/wallpapers/edp1.png"
+        "~/Pictures/wallpapers/dp9.png"
+        "~/Pictures/wallpapers/dp10.png"
       ];
       wallpaper = [
-        "eDP-1,~/Pictures/Wallpapers/edp1.png"
-        "HDMI-A-1,~/Pictures/Wallpapers/hdmi.png"
-        "DVI-I-1,~/Pictures/Wallpapers/dvi.png"
+        "eDP-1,~/Pictures/wallpapers/edp1.png"
+        "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,~/Pictures/wallpapers/dp9.png"
+        "desc:AOC Q27G2SG4B+ OGJMBHA018485,~/Pictures/wallpapers/dp10.png"
       ];
     };
   };
@@ -31,21 +31,19 @@
       fi
       hyprctl hyprpaper unload all 2>/dev/null
       hyprctl hyprpaper preload "$WP_DIR/edp1.png"
-      hyprctl hyprpaper preload "$WP_DIR/hdmi.png"
-      hyprctl hyprpaper preload "$WP_DIR/dvi.png"
+      hyprctl hyprpaper preload "$WP_DIR/dp9.png"
+      hyprctl hyprpaper preload "$WP_DIR/dp10.png"
       hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
-      hyprctl hyprpaper wallpaper "HDMI-A-1,$WP_DIR/hdmi.png"
-      hyprctl hyprpaper wallpaper "DVI-I-1,$WP_DIR/dvi.png"
+      hyprctl hyprpaper wallpaper "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,$WP_DIR/dp9.png"
+      hyprctl hyprpaper wallpaper "desc:AOC Q27G2SG4B+ OGJMBHA018485,$WP_DIR/dp10.png"
     '')
     (pkgs.writeShellScriptBin "set-wallpaper" ''
-      # Panoramic wallpaper across eDP-1 | HDMI-A-1 | DVI-I-1 (portrait)
-      # Each monitor gets a full, beautiful section scaled to fill its aspect ratio.
-      # Overlap is intentional — continuity over strict tiling.
+      # Wallpaper per monitor — matched by description, not DP port number.
       #
       # Monitor physical resolutions:
-      #   eDP-1:    2880x1800  (scale 2, logical 1440x900,  aspect 16:10)
-      #   HDMI-A-1: 2560x1440  (scale 1, logical 2560x1440, aspect 16:9)
-      #   DVI-I-1:  2560x1440  (scale 1, rotated 270°, portrait 1440x2560 logical)
+      #   eDP-1       : 2880x1800  (scale 1.5, logical 1920x1200, aspect 16:10)
+      #   Lenovo 27Q  : 2560x1440  (scale 1, logical 2560x1440, aspect 16:9)
+      #   AOC Q27G2   : 2560x1440  (scale 1, rotated 270°, portrait 1440x2560 logical)
 
       SRC="$1"
       if [ -z "$SRC" ] || [ ! -f "$SRC" ]; then
@@ -57,7 +55,7 @@
       mkdir -p "$WP_DIR"
       CONVERT="${pkgs.imagemagick}/bin/convert"
 
-      # --- eDP-1 (left monitor): 2880x1800, 16:10 ---
+      # --- eDP-1 (left, laptop): 2880x1800, 16:10 ---
       echo "Generating eDP-1 (laptop, left)..."
       $CONVERT "$SRC" \
         -resize "2880x1800^" \
@@ -65,35 +63,33 @@
         -extent "2880x1800" \
         "$WP_DIR/edp1.png"
 
-      # --- HDMI-A-1 (centre monitor): 2560x1440, 16:9 ---
-      echo "Generating HDMI-A-1 (centre, Lenovo)..."
+      # --- Lenovo Pro 27Q (centre): 2560x1440, 16:9 ---
+      echo "Generating Lenovo 27Q (centre)..."
       $CONVERT "$SRC" \
         -resize "2560x1440^" \
         -gravity Center \
         -extent "2560x1440" \
-        "$WP_DIR/hdmi.png"
+        "$WP_DIR/dp9.png"
 
-      # --- DVI-I-1 (right monitor, portrait): logical 1440x2560 ---
-      echo "Generating DVI-I-1 (right, portrait)..."
+      # --- AOC Q27G2 (right, portrait): 1440x2560 ---
+      echo "Generating AOC Q27G2 (right, portrait)..."
       $CONVERT "$SRC" \
         -resize "1440x2560^" \
         -gravity East \
         -extent "1440x2560" \
-        "$WP_DIR/dvi.png"
+        "$WP_DIR/dp10.png"
 
       # Apply via hyprpaper IPC
       echo "Applying wallpapers..."
       hyprctl hyprpaper unload all 2>/dev/null
       hyprctl hyprpaper preload "$WP_DIR/edp1.png"
-      hyprctl hyprpaper preload "$WP_DIR/hdmi.png"
-      hyprctl hyprpaper preload "$WP_DIR/dvi.png"
+      hyprctl hyprpaper preload "$WP_DIR/dp9.png"
+      hyprctl hyprpaper preload "$WP_DIR/dp10.png"
       hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
-      hyprctl hyprpaper wallpaper "HDMI-A-1,$WP_DIR/hdmi.png"
-      hyprctl hyprpaper wallpaper "DVI-I-1,$WP_DIR/dvi.png"
+      hyprctl hyprpaper wallpaper "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,$WP_DIR/dp9.png"
+      hyprctl hyprpaper wallpaper "desc:AOC Q27G2SG4B+ OGJMBHA018485,$WP_DIR/dp10.png"
 
-      echo "Wallpapers saved to $WP_DIR — will persist across rebuilds."
-
-      echo "Done!"
+      echo "Done! Wallpapers saved to $WP_DIR."
     '')
   ];
 }

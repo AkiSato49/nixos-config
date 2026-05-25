@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --greeting '${theme.greetd.greeting}' --time-format '${theme.greetd.time_fmt}' --theme '${theme.greetd.theme_str}' --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --greeting '${theme.greetd.greeting}' --time-format '${theme.greetd.time_fmt}' --theme '${theme.greetd.theme_str}' --cmd start-hyprland";
         user    = "greeter";
       };
     };
