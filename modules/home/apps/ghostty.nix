@@ -7,7 +7,7 @@ let c = theme.colors; in {
       font-family  = theme.font.mono;
       font-size    = theme.font.size_mono;
 
-      background-opacity = 0.95;
+      background-opacity = 1.0;
       window-decoration  = false;
       window-padding-x   = 14;
       window-padding-y   = 14;

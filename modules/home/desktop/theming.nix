@@ -20,14 +20,14 @@
       name = theme.gtk.font_name;
       size = theme.gtk.font_size;
     };
-    gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = 0;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = 0;
   };
 
   qt = {
     enable = true;
     platformTheme.name = "gtk";
-    style.name = "adwaita-dark";
+    style.name = "adwaita";
   };
 
   home.sessionVariables = {
