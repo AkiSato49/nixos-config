@@ -77,6 +77,29 @@ let
       esac
     done
   '';
+
+  smartClipboard = pkgs.writeShellScriptBin "smart-clipboard" ''
+    set -e
+    action="$1" # "copy" or "paste"
+    HYPRCTL="${pkgs.hyprland}/bin/hyprctl"
+    JQ="${pkgs.jq}/bin/jq"
+
+    class=$($HYPRCTL activewindow -j | $JQ -r '.class | ascii_downcase')
+
+    if [ "$class" = "alacritty" ]; then
+      if [ "$action" = "copy" ]; then
+        $HYPRCTL dispatch sendshortcut CTRL_SHIFT, c, activewindow
+      else
+        $HYPRCTL dispatch sendshortcut CTRL_SHIFT, v, activewindow
+      fi
+    else
+      if [ "$action" = "copy" ]; then
+        $HYPRCTL dispatch sendshortcut CTRL, c, activewindow
+      else
+        $HYPRCTL dispatch sendshortcut CTRL, v, activewindow
+      fi
+    fi
+  '';
 in {
   wayland.windowManager.hyprland = {
     enable  = true;
@@ -186,8 +209,8 @@ in {
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
       bind = $mod,       F2,     togglefloating
-      bind = $mod,       C,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL_SHIFT, c, activewindow; else ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL, c, activewindow; fi'
-      bind = $mod,       V,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL_SHIFT, v, activewindow; else ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL, v, activewindow; fi'
+      bind = $mod,       C,      exec, ${smartClipboard}/bin/smart-clipboard copy
+      bind = $mod,       V,      exec, ${smartClipboard}/bin/smart-clipboard paste
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit
