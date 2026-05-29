@@ -125,6 +125,12 @@ in {
         hide_cursor = true;
       };
 
+      auth = {
+        fingerprint = {
+          enabled = true;
+        };
+      };
+
       background    = [ bgSettings ];
       "input-field" = [ inputField ];
       label         = if minimal then labelsMinimal else labelsStandard;
