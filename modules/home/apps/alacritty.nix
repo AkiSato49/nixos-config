@@ -34,6 +34,7 @@ let c = theme.colors; in {
           cursor = c.yellow;
         };
         selection = {
+          save_to_clipboard = false;
           text       = c.fg;
           background = c.bg1;
         };
@@ -74,6 +75,8 @@ let c = theme.colors; in {
       keyboard.bindings = [
         { key = "V";    mods = "Control|Shift"; action = "Paste"; }
         { key = "C";    mods = "Control|Shift"; action = "Copy"; }
+        { key = "V";    mods = "Super";         action = "Paste"; }
+        { key = "C";    mods = "Super";         action = "Copy"; }
         { key = "Plus"; mods = "Control";       action = "IncreaseFontSize"; }
         { key = "Minus"; mods = "Control";      action = "DecreaseFontSize"; }
         { key = "Key0"; mods = "Control";       action = "ResetFontSize"; }
