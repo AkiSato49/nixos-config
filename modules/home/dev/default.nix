@@ -31,6 +31,14 @@
     pkg-config
   ];
 
+  home.sessionVariables = {
+    GOPATH = "$HOME/.local/share/go";
+  };
+
+  home.sessionPath = [
+    "$HOME/.local/share/go/bin"
+  ];
+
   # mise — runtime version manager (~nvm + pyenv + rbenv in one)
   home.file.".config/mise/config.toml".text = ''
     [settings]

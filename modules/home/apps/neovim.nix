@@ -436,18 +436,38 @@
             build = false,
           },
 
+          -- ── NixOS: mark all servers mason=false so LazyVim skips mason install
+          {
+            "neovim/nvim-lspconfig",
+            opts = function(_, opts)
+              opts.servers = opts.servers or {}
+              for name, _ in pairs(opts.servers) do
+                opts.servers[name] = opts.servers[name] or {}
+                opts.servers[name].mason = false
+              end
+              return opts
+            end,
+          },
+
           -- ── NixOS: disable mason auto-install (servers in PATH via Nix)
+          -- fn opts wins over lang-extra merges
           {
             "mason-org/mason-lspconfig.nvim",
-            opts = { ensure_installed = {} },
+            opts = function()
+              return { ensure_installed = {}, automatic_installation = false }
+            end,
           },
           {
             "mason-org/mason.nvim",
-            opts = { ensure_installed = {} },
+            opts = function()
+              return { ensure_installed = {} }
+            end,
           },
           {
             "WhoIsSethDaniel/mason-tool-installer.nvim",
-            opts = { ensure_installed = {} },
+            opts = function()
+              return { ensure_installed = {} }
+            end,
           },
 
           -- ── Formatters (using Nix-provided binaries) ──────────────────

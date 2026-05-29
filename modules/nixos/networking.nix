@@ -18,6 +18,14 @@
     };
   };
 
+  # NixOS ignores the [Install] section of units added via systemd.packages,
+  # so ModemManager never gets a multi-user.target.wants symlink automatically.
+  # Add wantedBy explicitly so it starts at boot before NetworkManager sees modems.
+  systemd.services.ModemManager = {
+    wantedBy = [ "multi-user.target" ];
+    before   = [ "NetworkManager.service" ];
+  };
+
   services.openssh = {
     enable = true;
     settings = {

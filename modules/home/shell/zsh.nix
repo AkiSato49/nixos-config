@@ -23,9 +23,9 @@
       du   = "ncdu";
 
       # Nix
-      rebuild  = "sudo nixos-rebuild switch --flake ~/nixos-config#NixOS";
+      rebuild  = "sudo nixos-rebuild switch --flake /etc/nixos#$(hostname)";
       test-rebuild = "sudo nixos-rebuild test --flake ~/nixos-config#NixOS";
-      update   = "nix flake update ~/nixos-config && rebuild";
+      update   = "nix flake update /etc/nixos && rebuild";
       cleanup  = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
       nix-shell = "nix-shell --run zsh";
 

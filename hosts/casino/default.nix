@@ -3,18 +3,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/boot.nix
-    ../../modules/nixos/networking.nix
-    ../../modules/nixos/audio.nix
-    ../../modules/nixos/bluetooth.nix
-    ../../modules/nixos/fonts.nix
-    ../../modules/nixos/flatpak.nix
+    ../../modules/nixos/profiles/desktop.nix
     ../../modules/nixos/power.nix
-    ../../modules/nixos/security.nix
-    ../../modules/nixos/greetd.nix
-    ../../modules/nixos/tailscale.nix
-    # ../../modules/nixos/displaylink.nix  # monitors now on native TB5 DP/HDMI, no longer needed
-    ../../modules/nixos/mongodb.nix
     ../../modules/nixos/obs.nix
   ];
 
@@ -43,6 +33,7 @@
   };
 
   networking.hostName = "casino";
+  taildrive.shareName = "casinoh";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_AU.UTF-8";
 

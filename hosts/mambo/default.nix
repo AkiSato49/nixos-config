@@ -3,19 +3,10 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/boot.nix
-    ../../modules/nixos/networking.nix
-    ../../modules/nixos/audio.nix
-    ../../modules/nixos/bluetooth.nix
-    ../../modules/nixos/fonts.nix
-    ../../modules/nixos/flatpak.nix
-    ../../modules/nixos/security.nix
-    ../../modules/nixos/greetd.nix
-    ../../modules/nixos/tailscale.nix
+    ../../modules/nixos/profiles/desktop.nix
     ../../modules/nixos/nvidia.nix
     ../../modules/nixos/openclaw.nix
-    ../../modules/nixos/mongodb.nix
-    # power.nix intentionally excluded (desktop, no battery)
+    ../../modules/nixos/home-utility-fetchers.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -43,6 +34,7 @@
   };
 
   networking.hostName = "mambo";
+  taildrive.shareName = "mamboh";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_AU.UTF-8";
 
