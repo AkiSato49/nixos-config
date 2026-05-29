@@ -71,11 +71,5 @@
 
   security.polkit.enable = true;
 
-  services.openssh = {
-    enable = true;
-    settings.PasswordAuthentication = false;
-    settings.PermitRootLogin = "no";
-  };
-
   system.stateVersion = "26.05";
 }
