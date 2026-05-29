@@ -100,6 +100,7 @@ in {
       env = MOZ_ENABLE_WAYLAND,1
       env = MOZ_USE_XINPUT2,1
       env = XCURSOR_SIZE,${toString curSize}
+      env = TERMINAL,alacritty
 
       $mod = SUPER
 
@@ -179,14 +180,14 @@ in {
       exec-once = ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent
 
       # Core
-      bind = $mod,       Return, exec, ghostty
+      bind = $mod,       Return, exec, alacritty
       bind = $mod,       Escape, exec, GTK_THEME=Adwaita:dark wlogout -b 3 -c 0 -r 0 -m 0
       bind = $mod,       Space,  exec, wofi --show drun
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
       bind = $mod,       F2,     togglefloating
-      bind = $mod,       C,      exec, wtype -M ctrl -k c
-      bind = $mod,       V,      exec, wtype -M ctrl -k v
+      bind = $mod,       C,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.wtype}/bin/wtype -M ctrl -M shift -k c; else ${pkgs.wtype}/bin/wtype -M ctrl -k c; fi'
+      bind = $mod,       V,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.wtype}/bin/wtype -M ctrl -M shift -k v; else ${pkgs.wtype}/bin/wtype -M ctrl -k v; fi'
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit
