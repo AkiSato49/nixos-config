@@ -34,7 +34,6 @@ let c = theme.colors; in {
           cursor = c.yellow;
         };
         selection = {
-          save_to_clipboard = false;
           text       = c.fg;
           background = c.bg1;
         };
@@ -71,6 +70,10 @@ let c = theme.colors; in {
       };
 
       mouse.hide_when_typing = true;
+
+      selection = {
+        save_to_clipboard = false;
+      };
 
       keyboard.bindings = [
         { key = "V";    mods = "Control|Shift"; action = "Paste"; }
