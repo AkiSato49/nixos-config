@@ -186,8 +186,8 @@ in {
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
       bind = $mod,       F2,     togglefloating
-      bind = $mod,       C,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.wtype}/bin/wtype -M ctrl -M shift -k c; else ${pkgs.wtype}/bin/wtype -M ctrl -k c; fi'
-      bind = $mod,       V,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.wtype}/bin/wtype -M ctrl -M shift -k v; else ${pkgs.wtype}/bin/wtype -M ctrl -k v; fi'
+      bind = $mod,       C,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL_SHIFT, c, activewindow; else ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL, c, activewindow; fi'
+      bind = $mod,       V,      exec, sh -c 'if [ "$(${pkgs.hyprland}/bin/hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r ".class | ascii_downcase")" = "alacritty" ]; then ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL_SHIFT, v, activewindow; else ${pkgs.hyprland}/bin/hyprctl dispatch sendshortcut CTRL, v, activewindow; fi'
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, hyprlock
       bind = $mod,       T,      layoutmsg, togglesplit
