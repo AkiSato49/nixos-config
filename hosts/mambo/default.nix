@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./immich-storage.nix
     ./hardware-configuration.nix
     ../../modules/nixos/boot.nix
     ../../modules/nixos/networking.nix
