@@ -12,7 +12,7 @@ in
     name        = "Zen Browser (Beta)";
     genericName = "Web Browser";
     icon        = "zen-browser";
-    exec        = "${zenExec} --name zen-beta --remote-debugging-port=9222 --remote-allow-hosts=localhost %U";
+    exec        = "${zenExec} --name zen-beta %U";
     terminal    = false;
     categories  = [ "Network" "WebBrowser" ];
     mimeType    = [
@@ -87,6 +87,7 @@ in
       "text/html"         = [ "zen-beta.desktop" ];
       "x-scheme-handler/http"  = [ "zen-beta.desktop" ];
       "x-scheme-handler/https" = [ "zen-beta.desktop" ];
+      "x-scheme-handler/figma" = [ "figma-linux.desktop" ];
     };
   };
 }

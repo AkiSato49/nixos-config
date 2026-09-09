@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  hardware.enableAllFirmware = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -8,33 +10,48 @@
     pulse.enable = true;
     jack.enable = true;
 
-    # Echo cancellation: creates a virtual mic with AEC + noise suppression + AGC.
-    # Use "Echo-Cancel Source" in pavucontrol / wpctl as the input for dictation.
-    extraConfig.pipewire."99-echo-cancel" = {
-      "context.modules" = [
-        {
-          name = "libpipewire-module-echo-cancel";
-          args = {
-            "library.name"  = "aec/libspa-aec-webrtc";
-            "node.latency"  = "1024/16000";
-            "source.props" = {
-              "node.name" = "echo-cancel-source";
-              "node.description" = "Echo-Cancel Source";
+    wireplumber = {
+      enable = true;
+      extraConfig."51-disable-hdmi" = {
+        "monitor.alsa.rules" = [
+          {
+            matches = [
+              { "node.name" = "~alsa_output.pci-.*HDMI.*"; }
+            ];
+            actions = {
+              "update-props" = {
+                "node.disabled" = true;
+              };
             };
-            "sink.props" = {
-              "node.name" = "echo-cancel-sink";
-              "node.description" = "Echo-Cancel Sink";
+          }
+          {
+            matches = [
+              { "device.name" = "~alsa_card.pci-.*"; }
+            ];
+            actions = {
+              "update-props" = {
+                "api.alsa.use-acp" = true;
+                "api.alsa.use-ucm" = true;
+              };
             };
-            "monitor.mode" = false;
-            "aec.args" = {
-              "webrtc.gain_control"     = true;
-              "webrtc.noise_suppression" = true;
-              "webrtc.voice_detection"  = true;
-              "webrtc.high_pass_filter" = true;
+          }
+        ];
+      };
+      extraConfig."52-force-hifi-profile" = {
+        "monitor.alsa.rules" = [
+          {
+            matches = [
+              { "device.name" = "~alsa_card.pci-0000_00_1f.3-platform-skl_hda_dsp_generic"; }
+            ];
+            actions = {
+              "update-props" = {
+                "api.acp.auto-profile" = true;
+                "api.acp.auto-port" = true;
+              };
             };
-          };
-        }
-      ];
+          }
+        ];
+      };
     };
   };
 

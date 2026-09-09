@@ -7,7 +7,6 @@
     ./hardware-configuration.nix
     ../../modules/nixos/profiles/desktop.nix
     ../../modules/nixos/nvidia.nix
-    ../../modules/nixos/openclaw.nix
     ../../modules/nixos/home-utility-fetchers.nix
   ];
 
@@ -43,7 +42,7 @@
   users.users.lawliet = {
     isNormalUser = true;
     description = "lawliet";
-    extraGroups = [ "networkmanager" "wheel" "docker" "audio" "video" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIrozfwAKPWxBjT3E4De1uzg9umySfKuC5yRb1X/psb6"
@@ -51,12 +50,18 @@
   };
 
   programs.zsh.enable = true;
+
+  # Low-latency desktop streaming host; pair from Moonlight on casino.
+  services.sunshine = {
+    enable = true;
+    openFirewall = true;
+  };
   programs.dconf.enable = true;
 
-  # XDG portals for Hyprland
+  # GTK portal supplements Hyprland portal registered by programs.hyprland.
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     xdgOpenUsePortal = true;
     config.common.default = "*";
   };
@@ -69,7 +74,7 @@
     playerctl
     gnome-keyring
     # Desktop-specific — no brightnessctl needed
-  ] ++ [ pkgs.lxqt.lxqt-policykit ];
+  ];
 
   security.polkit.enable = true;
 

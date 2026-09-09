@@ -36,13 +36,13 @@ let
           --match-color="${h c.yellow}ff" \
           --border-color="${h c.yellow}ff" \
           --border-width=1 \
-          --border-radius=0 \
+          --border-radius=${toString g.rounding} \
           --lines=6 \
           --width=14 \
           --no-sort)
 
     case "$choice" in
-      LOCK)      hyprlock ;;
+      LOCK)      gtklock ;;
       SUSPEND)   systemctl suspend ;;
       HIBERNATE) systemctl hibernate ;;
       LOGOUT)    hyprctl dispatch exit ;;

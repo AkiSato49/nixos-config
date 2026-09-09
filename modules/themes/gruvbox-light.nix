@@ -31,24 +31,26 @@
   };
 
   borders = {
-    active   = "rgba(b57614ff)";   # solid yellow-ochre
+    active   = "rgba(b57614ff) rgba(af3a03ff) 45deg"; # ochre → orange
     inactive = "rgba(d5c4a1ff)";
   };
 
   geometry = {
-    rounding    = 0;
-    blur        = false;
-    blur_size   = 0;
-    blur_passes = 0;
-    shadows     = false;
-    gaps_in     = 4;
-    gaps_out    = 8;
-    border_size = 1;
+    rounding        = 6;
+    blur            = false;
+    blur_size       = 0;
+    blur_passes     = 0;
+    shadows         = false;
+    gaps_in         = 6;
+    gaps_out        = 10;
+    border_size     = 1;
+    active_opacity  = 1.0;
+    inactive_opacity = 0.97;
   };
 
   font = {
-    ui        = "JetBrainsMono Nerd Font";
-    mono      = "JetBrainsMono Nerd Font";
+    ui        = "Atkinson Hyperlegible Next";
+    mono      = "Atkinson Hyperlegible Mono";
     size_ui   = 12;
     size_mono = 13.5;
   };
@@ -58,7 +60,7 @@
     icons       = "Papirus-Light";
     cursor      = "Bibata-Modern-Classic";
     cursor_size = 24;
-    font_name   = "JetBrainsMono Nerd Font";
+    font_name   = "Atkinson Hyperlegible Next";
     font_size   = 11;
   };
 

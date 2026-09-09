@@ -7,14 +7,14 @@
       ipc = "on";
       splash = false;
       preload = [
-        "~/Pictures/wallpapers/edp1.png"
-        "~/Pictures/wallpapers/dp9.png"
-        "~/Pictures/wallpapers/dp10.png"
+        "${config.home.homeDirectory}/Pictures/wallpapers/edp1.png"
+        "${config.home.homeDirectory}/Pictures/wallpapers/dp9.png"
+        "${config.home.homeDirectory}/Pictures/wallpapers/dp10.png"
       ];
       wallpaper = [
-        "eDP-1,~/Pictures/wallpapers/edp1.png"
-        "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,~/Pictures/wallpapers/dp9.png"
-        "desc:AOC Q27G2SG4B+ OGJMBHA018485,~/Pictures/wallpapers/dp10.png"
+        "eDP-1,${config.home.homeDirectory}/Pictures/wallpapers/edp1.png"
+        "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,${config.home.homeDirectory}/Pictures/wallpapers/dp9.png"
+        "desc:AOC Q27G2SG4B+ OGJMBHA018485,${config.home.homeDirectory}/Pictures/wallpapers/dp10.png"
       ];
     };
   };
@@ -29,13 +29,14 @@
         echo "No wallpapers found at $WP_DIR — run set-wallpaper <image> first"
         exit 1
       fi
-      hyprctl hyprpaper unload all 2>/dev/null
-      hyprctl hyprpaper preload "$WP_DIR/edp1.png"
-      hyprctl hyprpaper preload "$WP_DIR/dp9.png"
-      hyprctl hyprpaper preload "$WP_DIR/dp10.png"
-      hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
-      hyprctl hyprpaper wallpaper "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,$WP_DIR/dp9.png"
-      hyprctl hyprpaper wallpaper "desc:AOC Q27G2SG4B+ OGJMBHA018485,$WP_DIR/dp10.png"
+      while IFS=$'\t' read -r name description; do
+        case "$description" in
+          "Lenovo Group Limited Pro 27Q-10 UGW1F5CA") image="$WP_DIR/dp9.png" ;;
+          "AOC Q27G2SG4B+ OGJMBHA018485") image="$WP_DIR/dp10.png" ;;
+          *) image="$WP_DIR/edp1.png" ;;
+        esac
+        hyprctl hyprpaper wallpaper "$name,$image"
+      done < <(hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[] | [.name, .description] | @tsv')
     '')
     (pkgs.writeShellScriptBin "set-wallpaper" ''
       # Wallpaper per monitor — matched by description, not DP port number.
@@ -79,15 +80,17 @@
         -extent "1440x2560" \
         "$WP_DIR/dp10.png"
 
-      # Apply via hyprpaper IPC
+      # Current protocol loads paths when assigning them; explicit preload and
+      # unload requests belong to older hyprpaper versions.
       echo "Applying wallpapers..."
-      hyprctl hyprpaper unload all 2>/dev/null
-      hyprctl hyprpaper preload "$WP_DIR/edp1.png"
-      hyprctl hyprpaper preload "$WP_DIR/dp9.png"
-      hyprctl hyprpaper preload "$WP_DIR/dp10.png"
-      hyprctl hyprpaper wallpaper "eDP-1,$WP_DIR/edp1.png"
-      hyprctl hyprpaper wallpaper "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,$WP_DIR/dp9.png"
-      hyprctl hyprpaper wallpaper "desc:AOC Q27G2SG4B+ OGJMBHA018485,$WP_DIR/dp10.png"
+      while IFS=$'\t' read -r name description; do
+        case "$description" in
+          "Lenovo Group Limited Pro 27Q-10 UGW1F5CA") image="$WP_DIR/dp9.png" ;;
+          "AOC Q27G2SG4B+ OGJMBHA018485") image="$WP_DIR/dp10.png" ;;
+          *) image="$WP_DIR/edp1.png" ;;
+        esac
+        hyprctl hyprpaper wallpaper "$name,$image"
+      done < <(hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[] | [.name, .description] | @tsv')
 
       echo "Done! Wallpapers saved to $WP_DIR."
     '')

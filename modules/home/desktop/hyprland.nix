@@ -1,7 +1,8 @@
-{ config, pkgs, inputs, theme, hostName ? "", ... }:
+{ config, lib, pkgs, inputs, theme, hostName ? "", ... }:
 let
   c = theme.colors;
   g = theme.geometry;
+  workspaceState = "${config.xdg.stateHome}/hypr/workspaces.conf";
 
   # HiDPI laptop only
   big       = hostName == "casino";
@@ -23,57 +24,134 @@ let
       monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485,            2560x1440@60, 4480x0, 1, transform, 3
     '' else "";
 
-  # Distribute 10 workspaces across whatever monitors are connected.
-  # 1 mon -> 10 ; 2 mons -> 5/5 ; 3 mons -> 4/3/3 ; etc.
-  # Distribute TOTAL workspaces across all currently-connected monitors,
-  # left-to-right by physical X position. Splits as evenly as possible
-  # (extras go to the leftmost monitors, e.g. 10/3 -> 4,3,3). Each monitor
-  # gets its first workspace marked default so focusing the monitor lands
-  # on a sane workspace. Existing workspaces (with windows) are migrated
-  # via moveworkspacetomonitor so nothing gets orphaned when monitors come
-  # and go.
+  # Each Super+B press opens a new Zen window, including when Zen already runs.
+  # No launch lock: its file descriptor survives exec into Zen, blocking every
+  # later keypress for lifetime of browser process.
+  launchZen = pkgs.writeShellScriptBin "launch-zen" ''
+    exec ${pkgs.coreutils}/bin/env GDK_SCALE=1 GDK_DPI_SCALE=1 zen-beta --new-window
+  '';
+
+  # Generate workspace rules from complete monitor topology. Rules live in a
+  # sourced state file because Hyprland 0.54 does not replace workspace rules
+  # through repeated `hyprctl keyword workspace` calls.
   assignWs = pkgs.writeShellScriptBin "assign-ws" ''
-    set -e
+    set -euo pipefail
     HYPRCTL=${pkgs.hyprland}/bin/hyprctl
     JQ=${pkgs.jq}/bin/jq
 
-    # Monitors sorted left-to-right by x coordinate.
-    mapfile -t mons < <($HYPRCTL monitors -j | $JQ -r 'sort_by(.x) | .[].name')
-    n=''${#mons[@]}
+    exec 9>"$XDG_RUNTIME_DIR/assign-ws.lock"
+    ${pkgs.util-linux}/bin/flock 9
+
+    monitor_json=$($HYPRCTL monitors -j)
+    n=$(printf '%s' "$monitor_json" | $JQ 'length')
     if [ "$n" -eq 0 ]; then
       echo "assign-ws: no monitors connected" >&2
       exit 0
     fi
 
-    total=10
-    base=$(( total / n ))
-    extra=$(( total - base * n ))
+    declare -a mons counts
+    if [ "${if big then "1" else "0"}" = 1 ] && [ "$n" -eq 3 ] \
+      && printf '%s' "$monitor_json" | $JQ -e \
+        'any(.[]; .description == "Lenovo Group Limited Pro 27Q-10 UGW1F5CA") and
+         any(.[]; .name == "eDP-1") and
+         any(.[]; .description == "AOC Q27G2SG4B+ OGJMBHA018485")' >/dev/null; then
+      # Docked casino: main Lenovo gets 1-4, laptop 5-7, portrait AOC 8-10.
+      mons+=("$(printf '%s' "$monitor_json" | $JQ -r '.[] | select(.description == "Lenovo Group Limited Pro 27Q-10 UGW1F5CA") | .name')")
+      mons+=("eDP-1")
+      mons+=("$(printf '%s' "$monitor_json" | $JQ -r '.[] | select(.description == "AOC Q27G2SG4B+ OGJMBHA018485") | .name')")
+      counts=(4 3 3)
+    else
+      # Any other setup: split 10 evenly across outputs, left-to-right.
+      mapfile -t mons < <(printf '%s' "$monitor_json" | $JQ -r 'sort_by(.x) | .[].name')
+      base=$(( 10 / n ))
+      extra=$(( 10 % n ))
+      for i in "''${!mons[@]}"; do
+        count=$base
+        [ "$i" -lt "$extra" ] && count=$(( count + 1 ))
+        counts+=("$count")
+      done
+    fi
 
+    mkdir -p "$(dirname '${workspaceState}')"
+    tmp=$(mktemp '${workspaceState}.XXXXXX')
+    declare -A targets first
     ws=1
     for i in "''${!mons[@]}"; do
       mon="''${mons[$i]}"
-      count=$base
-      [ "$i" -lt "$extra" ] && count=$(( count + 1 ))
-      for j in $(seq 1 "$count"); do
+      count="''${counts[$i]}"
+      first[$mon]=$ws
+      for ((j = 1; j <= count; j++)); do
         default=""
-        [ "$j" -eq 1 ] && default=",default:true"
-        # Persist the binding (survives monitor hotplug).
-        $HYPRCTL keyword workspace "$ws,monitor:$mon$default" >/dev/null
-        # Migrate any existing windows on this workspace to the new monitor.
-        $HYPRCTL dispatch moveworkspacetomonitor "$ws $mon" >/dev/null 2>&1 || true
+        [ "$j" -eq 1 ] && default=", default:true"
+        printf 'workspace = %d, monitor:%s%s\n' "$ws" "$mon" "$default" >> "$tmp"
+        targets[$ws]=$mon
         ws=$(( ws + 1 ))
       done
     done
+    mv "$tmp" '${workspaceState}'
 
-    echo "assign-ws: $total workspaces across $n monitor(s): ''${mons[*]}" >&2
-    ${pkgs.procps}/bin/pkill -SIGUSR2 waybar 2>/dev/null || true
+    # Reload clears stale rules, then move workspaces which already exist.
+    $HYPRCTL reload >/dev/null
+    sleep 0.2
+    workspaces=$($HYPRCTL workspaces -j)
+    for ws in "''${!targets[@]}"; do
+      if printf '%s' "$workspaces" | $JQ -e --argjson ws "$ws" 'any(.[]; .id == $ws)' >/dev/null; then
+        $HYPRCTL dispatch moveworkspacetomonitor "$ws ''${targets[$ws]}" >/dev/null 2>&1 || true
+      fi
+    done
+
+    # Replace automatic workspaces (11+) and any workspace left on the wrong
+    # output while topology was still changing.
+    focused=$($HYPRCTL activeworkspace -j | $JQ -r '.monitor')
+    for mon in "''${mons[@]}"; do
+      active=$($HYPRCTL monitors -j | $JQ -r --arg mon "$mon" '.[] | select(.name == $mon) | .activeWorkspace.id')
+      if [ "''${targets[$active]:-}" != "$mon" ]; then
+        $HYPRCTL dispatch focusmonitor "$mon" >/dev/null
+        $HYPRCTL dispatch workspace "''${first[$mon]}" >/dev/null
+      fi
+    done
+    $HYPRCTL dispatch focusmonitor "$focused" >/dev/null 2>&1 || true
+
+    echo "assign-ws: ''${mons[*]} -> ''${counts[*]}" >&2
+  '';
+
+  toggleFloatWindow = pkgs.writeShellScriptBin "toggle-float-window" ''
+    set -eu
+    HYPRCTL=${pkgs.hyprland}/bin/hyprctl
+    JQ=${pkgs.jq}/bin/jq
+
+    floating=$($HYPRCTL activewindow -j | $JQ -r '.floating // false')
+    $HYPRCTL dispatch togglefloating
+
+    # Apply placement only when entering floating mode; preserve an existing
+    # floating window's geometry when returning it to tiled mode.
+    if [ "$floating" != "true" ]; then
+      $HYPRCTL dispatch resizeactive exact 33% 33%
+      $HYPRCTL dispatch centerwindow 1
+    fi
   '';
 
   wsListener = pkgs.writeShellScriptBin "ws-monitor-listener" ''
+    set -u
     SOCK="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+    pending=""
+
+    schedule_update() {
+      if [ -n "$pending" ]; then
+        kill "$pending" 2>/dev/null || true
+      fi
+      (
+        # Dock outputs arrive as several events; wait for complete topology.
+        sleep 2
+        ${assignWs}/bin/assign-ws
+        ${config.home.profileDirectory}/bin/set-wallpaper-apply
+      ) &
+      pending=$!
+    }
+
     ${pkgs.socat}/bin/socat -U - UNIX-CONNECT:"$SOCK" | while IFS= read -r line; do
       case "$line" in
-        monitoradded*|monitorremoved*) ${assignWs}/bin/assign-ws ;;
+        monitoradded*|monitorremoved*) schedule_update ;;
       esac
     done
   '';
@@ -101,12 +179,17 @@ let
     fi
   '';
 in {
+  home.packages = [ assignWs ];
+
   wayland.windowManager.hyprland = {
     enable  = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    systemd.enable = true;
 
     extraConfig = ''
       ${monitorConfig}
+      source = ${workspaceState}
+
       # Catch-all: any monitor not pinned above gets auto-placed at preferred mode.
       # On casino this only kicks in for unexpected outputs; on mambo it does
       # all the work (every connected display is auto-arranged left-to-right).
@@ -139,6 +222,8 @@ in {
 
       decoration {
         rounding = ${toString g.rounding}
+        active_opacity = ${toString (g.active_opacity or 1.0)}
+        inactive_opacity = ${toString (g.inactive_opacity or 1.0)}
         blur {
           enabled = ${if g.blur then "true" else "false"}
           size    = ${toString g.blur_size}
@@ -188,37 +273,34 @@ in {
         animate_manual_resizes   = true
       }
 
-      exec-once = waybar
       exec-once = nm-applet --indicator
-      exec-once = mako
       exec-once = hyprpaper
       exec-once = bash -c 'sleep 2 && [ -f ~/Pictures/wallpapers/edp1.png ] && set-wallpaper-apply'
       exec-once = wl-paste --type text  --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec-once = udiskie &
       exec-once = ${assignWs}/bin/assign-ws
-      exec-once = ${wsListener}/bin/ws-monitor-listener
       exec-once = /run/current-system/sw/bin/gnome-keyring-daemon --start --components=secrets
       exec-once = 1password --silent
-      exec-once = ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent
 
       # Core
       bind = $mod,       Return, exec, alacritty
-      bind = $mod,       Escape, exec, GTK_THEME=Adwaita:dark wlogout -b 3 -c 0 -r 0 -m 0
-      bind = $mod,       Space,  exec, wofi --show drun
+      bind = $mod,       Escape, exec, noctalia msg panel-toggle session
+      bind = $mod,       Space,  exec, noctalia msg panel-toggle launcher
       bind = $mod,       Q,      killactive
       bind = $mod,       F,      fullscreen
       bind = $mod,       F2,     togglefloating
       bind = $mod,       C,      exec, ${smartClipboard}/bin/smart-clipboard copy
       bind = $mod,       V,      exec, ${smartClipboard}/bin/smart-clipboard paste
       bind = $mod,       P,      pseudo
-      bind = $mod CTRL,  L,      exec, hyprlock
+      bind = $mod CTRL,  L,      exec, noctalia msg session lock
+      # Keep tested GTKLock as explicit recovery path while Noctalia lock is proven.
+      bind = $mod CTRL SHIFT, L, exec, gtklock
+      bind = $mod CTRL,  C,      exec, noctalia msg panel-toggle control-center
       bind = $mod,       T,      layoutmsg, togglesplit
-      # Launch zen at default (1x) scale so it isn't oversized on the
-      # non-HiDPI HDMI/DVI displays. MOZ_ENABLE_WAYLAND=1 already gives
-      # per-monitor scaling; GDK_SCALE=1.25 (set globally for casino) makes
-      # zen huge on the externals, so override it just for this launch.
-      bind = $mod,       B,      exec, env GDK_SCALE=1 GDK_DPI_SCALE=1 zen-beta
+      # Start Zen at default scale, or focus existing Zen. Launch lock absorbs
+      # duplicate key events before second browser window can open.
+      bind = $mod,       B,      exec, ${launchZen}/bin/launch-zen
       bind = $mod,       E,      exec, nautilus
 
       # Screenshots
@@ -227,7 +309,7 @@ in {
       bind = $mod SHIFT, S,        exec, grimblast save area - | swappy -f -
 
       # Clipboard
-      bind = $mod, Y, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+      bind = $mod, Y, exec, noctalia msg panel-toggle clipboard
 
       # Focus
       bind = $mod, left,  movefocus, l
@@ -277,15 +359,14 @@ in {
       bind = $mod, mouse_down, workspace, e+1
       bind = $mod, mouse_up,   workspace, e-1
 
-      # Audio
-      bind = , XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+
-      bind = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-      bind = , XF86AudioMute,        exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-      bind = , XF86AudioMicMute,     exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+      # Noctalia owns volume, microphone, brightness actions, and OSD.
+      bind = , XF86AudioRaiseVolume, exec, noctalia msg volume-up
+      bind = , XF86AudioLowerVolume, exec, noctalia msg volume-down
+      bind = , XF86AudioMute,        exec, noctalia msg volume-mute
+      bind = , XF86AudioMicMute,     exec, noctalia msg mic-mute
 
-      # Brightness
-      bind = , XF86MonBrightnessUp,   exec, brightnessctl set 5%+
-      bind = , XF86MonBrightnessDown, exec, brightnessctl set 5%-
+      bind = , XF86MonBrightnessUp,   exec, noctalia msg brightness-up
+      bind = , XF86MonBrightnessDown, exec, noctalia msg brightness-down
 
       # Media
       bind = , XF86AudioPlay, exec, playerctl play-pause
@@ -294,10 +375,17 @@ in {
 
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
+      # Rear thumb button (BTN_BACK): hold, then drag to move focused window.
+      bindm = , mouse:278, movewindow
+      # Middle thumb button, or Ctrl+left-click: float at 1/3 monitor size,
+      # centered. Existing floating windows return to tiled mode unchanged.
+      bind = , mouse:276, exec, ${toggleFloatWindow}/bin/toggle-float-window
+      bind = CTRL, mouse:272, exec, ${toggleFloatWindow}/bin/toggle-float-window
 
-      # blur wlogout even with global blur off — layer surfaces use their own rule
-      layerrule = blur true, match:namespace wlogout
-      layerrule = ignore_alpha 0.1, match:namespace wlogout
+      # Let Noctalia own panel animation; Hyprland supplies translucent blur.
+      layerrule = no_anim true, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$
+      layerrule = blur true, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$
+      layerrule = ignore_alpha 0.5, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$
 
       windowrule = float on, match:class pavucontrol
       windowrule = float on, match:class blueman-manager
@@ -308,5 +396,27 @@ in {
       windowrule = pin on,   match:title Picture-in-Picture
       windowrule = suppress_event maximize, match:class .*
     '';
+  };
+
+  home.activation.hyprWorkspaceState = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    mkdir -p "$(dirname '${workspaceState}')"
+    if [ ! -e '${workspaceState}' ]; then
+      : > '${workspaceState}'
+    fi
+  '';
+
+  systemd.user.services.ws-monitor-listener = {
+    Unit = {
+      Description = "Reconfigure workspaces and wallpapers on monitor hotplug";
+      After = [ "hyprland-session.target" "hyprpaper.service" ];
+      PartOf = [ "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStartPre = "-${pkgs.procps}/bin/pkill -f /ws-monitor-listener/bin/ws-monitor-listener";
+      ExecStart = "${wsListener}/bin/ws-monitor-listener";
+      Restart = "always";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
 }

@@ -1,0 +1,242 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-02T06:14:22.856Z",
+  "pages": {
+    "sources/obs-2026-05-29-ghostty-terminal-emulator-removed": {
+      "type": "source",
+      "title": "\"Observation: Ghostty terminal emulator removed\"",
+      "created": "2026-05-29",
+      "updated": "2026-05-29",
+      "slug": "obs-2026-05-29-ghostty-terminal-emulator-removed",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-05-29T05:16:01.672Z",
+      "tags": [
+        "nixos",
+        "home-manager",
+        "apps"
+      ],
+      "source_context": "\"Removing ghostty terminal emulator\""
+    },
+    "sources/obs-2026-05-29-helium-browser-wrapper-configured": {
+      "type": "source",
+      "title": "\"Observation: Helium Browser wrapper configured\"",
+      "created": "2026-05-29",
+      "updated": "2026-05-29",
+      "slug": "obs-2026-05-29-helium-browser-wrapper-configured",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-05-29T04:44:31.637Z",
+      "tags": [
+        "nixos",
+        "home-manager",
+        "apps"
+      ],
+      "source_context": "\"Adding Helium browser wrapper\""
+    },
+    "sources/obs-2026-05-29-repository-readme-rewritten-to-reflect-active-state": {
+      "type": "source",
+      "title": "\"Observation: Repository README rewritten to reflect active state\"",
+      "created": "2026-05-29",
+      "updated": "2026-05-29",
+      "slug": "obs-2026-05-29-repository-readme-rewritten-to-reflect-active-state",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-05-29T06:14:36.107Z",
+      "tags": [
+        "docs",
+        "git",
+        "housekeeping"
+      ],
+      "source_context": "\"Documentation updates\""
+    },
+    "sources/obs-2026-05-29-workstation-profile-consolidation-completed": {
+      "type": "source",
+      "title": "\"Observation: Workstation profile consolidation completed\"",
+      "created": "2026-05-29",
+      "updated": "2026-05-29",
+      "slug": "obs-2026-05-29-workstation-profile-consolidation-completed",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-05-29T05:41:53.426Z",
+      "tags": [
+        "nixos",
+        "architecture",
+        "housekeeping",
+        "git"
+      ],
+      "source_context": "\"Workstation profile consolidation and Git housekeeping\""
+    },
+    "sources/obs-2026-06-01-aws-cli-added-to-home-configuration": {
+      "type": "source",
+      "title": "\"Observation: AWS CLI added to home configuration\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-aws-cli-added-to-home-configuration",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-06-01T01:51:08.590Z",
+      "tags": [
+        "nixos",
+        "configuration",
+        "home-manager",
+        "awscli"
+      ],
+      "source_context": "\"Adding AWS CLI to user packages\""
+    },
+    "sources/obs-2026-06-01-disabled-web-search-curator-approval-flow": {
+      "type": "source",
+      "title": "\"Observation: Disabled web search curator approval flow\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-disabled-web-search-curator-approval-flow",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-06-01T01:40:33.104Z",
+      "tags": [
+        "web_search",
+        "configuration",
+        "pi-web-access"
+      ],
+      "source_context": "\"Fixing web search approval requirement\""
+    },
+    "sources/obs-2026-06-01-enabled-1password-fingerprint-unlock-in-pam": {
+      "type": "source",
+      "title": "\"Observation: Enabled 1Password fingerprint unlock in PAM\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-enabled-1password-fingerprint-unlock-in-pam",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-06-01T03:54:20.312Z",
+      "tags": [
+        "nixos",
+        "security",
+        "pam",
+        "1password",
+        "fprintd"
+      ],
+      "source_context": "\"Configuring 1Password fingerprint authentication via PAM\""
+    },
+    "sources/obs-2026-06-01-enabled-automatic-keyring-unlock-in-pam-configuration": {
+      "type": "source",
+      "title": "\"Observation: Enabled automatic keyring unlock in PAM configuration\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-enabled-automatic-keyring-unlock-in-pam-configuration",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-06-01T02:00:34.268Z",
+      "tags": [
+        "nixos",
+        "security",
+        "pam",
+        "keyring",
+        "greetd"
+      ],
+      "source_context": "\"Fixing automatic gnome-keyring unlocking via PAM\""
+    },
+    "sources/obs-2026-06-01-graphic-design-tools-added-to-configuration": {
+      "type": "source",
+      "title": "\"Observation: Graphic design tools added to configuration\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-graphic-design-tools-added-to-configuration",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-06-01T05:38:21.010Z",
+      "tags": [
+        "nixos",
+        "configuration",
+        "home-manager",
+        "graphics",
+        "inkscape",
+        "krita"
+      ],
+      "source_context": "\"Adding graphic design tools to NixOS configuration\""
+    },
+    "sources/obs-2026-06-01-localsend-added-to-home-configuration": {
+      "type": "source",
+      "title": "\"Observation: LocalSend added to home configuration\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-localsend-added-to-home-configuration",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-06-01T04:39:35.566Z",
+      "tags": [
+        "nixos",
+        "configuration",
+        "home-manager",
+        "localsend"
+      ],
+      "source_context": "\"Adding LocalSend package to user packages\""
+    },
+    "sources/obs-2026-06-01-web-search-test-passed-automatically": {
+      "type": "source",
+      "title": "\"Observation: Web search test passed automatically\"",
+      "created": "2026-06-01",
+      "updated": "2026-06-01",
+      "slug": "obs-2026-06-01-web-search-test-passed-automatically",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-06-01T01:41:28.778Z",
+      "tags": [
+        "web_search",
+        "testing"
+      ],
+      "source_context": "\"Testing automatic web search\""
+    },
+    "sources/obs-2026-06-02-configured-swappy-screenshot-save-directory-to-pictures-scre": {
+      "type": "source",
+      "title": "\"Observation: Configured Swappy screenshot save directory to ~/Pictures/Screenshots\"",
+      "created": "2026-06-02",
+      "updated": "2026-06-02",
+      "slug": "obs-2026-06-02-configured-swappy-screenshot-save-directory-to-pictures-scre",
+      "status": "observation",
+      "relevance": "medium",
+      "observed_at": "2026-06-02T06:14:22.856Z",
+      "tags": [
+        "nixos",
+        "hyprland",
+        "screenshots",
+        "swappy"
+      ],
+      "source_context": "\"Answering where screenshots are saved and configuring swappy\""
+    },
+    "sources/obs-2026-06-02-disabled-hdmi-audio-nodes-in-wireplumber-to-prevent-onboard-": {
+      "type": "source",
+      "title": "\"Observation: Disabled HDMI audio nodes in WirePlumber to prevent onboard audio dropout on dock connection\"",
+      "created": "2026-06-02",
+      "updated": "2026-06-02",
+      "slug": "obs-2026-06-02-disabled-hdmi-audio-nodes-in-wireplumber-to-prevent-onboard-",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-06-02T03:52:39.648Z",
+      "tags": [
+        "nixos",
+        "audio",
+        "wireplumber",
+        "dock"
+      ],
+      "source_context": "\"Fixing laptop speakers and microphone disappearing when dock connected\""
+    },
+    "sources/obs-2026-06-02-enabled-waybar-systemd-service-with-auto-restart-on-hyprland": {
+      "type": "source",
+      "title": "\"Observation: Enabled Waybar systemd service with auto-restart on Hyprland\"",
+      "created": "2026-06-02",
+      "updated": "2026-06-02",
+      "slug": "obs-2026-06-02-enabled-waybar-systemd-service-with-auto-restart-on-hyprland",
+      "status": "observation",
+      "relevance": "high",
+      "observed_at": "2026-06-02T05:42:43.021Z",
+      "tags": [
+        "nixos",
+        "waybar",
+        "hyprland",
+        "systemd"
+      ],
+      "source_context": "\"Fixing Waybar crashing/dying after sleep/suspend\""
+    }
+  }
+}

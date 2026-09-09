@@ -106,25 +106,18 @@ in
     libnotify
   ];
 
-  # Whisper server — starts at login, keeps model hot in memory.
-  # First start downloads the model (~500 MB for small.en, one-time).
-  # Override model: set WHISPER_MODEL in the service environment or
-  # edit whisper-dictation.service override in ~/.config/systemd/user/.
+  # First Super+D press starts Whisper on demand; second press records once
+  # model is ready. Stop after 30 minutes so it does not occupy battery sessions.
   systemd.user.services.whisper-dictation = {
-    Unit = {
-      Description = "Whisper.cpp local transcription server";
-      After = [ "default.target" ];
-    };
+    Unit.Description = "Whisper.cpp local transcription server";
     Service = {
-      Type      = "simple";
+      Type = "simple";
       ExecStart = "${whisper-server-launcher}/bin/whisper-server-launcher";
-      Restart   = "on-failure";
-      RestartSec = "5s";
+      RuntimeMaxSec = "30m";
       Environment = [
         "WHISPER_MODEL=${defaultModel}"
       ];
     };
-    Install.WantedBy = [ "default.target" ];
   };
 
   # CPU push-to-talk: hold Super+D to record, release to transcribe + type

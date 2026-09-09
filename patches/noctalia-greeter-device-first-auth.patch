@@ -1,0 +1,75 @@
+diff -urN a/src/greeter/greeter.cpp b/src/greeter/greeter.cpp
+--- a/src/greeter/greeter.cpp	1970-01-01 10:00:01.000000000 +1000
++++ b/src/greeter/greeter.cpp	2026-09-02 10:06:37.329648956 +1000
+@@ -124,6 +124,12 @@
+     view.window->setSceneReady(true);
+   }
+ 
++  // Start hardware PAM modules immediately. Password auth remains available
++  // when PAM subsequently issues its secret prompt.
++  if (!m_views.empty()) {
++    m_views.front().surface->beginDeviceAuthentication();
++  }
++
+   m_initializing = false;
+   if (m_pendingOutputSync) {
+     m_pendingOutputSync = false;
+diff -urN a/src/greeter/greeter_surface.cpp b/src/greeter/greeter_surface.cpp
+--- a/src/greeter/greeter_surface.cpp	1970-01-01 10:00:01.000000000 +1000
++++ b/src/greeter/greeter_surface.cpp	2026-09-02 10:06:37.330607170 +1000
+@@ -724,6 +724,10 @@
+ 
+ void GreeterSurface::setGreetdClient(GreetdClient* client) { m_greetdClient = client; }
+ 
++void GreeterSurface::beginDeviceAuthentication() {
++  if (m_allowEmptyPassword) tryAuthenticate(false);
++}
++
+ void GreeterSurface::setUsername(const std::string& username) { m_username = username; }
+ 
+ void GreeterSurface::setOnExitRequested(std::function<void()> callback) { m_onExitRequested = std::move(callback); }
+@@ -1324,7 +1328,7 @@
+   }
+ }
+ 
+-void GreeterSurface::tryAuthenticate() {
++void GreeterSurface::tryAuthenticate(bool submitPassword) {
+   // Ignore re-submits while a request is already in flight.
+   if (m_greetdClient == nullptr || awaitingReply()) {
+     return;
+@@ -1341,9 +1345,12 @@
+   }
+ 
+   if (!m_authSessionStarted) {
+-    // Arm the typed input (possibly empty) to answer the first secret prompt.
+-    m_pendingResponse = m_password;
+-    m_hasPendingResponse = true;
++    // Device-first startup must wait for PAM's real secret prompt. Arming an
++    // empty response here makes password fallback fail after fprintd times out.
++    if (submitPassword) {
++      m_pendingResponse = m_password;
++      m_hasPendingResponse = true;
++    }
+     m_authenticating = true;
+     kLog.info("greetd: create_session for '{}'", m_username);
+     if (!m_greetdClient->requestCreateSession(m_username)) {
+diff -urN a/src/greeter/greeter_surface.h b/src/greeter/greeter_surface.h
+--- a/src/greeter/greeter_surface.h	1970-01-01 10:00:01.000000000 +1000
++++ b/src/greeter/greeter_surface.h	2026-09-02 10:06:37.331918640 +1000
+@@ -47,6 +47,7 @@
+   void setGreetdClient(GreetdClient* client);
+   void setUsername(const std::string& username);
+   void setOnExitRequested(std::function<void()> callback);
++  void beginDeviceAuthentication();
+   void setOnStateChanged(std::function<void(GreeterSurface*)> callback);
+   void setKeyboardOwner(bool owner) noexcept;
+ 
+@@ -81,7 +82,7 @@
+   [[nodiscard]] bool pointerInViewport(float x, float y) const;
+   void syncScaledTypography();
+   void layoutScene(std::uint32_t width, std::uint32_t height);
+-  void tryAuthenticate();
++  void tryAuthenticate(bool submitPassword = true);
+   void handleGreetdResponse(const GreetdResponse& response);
+   void handleAuthMessage(const GreetdAuthMessage& message);
+   void postAuthResponse(const std::string& data);

@@ -1,16 +1,13 @@
-{ config, pkgs, inputs, lib, ... }:
+{ config, pkgs, inputs, lib, hostName, ... }:
 
 {
   imports = [
     ../modules/home/desktop/hyprland.nix
     ../modules/home/desktop/hyprpaper.nix
     ../modules/home/desktop/hyprlock.nix
-    ../modules/home/desktop/waybar.nix
-    ../modules/home/desktop/mako.nix
-    ../modules/home/desktop/wofi.nix
+    ../modules/home/desktop/noctalia.nix
     ../modules/home/desktop/theming.nix
     ../modules/home/desktop/kanshi.nix
-    ../modules/home/desktop/wlogout.nix
     ../modules/home/shell/zsh.nix
     ../modules/home/shell/tools.nix
     ../modules/home/apps/alacritty.nix
@@ -28,12 +25,19 @@
     homeDirectory = "/home/lawliet";
     stateVersion = "26.05";
 
-    packages = with pkgs; [
+    packages = with pkgs; (lib.optionals (hostName == "mambo") [
+      # Resolve needs Mambo's RTX 3070 Ti; casino's Intel iGPU is unsupported.
+      davinci-resolve
+    ]) ++ [
       # Browser (zen via flake — see hyprland.nix for the package ref)
       inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # Office
       libreoffice-qt6-fresh
+      pdfarranger
+
+      # Design
+      figma-linux
 
       # File manager
       nautilus
@@ -71,14 +75,21 @@
       gphoto2
       digikam
       exiftool
+      inkscape
+      krita
+      (import inputs.blender-nixpkgs {
+        system = pkgs.stdenv.hostPlatform.system;
+      }).blender
 
       # Media
+      spotify
       mpv
       imv
       zathura
 
       # Communication
       vesktop
+      localsend
 
       # Notes
       obsidian
@@ -109,6 +120,8 @@
         find "$HOME/.config/$dir" -maxdepth 3 -type f ! -type l -delete 2>/dev/null || true
       fi
     done
+    # Phase 1 replaces Phase 0's managed shell.qml file with one managed QS directory.
+    rm -rf "$HOME/.config/quickshell/lawliet-shell"
     # Standalone dotfiles
     rm -f \
       $HOME/.config/mimeapps.list \
@@ -121,6 +134,7 @@
     enable = true;
     automount = true;
     notify = true;
+    tray = "auto";
   };
 
   # XDG defaults
@@ -128,6 +142,11 @@
     enable = true;
     # Ensure zsh history dir exists
     dataFile."zsh/.keep".text = "";
+    configFile."swappy/config".text = ''
+      [Default]
+      save_dir=${config.home.homeDirectory}/Pictures/Screenshots
+      save_filename_format=screenshot_%Y%m%d_%H%M%S.png
+    '';
     userDirs = {
       enable = true;
       createDirectories = true;

@@ -141,14 +141,18 @@ in {
     enable = true;
     settings = {
       general = {
-        after_sleep_cmd    = "hyprctl dispatch dpms on";
+        after_sleep_cmd     = "hyprctl dispatch dpms on";
+        # Noctalia runs as a user unit, so logind cannot map its PID back to
+        # this graphical session. Lock through Noctalia IPC instead of relying
+        # on its disabled logind session-lock monitor.
+        before_sleep_cmd    = "noctalia msg session lock";
         ignore_dbus_inhibit = false;
-        lock_cmd           = "hyprlock";
+        lock_cmd            = "noctalia msg session lock";
       };
       listener = [
         {
           timeout    = 300;
-          on-timeout = "hyprlock";
+          on-timeout = "noctalia msg session lock";
         }
         {
           timeout    = 600;

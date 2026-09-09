@@ -1,0 +1,16 @@
+{
+  "sources/obs-2026-05-29-ghostty-terminal-emulator-removed": [],
+  "sources/obs-2026-05-29-helium-browser-wrapper-configured": [],
+  "sources/obs-2026-05-29-repository-readme-rewritten-to-reflect-active-state": [],
+  "sources/obs-2026-05-29-workstation-profile-consolidation-completed": [],
+  "sources/obs-2026-06-01-aws-cli-added-to-home-configuration": [],
+  "sources/obs-2026-06-01-disabled-web-search-curator-approval-flow": [],
+  "sources/obs-2026-06-01-enabled-1password-fingerprint-unlock-in-pam": [],
+  "sources/obs-2026-06-01-enabled-automatic-keyring-unlock-in-pam-configuration": [],
+  "sources/obs-2026-06-01-graphic-design-tools-added-to-configuration": [],
+  "sources/obs-2026-06-01-localsend-added-to-home-configuration": [],
+  "sources/obs-2026-06-01-web-search-test-passed-automatically": [],
+  "sources/obs-2026-06-02-configured-swappy-screenshot-save-directory-to-pictures-scre": [],
+  "sources/obs-2026-06-02-disabled-hdmi-audio-nodes-in-wireplumber-to-prevent-onboard-": [],
+  "sources/obs-2026-06-02-enabled-waybar-systemd-service-with-auto-restart-on-hyprland": []
+}

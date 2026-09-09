@@ -1,0 +1,18 @@
+{
+  "name": "lawliet-control-center",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite"
+  },
+  "type": "module",
+  "dependencies": {
+    "lit": "^3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
+  },
+  "private": "true"
+}

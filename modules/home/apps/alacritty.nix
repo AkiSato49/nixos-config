@@ -1,5 +1,4 @@
-{ config, pkgs, theme, ... }:
-let c = theme.colors; in {
+{ config, pkgs, theme, ... }: {
   programs.alacritty = {
     enable = true;
     settings = {
@@ -24,38 +23,39 @@ let c = theme.colors; in {
         size    = theme.font.size_mono;
       };
 
+      # Matches Noctalia's built-in `Noctalia` palette in light mode.
       colors = {
         primary = {
-          background = c.bg_hard;
-          foreground = c.fg;
+          background = "#e6e8fa";
+          foreground = "#4b55c8";
         };
         cursor = {
-          text   = c.bg;
-          cursor = c.yellow;
+          text   = "#e6e8fa";
+          cursor = "#5d65f5";
         };
         selection = {
-          text       = c.fg;
-          background = c.bg1;
+          text       = "#e6e8fa";
+          background = "#4b55c8";
         };
         normal = {
-          black   = c.bg;
-          red     = c.red;
-          green   = c.green;
-          yellow  = c.yellow;
-          blue    = c.blue;
-          magenta = c.purple;
-          cyan    = c.teal;
-          white   = c.fg_dim;
+          black   = "#eff0ff";
+          red     = "#FD4663";
+          green   = "#0e0e43";
+          yellow  = "#5d65f5";
+          blue    = "#8E93D8";
+          magenta = "#FD4663";
+          cyan    = "#0e0e43";
+          white   = "#4b55c8";
         };
         bright = {
-          black   = c.gray;
-          red     = c.red_br;
-          green   = c.green_br;
-          yellow  = c.yellow_br;
-          blue    = c.blue_br;
-          magenta = c.purple_br;
-          cyan    = c.teal_br;
-          white   = c.fg;
+          black   = "#8288fc";
+          red     = "#FD4663";
+          green   = "#0e0e43";
+          yellow  = "#5d65f5";
+          blue    = "#8E93D8";
+          magenta = "#FD4663";
+          cyan    = "#0e0e43";
+          white   = "#0e0e43";
         };
       };
 

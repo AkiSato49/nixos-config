@@ -1,4 +1,4 @@
-{ config, pkgs, lib, theme, ... }:
+{ config, pkgs, ... }:
 
 let
   # Hyprland launcher that picks the correct DRM devices for DisplayLink/evdi.
@@ -61,9 +61,7 @@ in
   services.udev.packages     = [ pkgs.displaylink ];
   environment.systemPackages = [ pkgs.displaylink hyprland-displaylink ];
 
-  # Override greetd's session command to use the DisplayLink-aware launcher.
-  # greetd.nix sets `--cmd Hyprland`; we replace it here only on hosts that
-  # import this module (i.e. casino).
-  services.greetd.settings.default_session.command = lib.mkForce
-    "${pkgs.tuigreet}/bin/tuigreet --time --remember --greeting '${theme.greetd.greeting}' --time-format '${theme.greetd.time_fmt}' --theme '${theme.greetd.theme_str}' --cmd ${hyprland-displaylink}/bin/hyprland-displaylink";
+  # Noctalia Greeter discovers sessions through Wayland desktop entries. Keep
+  # its greetd command untouched; this wrapper remains available for an
+  # explicit DisplayLink-aware Hyprland session entry when needed.
 }

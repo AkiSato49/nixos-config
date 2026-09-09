@@ -1,0 +1,52 @@
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: local("Atkinson Hyperlegible Next"); }
+
+:root {
+  color-scheme: light;
+  font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  color: #3c3836;
+  background: transparent;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 390px; background: transparent; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+main {
+  margin: 14px;
+  padding: 20px;
+  border: 1px solid rgba(60, 56, 54, .16);
+  border-radius: 24px;
+  background: rgba(251, 241, 199, .94);
+  box-shadow: 0 18px 60px rgba(60, 56, 54, .2);
+}
+
+.panel-header { display: flex; align-items: start; justify-content: space-between; margin: 2px 2px 18px; }
+.eyebrow { margin: 0 0 4px; color: #928374; font-size: 11px; font-weight: 800; letter-spacing: .13em; }
+h1 { margin: 0; font-size: 27px; letter-spacing: -.04em; }
+.close, .icon-button { display: grid; place-items: center; border: 0; border-radius: 999px; color: #665c54; background: rgba(60, 56, 54, .08); }
+.close { width: 30px; height: 30px; font-size: 24px; line-height: 1; }
+.close:hover, .icon-button:hover { background: rgba(60, 56, 54, .16); }
+
+.card { padding: 16px; border: 1px solid rgba(60, 56, 54, .1); border-radius: 18px; background: rgba(255, 252, 235, .72); }
+.card header { display: grid; grid-template-columns: 42px 1fr 34px; align-items: center; gap: 10px; }
+.icon { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; }
+.icon svg, .slider-icon svg { width: 21px; height: 21px; fill: currentColor; }
+.icon.sound { color: #fbf1c7; background: #b57614; }
+h2 { margin: 0; font-size: 16px; letter-spacing: -.01em; }
+.card p { overflow: hidden; margin: 2px 0 0; color: #928374; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.icon-button { width: 34px; height: 34px; }
+.icon-button svg { width: 17px; height: 17px; fill: currentColor; }
+
+.slider-row { display: grid; grid-template-columns: 18px 1fr 42px; align-items: center; gap: 9px; margin: 18px 0 12px; color: #665c54; }
+.slider-icon { display: grid; place-items: center; }
+input[type="range"] { width: 100%; accent-color: #b57614; }
+output { color: #665c54; font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+.device-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid rgba(60, 56, 54, .08); color: #665c54; font-size: 13px; }
+.device-row button { max-width: 70%; overflow: hidden; border: 0; color: #3c3836; background: transparent; text-overflow: ellipsis; white-space: nowrap; }
+.device-row button:hover { color: #b57614; }
+.device-row b { margin-left: 4px; font-size: 17px; font-weight: 400; }
+
+.coming-soon { margin-top: 12px; padding: 14px; border-radius: 16px; color: #928374; background: rgba(60, 56, 54, .045); font-size: 13px; line-height: 1.4; }
+
+@media (prefers-reduced-motion: no-preference) { button, input { transition: background-color 150ms ease, color 150ms ease; } }

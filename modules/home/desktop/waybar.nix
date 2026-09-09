@@ -2,6 +2,7 @@
 let
   c    = theme.colors;
   f    = theme.font;
+  g    = theme.geometry;
   flat = theme.variants.waybar_flat;
 
   # HiDPI laptop: bump everything up.
@@ -26,9 +27,9 @@ let
     }
 
     window#waybar {
-      background-color: ${c.bg_hard};
+      background-color: rgba(249, 245, 215, 0.86);
       color: ${c.fg};
-      border-bottom: 1px solid ${c.bg1};
+      border-bottom: 1px solid rgba(60, 56, 54, 0.12);
     }
 
     /* Workspaces ── flat, underline accent */
@@ -39,11 +40,11 @@ let
     }
 
     #workspaces button {
-      padding: 0 14px;
-      margin: 0;
+      padding: 0 10px;
+      margin: 3px 1px;
       color: ${c.fg_muted};
       background-color: transparent;
-      border-radius: 0;
+      border-radius: 7px;
       border-bottom: 2px solid transparent;
       font-size: ${toString smSize}px;
       font-weight: bold;
@@ -70,18 +71,17 @@ let
 
     /* Window title */
     #window {
-      color: ${c.fg_muted};
+      color: ${c.fg_dim};
       padding: 0 8px;
-      font-style: italic;
       font-size: ${toString smSize}px;
     }
 
     /* Clock ── typography forward */
     #clock {
       color: ${c.fg};
-      font-weight: bold;
+      font-weight: 700;
       padding: 0 16px;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.02em;
     }
 
     /* Right modules ── no bg, left-border separators */
@@ -89,11 +89,31 @@ let
     #network,
     #bluetooth,
     #battery,
-    #tray {
-      padding: 0 12px;
+    #tray,
+    #custom-launcher,
+    #custom-control-center {
+      padding: 0 9px;
       color: ${c.fg_dim};
       background: transparent;
-      border-left: 1px solid ${c.bg1};
+    }
+
+    #custom-launcher {
+      color: ${c.fg};
+      font-size: ${toString uiSize}px;
+      font-weight: 700;
+    }
+
+    #custom-control-center {
+      margin: 4px 8px 4px 2px;
+      padding: 0 10px;
+      color: ${c.fg};
+      background: ${c.bg1};
+      border-radius: 999px;
+    }
+
+    #custom-launcher:hover,
+    #custom-control-center:hover {
+      background: ${c.bg2};
     }
 
     #pulseaudio           { color: ${c.fg}; }
@@ -120,7 +140,7 @@ let
     tooltip {
       background-color: ${c.bg};
       border: 1px solid ${c.yellow};
-      border-radius: 0;
+      border-radius: ${toString g.rounding}px;
       color: ${c.fg};
       font-size: ${toString smSize}px;
     }
@@ -224,6 +244,7 @@ let
 in {
   programs.waybar = {
     enable = true;
+    systemd.enable = true;
 
     settings = {
       mainBar = {
@@ -232,9 +253,23 @@ in {
         height   = barH;
         spacing  = 4;
 
-        modules-left   = [ "hyprland/workspaces" "hyprland/window" ];
+        modules-left   = [ "custom/launcher" "hyprland/workspaces" "hyprland/window" ];
         modules-center = [ "clock" ];
-        modules-right  = [ "pulseaudio" "network" "bluetooth" "battery" "tray" ];
+        modules-right  = [ "custom/control-center" "tray" ];
+
+        "custom/launcher" = {
+          format = "◉";
+          tooltip = false;
+          on-click = "wofi --show drun";
+        };
+
+        "custom/control-center" = {
+          format = "󰕾  󰤨  󰂯  󰁹";
+          tooltip = true;
+          tooltip-format = "Control Center";
+          on-click = "control-center-toggle";
+        };
+
 
         "hyprland/workspaces" = {
           format = "{id}<span size='7000' rise='-3500'>{windows}</span>";
@@ -312,41 +347,42 @@ in {
         };
 
         pulseaudio = {
-          format       = "{icon} {volume}%";
+          format       = "{icon}";
           format-muted = "󰸈";
           format-icons = {
             headphone = "󰋋";
             default   = [ "󰕿" "󰖀" "󰕾" ];
           };
-          on-click   = "pavucontrol";
+          on-click   = "l1p0-menus --toggle audio";
           scroll-step = 5;
         };
 
         network = {
-          format-wifi       = "󰤨 {signalStrength}%";
-          format-ethernet   = "󰈀 {ifname}";
+          format-wifi       = "󰤨";
+          format-ethernet   = "󰈀";
           format-disconnected = "󰤭";
           tooltip-format    = "{ifname}: {ipaddr}\n{essid}";
-          on-click          = "nm-connection-editor";
+          on-click          = "l1p0-menus --toggle network";
         };
 
         bluetooth = {
-          format                    = "󰂯 {status}";
-          format-connected          = "󰂱 {device_alias}";
-          format-connected-battery  = "󰂱 {device_alias} {device_battery_percentage}%";
+          format                    = "󰂯";
+          format-connected          = "󰂱";
+          format-connected-battery  = "󰂱";
           format-off                = "󰂲";
-          on-click                  = "blueman-manager";
+          on-click                  = "l1p0-menus --toggle bluetooth";
           tooltip-format            = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
           tooltip-format-connected  = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
         };
 
         battery = {
           states          = { warning = 30; critical = 15; };
-          format          = "{icon} {capacity}%";
-          format-charging = "󰂄 {capacity}%";
-          format-plugged  = "󰚦 {capacity}%";
+          format          = "{icon}";
+          format-charging = "󰂄";
+          format-plugged  = "󰚦";
           format-icons    = [ "󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
           tooltip-format  = "{timeTo}\n{power}W";
+          on-click        = "l1p0-menus --toggle battery";
         };
 
         tray = { spacing = 8; };
@@ -354,5 +390,12 @@ in {
     };
 
     style = if flat then styleFlat else stylePill;
+  };
+
+  systemd.user.services.waybar = {
+    Service = {
+      Restart = pkgs.lib.mkForce "always";
+      RestartSec = "2";
+    };
   };
 }

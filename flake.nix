@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Separate pin keeps Blender current without forcing whole system onto newer nixpkgs.
+    blender-nixpkgs.url = "github:nixos/nixpkgs/b7c2ada94fe99c15b0dbcf4d11fd7850b957a436";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,6 +19,16 @@
 
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Pin latest Noctalia commit already built by upstream Cachix.
+    # Do not follow this flake's nixpkgs: that changes its derivation hash and misses cache.
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+
+    # Separate native greetd UI for pre-session login. Replaces ReGreet + Cage.
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
