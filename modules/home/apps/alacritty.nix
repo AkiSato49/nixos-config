@@ -5,7 +5,7 @@ let c = theme.colors; in {
     settings = {
       window = {
         padding        = { x = 14; y = 14; };
-        opacity        = 0.95;
+        opacity        = 1.0;
         decorations    = "None";
         startup_mode   = "Windowed";
         title          = "Alacritty";
