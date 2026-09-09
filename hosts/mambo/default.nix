@@ -2,6 +2,8 @@
 
 {
   imports = [
+    ./sunshine.nix
+    ./immich-storage.nix
     ./hardware-configuration.nix
     ../../modules/nixos/profiles/desktop.nix
     ../../modules/nixos/nvidia.nix

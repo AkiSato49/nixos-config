@@ -33,9 +33,11 @@
 
   home.sessionVariables = {
     GOPATH = "$HOME/.local/share/go";
+    GOBIN  = "$HOME/.local/bin";
   };
 
   home.sessionPath = [
+    "$HOME/.local/bin"
     "$HOME/.local/share/go/bin"
   ];
 
