@@ -1,0 +1,14 @@
+# sops-nix key + creation rules.
+# Add a new host: convert its /etc/ssh/ssh_host_ed25519_key.pub with
+#   ssh-to-age, add an anchor below, list it under the age group, then
+#   `sops updatekeys secrets/secrets.yaml`.
+keys:
+  - &user_lawliet age10hqgz7zkvzl3gq0renn4hyh589xk66v7u4yl3smm3k0dkhzgk5ts498alz
+  - &host_mambo   age173kvjfkefygfthg5hyjm8mjnnaycp6zcjsce5qpl8gcprtztzcxqex8fmg
+
+creation_rules:
+  - path_regex: secrets/[^/]+\.yaml$
+    key_groups:
+      - age:
+          - *user_lawliet
+          - *host_mambo

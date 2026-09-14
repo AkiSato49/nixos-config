@@ -12,8 +12,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hyprland = {
-      url = "github:hyprwm/Hyprland";
+      # Pinned 2026-04-22: latest Hyprland needs gcc16Stdenv, absent from
+      # pinned nixpkgs. Bump together with nixpkgs, not alone (Sep 14).
+      url = "github:hyprwm/Hyprland/300cdb7c3241969ac04cd02a5e13010a28ebb830";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -75,6 +82,7 @@
       specialArgs = { inherit inputs theme hostName; };
       modules = [
         { nixpkgs.overlays = [ waybarOverlay ]; }
+        inputs.sops-nix.nixosModules.sops
         ./hosts/${hostName}/default.nix
         home-manager.nixosModules.home-manager
         {

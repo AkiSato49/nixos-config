@@ -141,23 +141,29 @@ in {
     enable = true;
     settings = {
       general = {
-        after_sleep_cmd     = "hyprctl dispatch dpms on";
-        # Noctalia runs as a user unit, so logind cannot map its PID back to
-        # this graphical session. Lock through Noctalia IPC instead of relying
-        # on its disabled logind session-lock monitor.
-        before_sleep_cmd    = "noctalia msg session lock";
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+        # Noctalia-viable path (upstream #3062/#3165): route all locks via
+        # logind so hypridle bridges to Noctalia even though its own logind
+        # session-lock monitor is disabled (NoSessionForPID as user unit).
+        # inhibit_sleep=3 waits for locked state; mode 2 auto targets hyprlock.
+        before_sleep_cmd = "loginctl lock-session";
+        inhibit_sleep = 3;
         ignore_dbus_inhibit = false;
-        lock_cmd            = "noctalia msg session lock";
+        lock_cmd = "noctalia msg session lock";
       };
       listener = [
         {
-          timeout    = 300;
-          on-timeout = "noctalia msg session lock";
+          timeout = 300;
+          on-timeout = "loginctl lock-session";
         }
         {
-          timeout    = 600;
+          timeout = 600;
           on-timeout = "hyprctl dispatch dpms off";
-          on-resume  = "hyprctl dispatch dpms on";
+          # Settle delay: DPMS wake re-announces wl_output globals in stages
+          # (kanshi pair -> triple took ~3s Sep 14); firing dpms on immediately
+          # races noctalia bar/wallpaper rebuild and kills it (wl_display
+          # invalid object -> exit 1). 2s lets kanshi settle first.
+          on-resume = "sleep 2 && hyprctl dispatch dpms on";
         }
       ];
     };

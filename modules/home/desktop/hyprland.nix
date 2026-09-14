@@ -10,18 +10,32 @@ let
   gdkScale  = if big then "1.25" else "1";
   curSize   = if big then 28 else 24;
 
-  # Per-host monitor pinning. casino has a fixed three-display layout;
-  # mambo just auto-arranges whatever's plugged in via the catch-all rule.
+  # Per-host monitor pinning. casino has a fixed four-display layout;
+  # mambo pins its three externals by desc: so DPMS off/on and replug
+  # cannot churn DP-1/2/3 names (churn races noctalia bar/wallpaper
+  # rebuild -> wl_display invalid-object crash, Sep 14).
+  # Unknown hosts keep auto-arrange via the catch-all rule.
   monitorConfig =
     if big then ''
       # Layout (left -> right), all positions in *logical* pixels:
-      #   eDP-1    : 2880x1800 / scale 1.5 -> 1920x1200 logical, at 0,0
-      #   Lenovo Pro 27Q  : 2560x1440 / scale 1, landscape, at 1920,0
-      #   AOC Q27G2SG4B+  : 2560x1440 / scale 1, portrait (270°), at 4480,0
+      #   Samsung Odyssey G50SF : 2560x1440 / scale 1, landscape, at 0,0
+      #   eDP-1                 : 2880x1800 / scale 1.5 -> 1920x1200 logical, at 2560,0
+      #   Lenovo Pro 27Q        : 2560x1440 / scale 1, landscape, at 4480,0
+      #   AOC Q27G2SG4B+        : 2560x1440 / scale 1, portrait (270°), at 7040,0
       #   desc: matching avoids DP port number churn on replug
-      monitor = eDP-1, 2880x1800@60, 0x0, ${edpScale}
-      monitor = desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA, 2560x1440@60, 1920x0, 1
-      monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485,            2560x1440@60, 4480x0, 1, transform, 3
+      monitor = desc:Samsung Electric Company Odyssey G50SF HNAL600304, 2560x1440@120, 0x0, 1
+      monitor = eDP-1, 2880x1800@60, 2560x0, ${edpScale}
+      monitor = desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA, 2560x1440@60, 4480x0, 1
+      monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485,            2560x1440@60, 7040x0, 1, transform, 3
+    '' else if hostName == "mambo" then ''
+      # Layout (left -> right), logical pixels, scale 1:
+      #   Samsung Odyssey G50SF : landscape, at 0,0
+      #   Lenovo Pro 27Q        : landscape, at 2560,0
+      #   AOC Q27G2SG4B+        : portrait (270°), at 5120,0
+      #   desc: matching survives DP port number churn on DPMS/replug.
+      monitor = desc:Samsung Electric Company Odyssey G50SF HNAL600304, 2560x1440@120, 0x0, 1
+      monitor = desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA, 2560x1440@60, 2560x0, 1
+      monitor = desc:AOC Q27G2SG4B+ OGJMBHA018485, 2560x1440@60, 5120x0, 1, transform, 3
     '' else "";
 
   # Each Super+B press opens a new Zen window, including when Zen already runs.
@@ -293,7 +307,9 @@ in {
       bind = $mod,       C,      exec, ${smartClipboard}/bin/smart-clipboard copy
       bind = $mod,       V,      exec, ${smartClipboard}/bin/smart-clipboard paste
       bind = $mod,       P,      pseudo
-      bind = $mod CTRL,  L,      exec, noctalia msg session lock
+      bind = $mod CTRL,  L,      exec, loginctl lock-session
+      # logind route: hypridle lock_cmd bridges to Noctalia IPC. Direct
+      # `noctalia msg session lock` also works; logind unifies all lock paths.
       # Keep tested GTKLock as explicit recovery path while Noctalia lock is proven.
       bind = $mod CTRL SHIFT, L, exec, gtklock
       bind = $mod CTRL,  C,      exec, noctalia msg panel-toggle control-center
@@ -377,10 +393,9 @@ in {
       bindm = $mod, mouse:273, resizewindow
       # Rear thumb button (BTN_BACK): hold, then drag to move focused window.
       bindm = , mouse:278, movewindow
-      # Middle thumb button, or Ctrl+left-click: float at 1/3 monitor size,
-      # centered. Existing floating windows return to tiled mode unchanged.
+      # Middle thumb button: float at 1/3 monitor size, centered.
+      # Existing floating windows return to tiled mode unchanged.
       bind = , mouse:276, exec, ${toggleFloatWindow}/bin/toggle-float-window
-      bind = CTRL, mouse:272, exec, ${toggleFloatWindow}/bin/toggle-float-window
 
       # Let Noctalia own panel animation; Hyprland supplies translucent blur.
       layerrule = no_anim true, match:namespace ^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$
