@@ -5,7 +5,7 @@ let
 
   # ── Text layout (prayer theme) ───────────────────────────────────────────────
   textLayout = [
-    { label = "lock";      action = "gtklock";               text = "LOCK";      keybind = "l"; }
+    { label = "lock";      action = "loginctl lock-session"; text = "LOCK";      keybind = "l"; }
     { label = "hibernate"; action = "systemctl hibernate";   text = "HIBERNATE"; keybind = "h"; }
     { label = "logout";    action = "hyprctl dispatch exit"; text = "LOGOUT";    keybind = "e"; }
     { label = "shutdown";  action = "systemctl poweroff";    text = "SHUTDOWN";  keybind = "s"; }
@@ -15,7 +15,7 @@ let
 
   # ── Icon layout (dark theme) ─────────────────────────────────────────────────
   iconLayout = [
-    { label = "lock";      action = "gtklock";               text = "󰌾"; keybind = "l"; }
+    { label = "lock";      action = "loginctl lock-session"; text = "󰌾"; keybind = "l"; }
     { label = "hibernate"; action = "systemctl hibernate";   text = "󰒳"; keybind = "h"; }
     { label = "logout";    action = "hyprctl dispatch exit"; text = "󰍃"; keybind = "e"; }
     { label = "shutdown";  action = "systemctl poweroff";    text = "󰐥"; keybind = "s"; }

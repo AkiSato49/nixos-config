@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   services.hyprpaper = {
@@ -6,16 +6,6 @@
     settings = {
       ipc = "on";
       splash = false;
-      preload = [
-        "${config.home.homeDirectory}/Pictures/wallpapers/edp1.png"
-        "${config.home.homeDirectory}/Pictures/wallpapers/dp9.png"
-        "${config.home.homeDirectory}/Pictures/wallpapers/dp10.png"
-      ];
-      wallpaper = [
-        "eDP-1,${config.home.homeDirectory}/Pictures/wallpapers/edp1.png"
-        "desc:Lenovo Group Limited Pro 27Q-10 UGW1F5CA,${config.home.homeDirectory}/Pictures/wallpapers/dp9.png"
-        "desc:AOC Q27G2SG4B+ OGJMBHA018485,${config.home.homeDirectory}/Pictures/wallpapers/dp10.png"
-      ];
     };
   };
 
@@ -25,16 +15,22 @@
     # Apply already-generated wallpapers (runs on login)
     (pkgs.writeShellScriptBin "set-wallpaper-apply" ''
       WP_DIR="$HOME/Pictures/wallpapers"
-      if [ ! -f "$WP_DIR/edp1.png" ]; then
-        echo "No wallpapers found at $WP_DIR — run set-wallpaper <image> first"
+      fallback="$WP_DIR/edp1.png"
+      if ! ${pkgs.imagemagick}/bin/magick identify "$fallback" >/dev/null 2>&1; then
+        echo "No valid wallpapers found at $WP_DIR — run set-wallpaper <image> first"
         exit 1
       fi
       while IFS=$'\t' read -r name description; do
         case "$description" in
           "Lenovo Group Limited Pro 27Q-10 UGW1F5CA") image="$WP_DIR/dp9.png" ;;
           "AOC Q27G2SG4B+ OGJMBHA018485") image="$WP_DIR/dp10.png" ;;
-          *) image="$WP_DIR/edp1.png" ;;
+          *) image="$fallback" ;;
         esac
+        # Never leave an output blank because one generated tile was truncated.
+        if ! ${pkgs.imagemagick}/bin/magick identify "$image" >/dev/null 2>&1; then
+          echo "Invalid wallpaper $image; using $fallback" >&2
+          image="$fallback"
+        fi
         hyprctl hyprpaper wallpaper "$name,$image"
       done < <(hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[] | [.name, .description] | @tsv')
     '')
@@ -56,29 +52,31 @@
       mkdir -p "$WP_DIR"
       CONVERT="${pkgs.imagemagick}/bin/convert"
 
-      # --- eDP-1 (left, laptop): 2880x1800, 16:10 ---
+      generate() {
+        destination="$1"
+        size="$2"
+        gravity="$3"
+        temporary=$(mktemp "$WP_DIR/.wallpaper.XXXXXX.png")
+        trap 'rm -f "$temporary"' RETURN
+        $CONVERT "$SRC" \
+          -resize "$size^" \
+          -gravity "$gravity" \
+          -extent "$size" \
+          "$temporary"
+        mv "$temporary" "$destination"
+        trap - RETURN
+      }
+
+      # Write through temporary files: interrupted conversion cannot replace a
+      # valid tile with a truncated PNG.
       echo "Generating eDP-1 (laptop, left)..."
-      $CONVERT "$SRC" \
-        -resize "2880x1800^" \
-        -gravity West \
-        -extent "2880x1800" \
-        "$WP_DIR/edp1.png"
+      generate "$WP_DIR/edp1.png" "2880x1800" West
 
-      # --- Lenovo Pro 27Q (centre): 2560x1440, 16:9 ---
       echo "Generating Lenovo 27Q (centre)..."
-      $CONVERT "$SRC" \
-        -resize "2560x1440^" \
-        -gravity Center \
-        -extent "2560x1440" \
-        "$WP_DIR/dp9.png"
+      generate "$WP_DIR/dp9.png" "2560x1440" Center
 
-      # --- AOC Q27G2 (right, portrait): 1440x2560 ---
       echo "Generating AOC Q27G2 (right, portrait)..."
-      $CONVERT "$SRC" \
-        -resize "1440x2560^" \
-        -gravity East \
-        -extent "1440x2560" \
-        "$WP_DIR/dp10.png"
+      generate "$WP_DIR/dp10.png" "1440x2560" East
 
       # Current protocol loads paths when assigning them; explicit preload and
       # unload requests belong to older hyprpaper versions.

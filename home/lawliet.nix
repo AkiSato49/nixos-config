@@ -1,5 +1,42 @@
 { config, pkgs, inputs, lib, hostName, ... }:
 
+let
+  # ALSA_CONFIG_PATH replaces ALSA's whole config; a PCM-only file removes
+  # ctl.hw/card definitions and makes Fairlight retry device discovery forever.
+  # Load full alsa-lib config first. NixOS's /etc/alsa/conf.d then selects
+  # PipeWire as default while preserving hardware enumeration.
+  resolveAlsaConfig = pkgs.writeText "resolve-asound.conf" ''
+    <${pkgs.alsa-lib}/share/alsa/alsa.conf>
+  '';
+
+  # Nixpkgs Resolve FHS contains alsa-lib but not PipeWire's ALSA plugin.
+  # Extend only this package environment; no global library-path changes.
+  davinciResolvePipewire = pkgs.davinci-resolve.override {
+    buildFHSEnv = args:
+      pkgs.buildFHSEnv (args // {
+        targetPkgs = fhsPkgs: (args.targetPkgs fhsPkgs) ++ [ fhsPkgs.pipewire ];
+      });
+  };
+
+  resolve = pkgs.symlinkJoin {
+    name = "davinci-resolve-pipewire";
+    paths = [ davinciResolvePipewire ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/davinci-resolve \
+        --set ALSA_CONFIG_PATH ${resolveAlsaConfig} \
+        --set PIPEWIRE_LATENCY 1024/48000
+    '';
+  };
+
+  resolvePerformance = pkgs.writeShellApplication {
+    name = "davinci-resolve-performance";
+    runtimeInputs = [ pkgs.gamemode ];
+    text = ''
+      exec gamemoderun ${resolve}/bin/davinci-resolve "$@"
+    '';
+  };
+in
 {
   imports = [
     ../modules/home/desktop/hyprland.nix
@@ -27,7 +64,8 @@
 
     packages = with pkgs; (lib.optionals (hostName == "mambo") [
       # Resolve needs Mambo's RTX 3070 Ti; casino's Intel iGPU is unsupported.
-      davinci-resolve
+      resolve
+      resolvePerformance
     ]) ++ [
       # Browser (zen via flake — see hyprland.nix for the package ref)
       inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default

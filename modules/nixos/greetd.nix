@@ -1,4 +1,4 @@
-{ inputs, pkgs, theme, ... }:
+{ inputs, lib, pkgs, theme, hostName, ... }:
 
 let
   wallpaper = ../../assets/wallpapers/casino-login.png;
@@ -50,6 +50,13 @@ in {
         theme = "Bibata-Modern-Classic";
         size = 24;
         path = "${pkgs.bibata-cursors}/share/icons";
+      };
+      # Match Mambo's session layout. Greeter runs its own compositor, so
+      # Hyprland/Kanshi output rules do not apply before login.
+      output = lib.optionalAttrs (hostName == "mambo") {
+        layout = "DP-2:0,0; DP-1:2560,0";
+        transforms = "DP-2:normal; DP-1:270";
+        scales = "DP-2:1; DP-1:1";
       };
       # Skip user picker; this is only local desktop account.
       user.default = "lawliet";

@@ -22,7 +22,9 @@
         # Let Enter on an empty password field invoke PAM fingerprint auth.
         # Noctalia otherwise rejects empty submissions before PAM runs.
         allow_empty_password = true;
-        lock_before_suspend = true;
+        # Single lock owner = hypridle (hyprlock.nix). Noctalia must not
+        # race it with its own suspend lock; hypridle lock_cmd drives IPC.
+        lock_before_suspend = false;
         # `set-wallpaper` regenerates this file before applying Hyprpaper.
         # Use same image on lock surface without exposing desktop windows.
         wallpaper = "${config.home.homeDirectory}/Pictures/wallpapers/edp1.png";
@@ -71,4 +73,17 @@
   home.activation.stopQuickshell = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD systemctl --user disable --now quickshell-lawliet.service 2>/dev/null || true
   '';
+
+  # DPMS wake makes dock outputs flap while kanshi converges. Noctalia can
+  # either fail on a stale wl_output (exit 1) or treat a Wayland broken pipe
+  # as clean shutdown (exit 0). `on-failure` misses latter and leaves shell
+  # dead, so restart after either exit. Explicit systemd stop still suppresses
+  # restart. Larger burst covers pair -> triple output churn.
+  systemd.user.services.noctalia = {
+    Service = {
+      Restart = lib.mkForce "always";
+      RestartSec = "2s";
+    };
+    Unit.StartLimitBurst = 10;
+  };
 }

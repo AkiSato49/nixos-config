@@ -102,11 +102,16 @@ let
         ws=$(( ws + 1 ))
       done
     done
-    mv "$tmp" '${workspaceState}'
-
+    # Conditional reload: DPMS off/on re-announces identical topology;
+    # unconditional reload drops all Wayland clients (Noctalia Broken pipe).
     # Reload clears stale rules, then move workspaces which already exist.
-    $HYPRCTL reload >/dev/null
-    sleep 0.2
+    if ! cmp -s "$tmp" '${workspaceState}' 2>/dev/null; then
+      mv "$tmp" '${workspaceState}'
+      $HYPRCTL reload >/dev/null
+      sleep 0.2
+    else
+      rm -f "$tmp"
+    fi
     workspaces=$($HYPRCTL workspaces -j)
     for ws in "''${!targets[@]}"; do
       if printf '%s' "$workspaces" | $JQ -e --argjson ws "$ws" 'any(.[]; .id == $ws)' >/dev/null; then
@@ -156,7 +161,9 @@ let
       fi
       (
         # Dock outputs arrive as several events; wait for complete topology.
-        sleep 2
+        # 5s matches hypridle on-resume settle; shorter races kanshi
+        # pair->triple (~3s) and kills Noctalia mid-rebuild.
+        sleep 5
         ${assignWs}/bin/assign-ws
         ${config.home.profileDirectory}/bin/set-wallpaper-apply
       ) &
@@ -288,6 +295,11 @@ in {
       }
 
       exec-once = nm-applet --indicator
+      # User units (noctalia, hypridle, soteria) run under manager session
+      # (CanLock=no) with no XDG_SESSION_ID. Import real graphical session
+      # env each login so logind/dbus calls resolve; then restart hypridle
+      # once so already-running daemon picks up imported env.
+      exec-once = systemctl --user import-environment XDG_SESSION_ID WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP; dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_ID; systemctl --user try-restart hypridle.service
       exec-once = hyprpaper
       exec-once = bash -c 'sleep 2 && [ -f ~/Pictures/wallpapers/edp1.png ] && set-wallpaper-apply'
       exec-once = wl-paste --type text  --watch cliphist store
@@ -308,7 +320,9 @@ in {
       bind = $mod,       V,      exec, ${smartClipboard}/bin/smart-clipboard paste
       bind = $mod,       P,      pseudo
       bind = $mod CTRL,  L,      exec, loginctl lock-session
-      # logind route: hypridle lock_cmd bridges to Noctalia IPC. Direct
+      # hypridle lock_cmd bridges to Noctalia IPC with hyprlock fallback.
+      # Singular, no ID: locks caller session, no auth prompt. Plural form
+      # demands polkit — never use it.
       # `noctalia msg session lock` also works; logind unifies all lock paths.
       # Keep tested GTKLock as explicit recovery path while Noctalia lock is proven.
       bind = $mod CTRL SHIFT, L, exec, gtklock

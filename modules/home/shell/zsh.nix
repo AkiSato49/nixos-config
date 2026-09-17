@@ -53,6 +53,53 @@
 
       # npm global bins (e.g. pi, npx tools)
       export PATH="$HOME/.npm-global/bin:$PATH"
+
+      # Secrets from sops-nix (/run/secrets/*, owned by lawliet). See
+      # /etc/nixos/modules/nixos/secrets.nix. Guarded so non-casino/no-sops
+      # shells still start clean.
+      _load_secret() { [ -r "$1" ] && export "$2=$(cat "$1")"; }
+      _load_secret /run/secrets/meta_model_api_key    MODEL_API_KEY
+      _load_secret /run/secrets/gog_keyring_password  GOG_KEYRING_PASSWORD
+      _load_secret /run/secrets/openai_api_key        OPENAI_API_KEY
+      _load_secret /run/secrets/figma_token           FIGMA_TOKEN
+      unset -f _load_secret
+
+      # syncforce [folder|all]: force syncthing rescan on mambo + casino.
+      # Defaults to School folder. Pull follows scan automatically (~10s).
+      syncforce() {
+        local folder="''${1:-School}"
+        local query=""
+        [[ "$folder" == "all" ]] || query="?folder=''${folder}"
+        local mkey
+        mkey=$(grep -oP '<apikey>\K[^<]+' ~/.config/syncthing/config.xml)
+        curl -s -X POST -H "X-API-Key: $mkey" "http://127.0.0.1:8384/rest/db/scan''${query}" >/dev/null && echo "mambo ''${folder}: scan triggered"
+        ssh lawliet@100.105.22.71 "CKEY=\$(grep -oP '<apikey>\K[^<]+' ~/.config/syncthing/config.xml); curl -s -X POST -H \"X-API-Key: \$CKEY\" \"http://127.0.0.1:8384/rest/db/scan''${query}\" >/dev/null && echo \"casino ''${folder}: scan triggered\""
+      }
+
+      # add-secret <sops_key> [ENV_VAR]: store value via sops, declare in
+      # secrets.nix, wire _load_secret above. Value prompted hidden, never
+      # passed as argv, never saved to history. Run `rebuild` after.
+      add-secret() {
+        local key="$1" envvar="$2"
+        [[ "$key" =~ ^[a-z0-9_]+$ ]] || { echo "usage: add-secret <sops_key> [ENV_VAR] (e.g. add-secret figma_token)" >&2; return 1; }
+        : "''${envvar:=${key:u}}"
+        [[ "$envvar" =~ ^[A-Z_][A-Z0-9_]*$ ]] || { echo "bad ENV_VAR: $envvar" >&2; return 1; }
+        local val=""
+        read -sr "val?secret value for $key: "; echo
+        [[ -n "$val" ]] || { echo "empty, abort" >&2; return 1; }
+        local json; json=$(print -r -- "$val" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))') || return 1
+        val=""
+        sops set /etc/nixos/secrets/secrets.yaml "[\"$key\"]" "$json" || return 1
+        grep -q "\b$key\.owner" /etc/nixos/modules/nixos/secrets.nix || {
+          sed -i "/secrets = {/a\      $key.owner = user;" /etc/nixos/modules/nixos/secrets.nix || return 1
+          echo "declared $key in secrets.nix"
+        }
+        grep -q "/run/secrets/$key" /etc/nixos/modules/home/shell/zsh.nix || {
+          sed -i "s|_load_secret /run/secrets/openai_api_key.*|&\n      _load_secret /run/secrets/$key  $envvar|" /etc/nixos/modules/home/shell/zsh.nix || return 1
+          echo "wired $envvar in zsh.nix"
+        }
+        echo "stored $key -> $envvar. Next: rebuild, then printenv $envvar | wc -c"
+      }
     '';
 
     history = {

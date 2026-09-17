@@ -2,10 +2,12 @@
 result
 result-*
 
-# Secrets (never commit these)
-secrets.yaml
+# Secrets
+# NOTE: secrets/*.yaml are sops-ENCRYPTED and MUST be committed.
+# Never commit private age/ssh identities or plaintext key material.
 *.age
 *.key
+keys.txt
 
 # Hardware config is machine-specific — commit your own version
 # hosts/nixos/hardware-configuration.nix

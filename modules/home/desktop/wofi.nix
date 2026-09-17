@@ -42,7 +42,7 @@ let
           --no-sort)
 
     case "$choice" in
-      LOCK)      gtklock ;;
+      LOCK)      loginctl lock-session ;;
       SUSPEND)   systemctl suspend ;;
       HIBERNATE) systemctl hibernate ;;
       LOGOUT)    hyprctl dispatch exit ;;

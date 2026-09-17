@@ -3,10 +3,12 @@
 {
   imports = [
     ./immich-storage.nix
+    ./workstation.nix
     ./hardware-configuration.nix
     ../../modules/nixos/profiles/desktop.nix
     ../../modules/nixos/nvidia.nix
     ../../modules/nixos/home-utility-fetchers.nix
+    ../../modules/nixos/secrets.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -41,7 +43,7 @@
   users.users.lawliet = {
     isNormalUser = true;
     description = "lawliet";
-    extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" "gamemode" ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIrozfwAKPWxBjT3E4De1uzg9umySfKuC5yRb1X/psb6"

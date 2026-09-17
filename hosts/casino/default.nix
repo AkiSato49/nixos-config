@@ -7,6 +7,9 @@
     ../../modules/nixos/power.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/photography.nix
+    # secrets.nix: enable once casino's host key is a sops recipient
+    # (ssh-to-age its /etc/ssh/ssh_host_ed25519_key.pub -> .sops.yaml -> sops updatekeys)
+    # ../../modules/nixos/secrets.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   hardware.enableAllFirmware = true;
@@ -49,6 +49,36 @@
                 "api.acp.auto-port" = true;
               };
             };
+          }
+        ];
+      };
+      # Resolve's Fairlight engine continuously reconnects unless both input
+      # and output exist under one stable Pro Audio profile.
+      extraConfig."53-mambo-resolve-audio" = lib.mkIf (config.networking.hostName == "mambo") {
+        "monitor.alsa.rules" = [
+          {
+            matches = [
+              { "device.name" = "alsa_card.pci-0000_0d_00.4"; }
+            ];
+            actions."update-props" = {
+              "device.profile" = "pro-audio";
+              "api.acp.auto-profile" = false;
+            };
+          }
+          {
+            # ALC887 optical/SPDIF output (hw:1,1).
+            matches = [
+              { "node.name" = "alsa_output.pci-0000_0d_00.4.pro-output-1"; }
+            ];
+            actions."update-props"."priority.session" = 3000;
+          }
+          {
+            # ALC887 analog capture (hw:1,0); Fairlight requires an input even
+            # for playback-only sessions.
+            matches = [
+              { "node.name" = "alsa_input.pci-0000_0d_00.4.pro-input-0"; }
+            ];
+            actions."update-props"."priority.session" = 3000;
           }
         ];
       };

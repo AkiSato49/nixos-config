@@ -141,15 +141,19 @@ in {
     enable = true;
     settings = {
       general = {
-        after_sleep_cmd = "hyprctl dispatch dpms on";
-        # Noctalia-viable path (upstream #3062/#3165): route all locks via
-        # logind so hypridle bridges to Noctalia even though its own logind
-        # session-lock monitor is disabled (NoSessionForPID as user unit).
-        # inhibit_sleep=3 waits for locked state; mode 2 auto targets hyprlock.
+        # Single lock owner = hypridle. Noctalia lock_before_suspend=false
+        # (see noctalia.nix); hypridle alone drives suspend + idle lock.
+        # Singular `lock-session` (no ID) locks caller's own session with no
+        # auth prompt — but only resolves while $XDG_SESSION_ID is in the
+        # user manager env (Hyprland exec-once imports it, then restarts
+        # hypridle). Plural `lock-sessions` hits all sessions and demands
+        # polkit auth — never use it here.
+        # lock_cmd goes direct to Noctalia IPC with hyprlock fallback so a
+        # dead Noctalia never means an unlocked session.
         before_sleep_cmd = "loginctl lock-session";
         inhibit_sleep = 3;
         ignore_dbus_inhibit = false;
-        lock_cmd = "noctalia msg session lock";
+        lock_cmd = "sh -c 'noctalia msg session lock || hyprlock'";
       };
       listener = [
         {
@@ -158,12 +162,15 @@ in {
         }
         {
           timeout = 600;
+          # Monitors black only — never suspend the box. Lock already held
+          # since 300s; DPMS off is display-only, session stays up.
           on-timeout = "hyprctl dispatch dpms off";
-          # Settle delay: DPMS wake re-announces wl_output globals in stages
-          # (kanshi pair -> triple took ~3s Sep 14); firing dpms on immediately
-          # races noctalia bar/wallpaper rebuild and kills it (wl_display
-          # invalid object -> exit 1). 2s lets kanshi settle first.
-          on-resume = "sleep 2 && hyprctl dispatch dpms on";
+          # Single DPMS writer (after_sleep_cmd removed). Settle delay:
+          # DPMS wake re-announces wl_output globals in stages
+          # (kanshi pair -> triple took ~3s Sep 14); firing dpms on
+          # immediately races noctalia bar/wallpaper rebuild and kills it
+          # (wl_display invalid object -> exit 1). 5s lets kanshi settle.
+          on-resume = "sleep 5 && hyprctl dispatch dpms on";
         }
       ];
     };

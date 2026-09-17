@@ -34,11 +34,14 @@
     };
   };
 
-  # Syncthing
+  # Syncthing (imperative pairing via GUI :8384; tailnet direct via tailscale0 trust)
   services.syncthing = {
     enable = true;
     user = "lawliet";
-    dataDir = "/home/lawliet/Sync";
+    dataDir = "/home/lawliet/.local/share/syncthing";
     configDir = "/home/lawliet/.config/syncthing";
+    openDefaultPorts = true;
+    overrideDevices = false; # keep GUI pairing
+    overrideFolders = false; # keep GUI folders (school, etc.)
   };
 }

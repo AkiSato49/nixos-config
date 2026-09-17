@@ -7,7 +7,7 @@ lawliet's NixOS flake configuration. Optimized for a clean, Swiss-grid aesthetic
 ## 💻 Hosts
 
 *   **`casino`** (Laptop): NixOS unstable, high-DPI scaling, power management (`power.nix`), and local obs setup.
-*   **`mambo`** (Desktop): Ryzen 5 5600X + RTX 3070 Ti, custom NVIDIA drivers, OpenClaw, and the `home-utility-fetchers` service.
+*   **`mambo`** (Desktop): Ryzen 5 5600X + RTX 3070 Ti, NVIDIA drivers, Hermes gateway, and the `home-utility-fetchers` service.
 
 ---
 
